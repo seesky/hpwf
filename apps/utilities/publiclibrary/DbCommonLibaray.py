@@ -7,7 +7,6 @@ from django.db import connection, transaction
 class DbCommonLibaray(object):
 
     def executeQuery(self, sql):
-        print(sql)
         cursor = connection.cursor()  # 获得一个游标(cursor)对象
         cursor.execute(sql)
         rawData = cursor.fetchall()
@@ -20,5 +19,4 @@ class DbCommonLibaray(object):
 
                 objDict[col_names[index]] = value
             result.append(objDict)
-            print(result)
         return result
