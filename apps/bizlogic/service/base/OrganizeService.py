@@ -2,52 +2,66 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/11 14:25'
 
-from apps.bizlogic import models
+from apps.bizlogic.models import Piorganize
 
-def Add(entity, statusCode, statusMessage):
-    pass
+class OrganizeService(object):
+    def Add(self, entity, statusCode, statusMessage):
+        pass
 
-def BatchDelete(ids):
-    pass
+    def BatchDelete(self, ids):
+        pass
 
-def BatchMoveTo(organizeIds, parentId):
-    pass
+    def BatchMoveTo(self, organizeIds, parentId):
+        pass
 
-def BatchSave(dataTable):
-    pass
+    def BatchSave(self, dataTable):
+        pass
 
-def Delete(id):
-    pass
+    def Delete(self, id):
+        pass
 
-def GetChildrensById(organizeId):
-    pass
+    def GetChildrensById(self, organizeId):
+        """
+        根据组织机构主键获取其指定分类下的子节点列表
+        Args:
+            organizeId (string): 组织机构主键
+        Returns:
+            returnValue (List): 子节点列表
+        """
+        try:
+            returnValue = []
+            for piorganize in Piorganize.objects.filter(parentid=organizeId):
+                returnValue.append(piorganize.id)
+            return returnValue
+        except Piorganize.DoesNotExist:
+            return returnValue
 
-def GetDT():
-    pass
+    def GetDT(self):
+        pass
 
-def GetDTByIds(ids):
-    pass
+    def GetDTByIds(self, ids):
+        pass
 
-def GetDTByParent(parentId):
-    pass
+    def GetDTByParent(self, parentId):
+        pass
 
-def GetDTByValues(names, values):
-    pass
+    def GetDTByValues(self, names, values):
+        pass
 
-def GetEntity(id):
-    pass
+    def GetEntity(self, id):
+        pass
 
-def GetList():
-    pass
+    def GetList(self):
+        pass
 
-def GetListByParent():
-    pass
+    def GetListByParent(self):
+        pass
 
-def MoveTo(organizeId, parentId):
-    pass
+    def MoveTo(self, organizeId, parentId):
+        pass
 
-def SetDeleted(ids):
-    pass
+    def SetDeleted(self, ids):
+        pass
 
-def Update(entity, statusMessage):
-    pass
+    def Update(self, entity, statusMessage):
+        pass
