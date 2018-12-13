@@ -143,54 +143,20 @@ class UserSerivce(object):
                     + " OR " + Piuser._meta.db_table + '.SUBDEPARTMENTID IN (' + StringHelper.ArrayToList(self,organizeIds,"\'") + ')' \
                     + " OR " + Piuser._meta.db_table + '.WORKGROUPID IN (' + StringHelper.ArrayToList(self,organizeIds,"\'") + '))'
 
-        # if roleId:
-        #     whereConditional = whereConditional + ' AND ( ' + Piuser._meta.db_table + '.id IN' \
-        #         + '    (SELECT USERID FROM ' + Piuserrole._meta.db_table \
-        #         + '     WHERE ROLEID = \"' + roleId + '\"' \
-        #         + '     AND ENABLED = 1' \
-        #         + '     AND DELETEMARK = 0 ))'
-        # tableName =
-        # whereConditional = whereConditional + " AND (piuser.id IN (select userid from piuserrole where roleid = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81'))"
+        if roleId:
+            whereConditional = whereConditional + ' AND ( ' + Piuser._meta.db_table + '.ID IN' \
+                + '    (SELECT USERID FROM ' + Piuserrole._meta.db_table \
+                + '     WHERE ROLEID = \'' + roleId + '\'' \
+                + '     AND ENABLED = 1' \
+                + '     AND DELETEMARK = 0 ))'
 
         if searchValue:
             whereConditional = whereConditional + "  AND (" + searchValue + ')'
 
         countSqlQuery = countSqlQuery + ' ' + whereConditional
-
-        #print(countSqlQuery)
-
-
-
         userList = DbCommonLibaray.executeQuery(self, countSqlQuery)
-
-
-
-
-        #print(len(userList))
         returnValue = Paginator(userList, pageSize)
-        #print(userList)
-        returnValue2 = []
-        role = Piuserrole.objects.filter(Q(roleid=roleId) & Q(enabled=1) & Q(deletemark=0))
-
-        print(userList)
-        print(role)
-
-        for v in userList:
-            print(v.get('ID'))
-
-        for r in role:
-            print(r.userid)
-
-
-        for v in userList:
-            for r in role:
-                if v.get('ID') == r.userid:
-                    print(v.get('ID'))
-                    print(r.userid)
-                    returnValue2.append(r)
-                    break
-
-        return returnValue2
+        return returnValue
 
     def GetList(self):
         pass

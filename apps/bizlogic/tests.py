@@ -171,13 +171,12 @@ class UserServiceTest(TestCase):
         piuserrole.userid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
         piuserrole.save()
 
-        piuserrole = Piuserrole.objects.get(roleid='27A40BF7-D68C-4BF5-9B40-056A8D3E9A81')
-        #print(piuserrole.userid)
+
         returnValue = UserSerivce.GetDTByPage(self, '', '07DF66FA-644E-4B1F-9994-AE7332796058', '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81', 1, None)
-        print(returnValue)
-        #print(returnValue.count)
-        #print(returnValue.num_pages)
-        #print(returnValue.page_range)
+        print(returnValue.count)
+        print(returnValue.num_pages)
+        print(returnValue.page_range)
+        print(returnValue.object_list)
 
 
 class UserOrganzieServiceTest(TestCase):
