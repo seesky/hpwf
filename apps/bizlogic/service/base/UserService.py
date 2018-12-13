@@ -8,6 +8,7 @@ from apps.bizlogic.models import Piuserrole
 from django.db.utils import DatabaseError
 from django.db.transaction import TransactionManagementError
 from django.db import connection
+from django.core.paginator import Paginator
 
 from utilities.publiclibrary.StringHelper import StringHelper
 from utilities.message.StatusCode import StatusCode
@@ -114,19 +115,17 @@ class UserSerivce(object):
             return returnValue
 
 
-    def GetDTByPage(self, searchValue, departmentId, roleId, recordCount, pageIndex=0, pageSize=50, order=None):
+    def GetDTByPage(self, searchValue, departmentId, roleId, pageSize=50, order=None):
         """
         分页查询
         Args:
             searchValue (string): 查询字段
             departmentId (string): 部门主键
             roleId (string): 角色主键
-            recordCount (int): 记录数
-            pageIndex (int): 当前页
             pageSize (int): 每页显示
             order (string): 排序
         Returns:
-            returnValue (List): 用户列表
+            returnValue (List): 用户分页列表
         """
         countSqlQuery =' SELECT * FROM ' +  Piuser._meta.db_table + ' WHERE '
 
@@ -143,19 +142,26 @@ class UserSerivce(object):
                     + " OR " + Piuser._meta.db_table + '.SUBDEPARTMENTID IN (' + StringHelper.ArrayToList(self,organizeIds,"\'") + ')' \
                     + " OR " + Piuser._meta.db_table + '.WORKGROUPID IN (' + StringHelper.ArrayToList(self,organizeIds,"\'") + '))'
 
-        if roleId:
-            whereConditional = whereConditional + ' AND ( ' + Piuser._meta.db_table + '.ID IN' \
-                + '    (SELECT USERID FROM ' + Piuserrole._meta.db_table \
-                + '     WHERE ROLEID = \'' + roleId + '\'' \
-                + '     AND ENABLED = 1' \
-                + '     AND DELETEMARK = 0 ))'
+        # if roleId:
+        #     whereConditional = whereConditional + ' AND ( ' + Piuser._meta.db_table + '.ID IN' \
+        #         + '    (SELECT USERID FROM ' + Piuserrole._meta.db_table \
+        #         + '     WHERE ROLEID = \'' + roleId + '\'' \
+        #         + '     AND ENABLED = 1' \
+        #         + '     AND DELETEMARK = 0 ))'
+
+        if searchValue:
+            whereConditional = whereConditional + " AND (" + searchValue + ')'
 
         countSqlQuery = countSqlQuery + ' ' + whereConditional
 
+        #print(countSqlQuery)
+
         userList = DbCommonLibaray.executeQuery(self, countSqlQuery)
-        print(countSqlQuery)
-        print(len(userList))
-        return whereConditional
+
+
+        #print(len(userList))
+        returnValue = Paginator(userList, pageSize)
+        return returnValue
 
     def GetList(self):
         pass

@@ -8,6 +8,7 @@ from apps.bizlogic.service.base.OrganizeService import OrganizeService
 
 from apps.bizlogic.models import Piuser
 from apps.bizlogic.models import Piorganize
+from apps.bizlogic.models import Piuserrole
 
 # Create your tests here.
 class ExceptionServiceTest(TestCase):
@@ -126,6 +127,19 @@ class UserServiceTest(TestCase):
 
     #分页查询
     def test_GetDTByPage(self):
+        user = Piuser()
+        user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        user.username = 'wuyujia'
+        user.realname = '邬育佳'
+        user.isstaff = 1
+        user.isvisible = 1
+        user.isdimission = 1
+        user.deletemark = 0
+        user.enabled = 1
+        user.companyid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        user.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user)
+
         organzie = Piorganize()
         organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
         organzie.fullname = 'o1'
@@ -147,8 +161,22 @@ class UserServiceTest(TestCase):
         organzie1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         organzie1.save()
 
-        returnValue = UserSerivce.GetDTByPage(self, 'search', '07DF66FA-644E-4B1F-9994-AE7332796058', 'D25198E7-84E7-4C1A-8EA9-C047D2A13FBF', 10)
-        print(returnValue)
+        piuserrole = Piuserrole()
+        piuserrole.id = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A82'
+        piuserrole.roleid = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81'
+        piuserrole.enabled = 1
+        piuserrole.deletemark = 0
+        piuserrole.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole.userid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        piuserrole.save()
+
+        piuserrole = Piuserrole.objects.get(roleid='27A40BF7-D68C-4BF5-9B40-056A8D3E9A81')
+        print(piuserrole.userid)
+        returnValue = UserSerivce.GetDTByPage(self, '', '07DF66FA-644E-4B1F-9994-AE7332796058', '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81', 1)
+        #print(returnValue.count)
+        #print(returnValue.num_pages)
+        #print(returnValue.page_range)
 
 
 class UserOrganzieServiceTest(TestCase):
