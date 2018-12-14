@@ -170,14 +170,77 @@ class UserServiceTest(TestCase):
         piuserrole.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         piuserrole.userid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
         piuserrole.save()
-
-
         returnValue = UserSerivce.GetDTByPage(self, '', '07DF66FA-644E-4B1F-9994-AE7332796058', '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81', 1, None)
-        print(returnValue.count)
-        print(returnValue.num_pages)
-        print(returnValue.page_range)
-        print(returnValue.object_list)
 
+    #获取用户列表
+    def test_GetList(self):
+        # 没有用户
+        returnValue = UserSerivce.GetDT(self)
+        self.assertEqual(len(returnValue), 0)
+        # 有用户
+        user = Piuser()
+        user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        user.username = 'wuyujia'
+        user.realname = '邬育佳'
+        user.isstaff = 1
+        user.isvisible = 1
+        user.isdimission = 1
+        user.deletemark = 0
+        user.enabled = 1
+        user.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user)
+        returnValue = UserSerivce.GetDT(self)
+        self.assertEqual(len(returnValue), 1)
+        print('获取用户列表测试完成  ' + str(datetime.datetime.now()))
+
+    #按主键获取用户列表
+    def test_GetDTByIds(self):
+        # 没有用户
+        ids = ['0003d3f5-6aa1-4475-adf6-50961c8bd739','0003d3f5-6aa1-4475-adf6-50961c8bd738']
+        returnValue = UserSerivce.GetDTByIds(self, ids)
+        self.assertEqual(len(returnValue), 0)
+        # 有用户
+        user = Piuser()
+        user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        user.username = 'wuyujia'
+        user.realname = '邬育佳'
+        user.isstaff = 1
+        user.isvisible = 1
+        user.isdimission = 1
+        user.deletemark = 0
+        user.enabled = 1
+        user.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user)
+        returnValue = UserSerivce.GetDTByIds(self, ids)
+        self.assertEqual(len(returnValue), 1)
+
+        user1 = Piuser()
+        user1.id = '0003d3f5-6aa1-4475-adf6-50961c8bd738'
+        user1.username = 'wuyujia'
+        user1.realname = '邬育佳'
+        user1.isstaff = 1
+        user1.isvisible = 1
+        user1.isdimission = 1
+        user1.deletemark = 0
+        user1.enabled = 1
+        user1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user1)
+        returnValue = UserSerivce.GetDTByIds(self, ids)
+        self.assertEqual(len(returnValue), 2)
+        print('按主键获取用户列表测试完成  ' + str(datetime.datetime.now()))
+
+    #更新用户
+    def test_UpdateUser(self):
+        #更新失败
+        user = Piuser()
+        returnCode,returnMessage = UserSerivce.UpdateUser(self, user)
+        self.assertEqual(returnCode, 9)
+        self.assertEqual(returnMessage, '发生未知错误。')
+        print('更新用户测试完成  ' + str(datetime.datetime.now()))
+
+    #查询用户
+    def test_Search(self):
+        pass
 
 class UserOrganzieServiceTest(TestCase):
 

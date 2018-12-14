@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'hpwf.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hpwf',
+        'NAME': 'rdiframeworkv30',
         'USER':'root',
         'PASSWORD':'123456',
         'HOST':'',

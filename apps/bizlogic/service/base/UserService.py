@@ -159,19 +159,144 @@ class UserSerivce(object):
         return returnValue
 
     def GetList(self):
-        pass
+        """
+        获取用户列表
+        Args:
+        Returns:
+            returnValue (List): 用户列表
+        """
+        returnValue = []
+        try:
+            for user in Piuser.objects.all():
+                returnValue.append(user)
+            return returnValue
+        except DatabaseError as e:
+            return returnValue
+        except TransactionManagementError as e:
+            return returnValue
+
 
     def GetDTByIds(self, ids):
-        pass
+        """
+         按主键获取用户列表
+        Args:
+            ids (List[string]): 主键数组
+        Returns:
+            returnValue (List): 用户列表
+        """
+        returnValue = []
+        for id in ids:
+            try:
+                user = Piuser.objects.get(id=id)
+                returnValue.append(user)
+            except Piuser.DoesNotExist:
+                continue
+        return returnValue
 
     def GetListByIds(self, ids):
-        pass
+        """
+        按主键获取用户列表
+        Args:
+            ids (List[string]): 主键数组
+        Returns:
+            returnValue (List): 用户列表
+        """
+        returnValue = []
+        for id in ids:
+            try:
+                user = Piuser.objects.get(id=id)
+                returnValue.append(user)
+            except Piuser.DoesNotExist:
+                continue
+        return returnValue
 
-    def UpdateUser(self, userEntity, statusCode, statusMessage):
-        pass
+    def UpdateUser(self, userEntity):
+        """
+        更新用户
+        Args:
+            userEntity (Piuser): 用户实体
+        Returns:
+            returnValue (string): 状态码
+            returnMessage (string): 状态信息
+        """
+        try:
+            userEntity.save()
+            returnCode = StatusCode.statusCodeDic['OKUpdate']
+            returnMessage = FrameworkMessage.MSG0010
+            return returnCode,returnMessage
+        except:
+            returnCode = StatusCode.statusCodeDic['Error']
+            returnMessage = FrameworkMessage.MSG0001
+            return returnCode, returnMessage
 
-    def Search(self, searchValue, auditStatus, roleIds):
-        pass
+    def GetSearchConditional(self, permissionScopeCode, search, roleIds, enabled, auditStates, departmentId):
+        #easyui search
+        whereConditional = 'piuser.DELETEMARK = 0 AND piuser.ISVISIBLE = 1 '
+        if enabled:
+            whereConditional = whereConditional + ' AND ( piuser.ENABLED = 1 ) '
+
+        if search:
+            whereConditional = whereConditional + ' AND ( piuser.USERNAME LIKE \'' + search + '\'' \
+                + ' OR piuser.CODE LIKE \'' + search + '\'' \
+                + ' OR piuser.REALNAME LIKE \'' + search + '\'' \
+                + ' OR piuser.QUICKQUERY LIKE \'' + search + '\'' \
+                + ' OR piuser.DEPARTMENTNAME LIKE \'' + search + '\'' \
+                + ' OR piuser.DESCRIPTION LIKE \'' + search + '\')'
+
+        if departmentId:
+            organizeIds = OrganizeService.GetChildrensById(self, departmentId)
+            if len(organizeIds) > 0:
+                whereConditional = whereConditional + ' AND (piuser.COMPANYID IN (' + StringHelper.ArrayToList(self, organizeIds, '\'') + ')' \
+                    + ' OR piuser.COMPANYID IN (' + StringHelper.ArrayToList(self, organizeIds, '\'') + ')' \
+                    + ' OR piuser.DEPARTMENTID IN (' + StringHelper.ArrayToList(self, organizeIds, '\'') + ')' \
+                    + ' OR piuser.SUBDEPARTMENTID IN (' + StringHelper.ArrayToList(self, organizeIds, '\'') + ')' \
+                    + ' OR piuser.WORKGROUPID IN (' + StringHelper.ArrayToList(self, organizeIds, '\'') + '))'
+
+                whereConditional = whereConditional + ' OR piuser.ID IN (' \
+                    + ' SELECT ID' \
+                    + ' FROM piuser' \
+                    + ' WHERE (piuserorganize.DELETEMARK = 0)' \
+                    + ' AND (' \
+                    + ' piuserorganize.COMPANYID=' + departmentId + '\' OR ' \
+                    + ' piuserorganize.SUBCOMPANYID=' + departmentId + '\' OR ' \
+                    + ' piuserorganize.DEPARTMENTID=' + departmentId + '\' OR ' \
+                    + ' piuserorganize.SUBDEPARTMENTID=' + departmentId + '\' OR ' \
+                    + ' piuserorganize.WORKGROUPID=' + departmentId + '\'))'
+
+        if  auditStates:
+            whereConditional = whereConditional + ' AND (piuser.AUDITSTATUS=\'' + auditStates + '\')'
+
+        if roleIds:
+            roles = StringHelper.ArrayToList(self, roleIds, '\'')
+            whereConditional = whereConditional + ' AND (piuser.ID IN ( SELECT ID FROM piuserrole WHERE ID IN (' + roles + ')))'
+
+        return whereConditional
+
+
+    def HSearchs(self, permissionScopeCode, search, roleIds, enabled, audiStates, departmentId):
+        userList = []
+        sqlQuery = 'select piuser.*,piuserlogon.FIRSTVISIT,piuserlogon.PREVIOUSVISIT,piuserlogon.LASTVISIT,piuserlogon.IPADDRESS,piuserlogon.MACADDRESS,piuserlogon.LOGONCOUNT,piuserlogon.USERONLINE,piuserlogon.CHECKIPADDRESS,piuserlogon.MULTIUSERLOGIN FROM PIUSER LEFT OUTER JOIN PIUSERLOGON ON PIUSER.ID = PIUSERLOGON.ID '
+        whereConditional = UserSerivce.GetSearchConditional(self,permissionScopeCode, search, roleIds, enabled, audiStates, departmentId)
+        sqlQuery = sqlQuery + " WHERE " + whereConditional
+        sqlQuery = sqlQuery + " ORDER BY piuser.SORTCODE"
+        print(sqlQuery)
+        userList = DbCommonLibaray.executeQuery(self, sqlQuery)
+        return userList
+
+    def HSearch(self, searchValue, auditStatus, roleIds):
+        """
+        查询用户
+        Args:
+            searchValue (string): 查询
+            auditStatus (string): 有效
+            roleIds     (string[]): 用户角色
+        Returns:
+            returnValue (Piuser[]): 状态信息
+        """
+        returnValue = UserSerivce.HSearchs(self, '', searchValue, roleIds, None,   auditStatus, '')
+        return returnValue
+
+
 
     def SetUserAuditStates(self, ids, auditStates):
         pass
