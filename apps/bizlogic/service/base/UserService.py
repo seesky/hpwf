@@ -14,6 +14,7 @@ from django.db.models import Q
 from utilities.publiclibrary.StringHelper import StringHelper
 from utilities.message.StatusCode import StatusCode
 from utilities.message.FrameworkMessage import FrameworkMessage
+from utilities.message.AuditStatus import AuditStatus
 from utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 
 from apps.bizlogic.service.base.OrganizeService import OrganizeService
@@ -268,12 +269,12 @@ class UserSerivce(object):
 
         if roleIds:
             roles = StringHelper.ArrayToList(self, roleIds, '\'')
-            whereConditional = whereConditional + ' AND (piuser.ID IN ( SELECT ID FROM piuserrole WHERE ID IN (' + roles + ')))'
+            whereConditional = whereConditional + ' AND (piuser.ID IN ( SELECT USERID FROM piuserrole WHERE ROLEID IN (' + roles + ')))'
 
         return whereConditional
 
 
-    def HSearchs(self, permissionScopeCode, search, roleIds, enabled, audiStates, departmentId):
+    def Searchs(self, permissionScopeCode, search, roleIds, enabled, audiStates, departmentId):
         userList = []
         sqlQuery = 'select piuser.*,piuserlogon.FIRSTVISIT,piuserlogon.PREVIOUSVISIT,piuserlogon.LASTVISIT,piuserlogon.IPADDRESS,piuserlogon.MACADDRESS,piuserlogon.LOGONCOUNT,piuserlogon.USERONLINE,piuserlogon.CHECKIPADDRESS,piuserlogon.MULTIUSERLOGIN FROM PIUSER LEFT OUTER JOIN PIUSERLOGON ON PIUSER.ID = PIUSERLOGON.ID '
         whereConditional = UserSerivce.GetSearchConditional(self,permissionScopeCode, search, roleIds, enabled, audiStates, departmentId)
@@ -283,7 +284,7 @@ class UserSerivce(object):
         userList = DbCommonLibaray.executeQuery(self, sqlQuery)
         return userList
 
-    def HSearch(self, searchValue, auditStatus, roleIds):
+    def Search(self, searchValue, auditStatus, roleIds):
         """
         查询用户
         Args:
@@ -293,13 +294,26 @@ class UserSerivce(object):
         Returns:
             returnValue (Piuser[]): 状态信息
         """
-        returnValue = UserSerivce.HSearchs(self, '', searchValue, roleIds, None,   auditStatus, '')
+        returnValue = UserSerivce.Searchs(self, '', searchValue, roleIds, None,   auditStatus, '')
         return returnValue
 
 
 
     def SetUserAuditStates(self, ids, auditStates):
-        pass
+        """
+        设置用户审核状态
+        Args:
+            ids (string[]): 主键数组
+            auditStates (string): 审核状态
+        Returns:
+            returnValue (int): 影响行数
+        """
+        returnValue = Piuser.objects.filter(id__in=ids).update(auditstatus = auditStates)
+        if auditStates == AuditStatus.AuditPass:
+            returnValue = Piuser.objects.filter(id__in=ids).update(enable=1)
+        if auditStates == AuditStatus.AuditReject:
+            returnValue = Piuser.objects.filter(id__in=ids).update(enable=0)
+        return returnValue
 
     def Delete(self, id):
         pass

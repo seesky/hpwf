@@ -2,6 +2,7 @@ import datetime
 from django.test import TestCase
 from apps.bizlogic.service.base import ExceptionService
 from apps.bizlogic.models import Ciexception
+import uuid
 
 from apps.bizlogic.service.base.UserService import UserSerivce
 from apps.bizlogic.service.base.OrganizeService import OrganizeService
@@ -28,6 +29,7 @@ class UserServiceTest(TestCase):
         # self.assertEqual(returnValue, None)
         #添加成功
         user = Piuser()
+        user.id = uuid.uuid4()
         user.username = 'wuyujia'
         user.realname = '邬育佳'
         user.isstaff = 1

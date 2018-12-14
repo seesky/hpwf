@@ -696,8 +696,8 @@ class Pitablepermissionscope(models.Model):
 
 
 class Piuser(models.Model):
-    #id = models.CharField(db_column='ID', primary_key=True, max_length=40)  # Field name made lowercase.
-    id = models.UUIDField(db_column='ID', primary_key=True, max_length=40, auto_created=True, default=uuid.uuid4, editable=False)
+    id = models.CharField(db_column='ID', primary_key=True, max_length=40)  # Field name made lowercase.
+    #id = models.UUIDField(db_column='ID', primary_key=True, max_length=40, auto_created=True, default=uuid.uuid4, editable=False)
     code = models.CharField(db_column='CODE', max_length=50, blank=True, null=True)  # Field name made lowercase.
     username = models.CharField(db_column='USERNAME', max_length=50)  # Field name made lowercase.
     realname = models.CharField(db_column='REALNAME', max_length=50, blank=True, null=True)  # Field name made lowercase.
