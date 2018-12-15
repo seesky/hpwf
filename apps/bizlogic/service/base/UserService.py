@@ -4,6 +4,7 @@ __date__ = '2018/12/11 15:01'
 
 from apps.bizlogic.models import Piuser
 from apps.bizlogic.models import Piuserrole
+from apps.bizlogic.models import Pistaff
 
 from django.db.utils import DatabaseError
 from django.db.transaction import TransactionManagementError
@@ -18,6 +19,7 @@ from utilities.message.AuditStatus import AuditStatus
 from utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 
 from apps.bizlogic.service.base.OrganizeService import OrganizeService
+from apps.bizlogic.service.permission.UserPermission import UserPermission
 
 class UserSerivce(object):
     """
@@ -231,6 +233,18 @@ class UserSerivce(object):
             return returnCode, returnMessage
 
     def GetSearchConditional(self, permissionScopeCode, search, roleIds, enabled, auditStates, departmentId):
+        """
+        获取SQL查询串
+        Args:
+            permissionScopeCode (string): 权限码
+            search (string): 查询字段
+            roleIds     (string[]): 用户角色ID字典
+            enabled (string): 启用标志
+            auditStates (string): 审核状态
+            departmentId (string): 组织机构ID
+        Returns:
+            returnValue (int): SQL组合查询串
+        """
         #easyui search
         whereConditional = 'piuser.DELETEMARK = 0 AND piuser.ISVISIBLE = 1 '
         if enabled:
@@ -275,12 +289,23 @@ class UserSerivce(object):
 
 
     def Searchs(self, permissionScopeCode, search, roleIds, enabled, audiStates, departmentId):
+        """
+        查询用户
+        Args:
+            permissionScopeCode (string): 权限码
+            search (string): 查询字段
+            roleIds     (string[]): 用户角色
+            enabled (string): 启用标志
+            auditStates (string): 审核状态
+            departmentId (string): 组织机构ID
+        Returns:
+            returnValue (List): 用户列表
+        """
         userList = []
         sqlQuery = 'select piuser.*,piuserlogon.FIRSTVISIT,piuserlogon.PREVIOUSVISIT,piuserlogon.LASTVISIT,piuserlogon.IPADDRESS,piuserlogon.MACADDRESS,piuserlogon.LOGONCOUNT,piuserlogon.USERONLINE,piuserlogon.CHECKIPADDRESS,piuserlogon.MULTIUSERLOGIN FROM PIUSER LEFT OUTER JOIN PIUSERLOGON ON PIUSER.ID = PIUSERLOGON.ID '
         whereConditional = UserSerivce.GetSearchConditional(self,permissionScopeCode, search, roleIds, enabled, audiStates, departmentId)
         sqlQuery = sqlQuery + " WHERE " + whereConditional
         sqlQuery = sqlQuery + " ORDER BY piuser.SORTCODE"
-        print(sqlQuery)
         userList = DbCommonLibaray.executeQuery(self, sqlQuery)
         return userList
 
@@ -288,11 +313,11 @@ class UserSerivce(object):
         """
         查询用户
         Args:
-            searchValue (string): 查询
-            auditStatus (string): 有效
-            roleIds     (string[]): 用户角色
+            searchValue (string): 查询字段
+            auditStatus (string): 审核状态
+            roleIds     (string[]): 用户角色ID字典
         Returns:
-            returnValue (Piuser[]): 状态信息
+            returnValue (int): 影响行数
         """
         returnValue = UserSerivce.Searchs(self, '', searchValue, roleIds, None,   auditStatus, '')
         return returnValue
@@ -316,7 +341,29 @@ class UserSerivce(object):
         return returnValue
 
     def Delete(self, id):
-        pass
+        """
+        单个删除用户
+        Args:
+            id (string): 主键
+        Returns:
+            returnValue (True or False): 删除结果
+        """
+        try:
+            #已删除用户Piuser表中的DELETEMARK设置为1
+            try:
+                user = Piuser.objects.get(id=id)
+            except Piuser.DoesNotExist as e:
+                return False
+            user.deletemark = 1
+            user.save()
+            #用户已经被删除的员工的UserId设置为Null
+            Pistaff.objects.filter(userid__in=Piuser.objects.filter(deletemark=1)).update(userid=None)
+            UserPermission.ClearUserPermissionByUserId(self, id)
+            return True
+        except Exception as e:
+            print(e)
+            return False
+
 
     def BatchDelete(self, ids):
         pass

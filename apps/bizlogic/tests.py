@@ -10,6 +10,8 @@ from apps.bizlogic.service.base.OrganizeService import OrganizeService
 from apps.bizlogic.models import Piuser
 from apps.bizlogic.models import Piorganize
 from apps.bizlogic.models import Piuserrole
+from apps.bizlogic.models import Pipermission
+from apps.bizlogic.models import Pipermissionscope
 
 # Create your tests here.
 class ExceptionServiceTest(TestCase):
@@ -242,7 +244,86 @@ class UserServiceTest(TestCase):
 
     #查询用户
     def test_Search(self):
-        pass
+        user = Piuser()
+        user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        user.username = 'wuyujia'
+        user.realname = '邬育佳'
+        user.isstaff = 1
+        user.isvisible = 1
+        user.isdimission = 1
+        user.deletemark = 0
+        user.enabled = 1
+        user.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user)
+
+        piuserrole = Piuserrole()
+        piuserrole.id = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A82'
+        piuserrole.roleid = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81'
+        piuserrole.enabled = 1
+        piuserrole.deletemark = 0
+        piuserrole.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole.userid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        piuserrole.save()
+
+        roleIds = ['27A40BF7-D68C-4BF5-9B40-056A8D3E9A81']
+        returnValue = UserSerivce.Search(self, '', '', roleIds)
+        self.assertEqual(len(returnValue), 1)
+        print('查询用户测试完成  ' + str(datetime.datetime.now()))
+
+    #单个删除用户
+    def test_Delete(self):
+        user = Piuser()
+        user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        user.username = 'wuyujia'
+        user.realname = '邬育佳'
+        user.isstaff = 1
+        user.isvisible = 1
+        user.isdimission = 1
+        user.deletemark = 0
+        user.enabled = 1
+        user.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user)
+
+        piuserrole = Piuserrole()
+        piuserrole.id = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A82'
+        piuserrole.roleid = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81'
+        piuserrole.enabled = 1
+        piuserrole.deletemark = 0
+        piuserrole.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole.userid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        piuserrole.save()
+
+        pipermission = Pipermission()
+        pipermission.id = '0058389d-cdba-47ca-8785-06f5c9a92f09'
+        pipermission.resourcecategory = 'PIUSER'
+        pipermission.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        pipermission.enabled = 1
+        pipermission.deletemark = 0
+        pipermission.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission.save()
+
+        pipermissionscope = Pipermissionscope()
+        pipermissionscope.id = '021578bc-a8c7-4c35-9e2b-2c11c970dd78'
+        pipermissionscope.resourcecategory = 'PIUSER'
+        pipermissionscope.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        pipermissionscope.enabled = 1
+        pipermissionscope.deletemark = 0
+        pipermissionscope.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope.save()
+
+        self.assertEqual(Piuser.objects.get(id='0003d3f5-6aa1-4475-adf6-50961c8bd739').username, 'wuyujia')
+        self.assertEqual(Piuserrole.objects.get(id='27A40BF7-D68C-4BF5-9B40-056A8D3E9A82').roleid, '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81')
+        self.assertEqual(Pipermission.objects.get(id='0058389d-cdba-47ca-8785-06f5c9a92f09').resourcecategory, 'PIUSER')
+        self.assertEqual(Pipermissionscope.objects.get(id='021578bc-a8c7-4c35-9e2b-2c11c970dd78').resourceid, '0003d3f5-6aa1-4475-adf6-50961c8bd739')
+
+        self.assertEqual(UserSerivce.Delete(self, '0003d3f5-6aa1-4475-adf6-50961c8bd730'), False)
+        self.assertEqual(UserSerivce.Delete(self, '0003d3f5-6aa1-4475-adf6-50961c8bd739'), True)
+        print('单个删除用户测试完成  ' + str(datetime.datetime.now()))
+
 
 class UserOrganzieServiceTest(TestCase):
 

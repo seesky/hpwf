@@ -15,6 +15,6 @@ class PiuserTest(View):
         ids = ['0009ed41-3753-4f99-b52d-4ea6a43dda1a','0003d3f5-6aa1-4475-adf6-50961c8bd739']
         # #userPage = UserSerivce.GetDTByPage(self, '', '07DF66FA-644E-4B1F-9994-AE7332796058', '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81', 2, None)
         #userList = UserSerivce.Search(self, '', '', roleIds)
-        userList = UserSerivce.SetUserAuditStates(self, ids, None)
-        return HttpResponse(len(userList))
+        #userList = UserSerivce.SetUserAuditStates(self, ids, None)
+        return HttpResponse('')
 
