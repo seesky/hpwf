@@ -79,8 +79,10 @@ class UserPermission(object):
 
         try:
             #清除用户的角色归属
-            Piuser.objects.get(id=userId).roleid = None
-            Piuserrole.objects.filter(roleid=userId).delete()
+            user = Piuser.objects.get(id=userId)
+            user.roleid = None
+            user.save()
+            Piuserrole.objects.filter(userid=userId).delete()
             #清除用户的模块权限
             Pipermission.objects.filter(Q(resourcecategory=Piuser._meta.db_table) & Q(resourceid=userId)).delete()
             #清除用户的操作权限

@@ -358,15 +358,34 @@ class UserSerivce(object):
             user.save()
             #用户已经被删除的员工的UserId设置为Null
             Pistaff.objects.filter(userid__in=Piuser.objects.filter(deletemark=1)).update(userid=None)
+            # 清除用户的操作权限
             UserPermission.ClearUserPermissionByUserId(self, id)
+            return True
+        except Exception as e:
+            return False
+
+
+    def BatchDelete(self, ids):
+        """
+        单个删除用户
+        Args:
+            ids (string[]): 用户主键列表
+        Returns:
+            returnValue (True or False): 删除结果
+        """
+        try:
+            # 已删除用户Piuser表中的DELETEMARK设置为1
+            Piuser.objects.filter(id__in=ids).update(deletemark=1)
+            # 用户已经被删除的员工的UserId设置为Null
+            Pistaff.objects.filter(userid__in=Piuser.objects.filter(id__in=ids)).update(userid=None)
+            # 清除用户的操作权限
+            for id in ids:
+                UserPermission.ClearUserPermissionByUserId(self, id)
             return True
         except Exception as e:
             print(e)
             return False
 
-
-    def BatchDelete(self, ids):
-        pass
 
     def SetDeleted(self, ids):
         pass
