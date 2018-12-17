@@ -87,9 +87,7 @@ class UserPermission(object):
             Pipermission.objects.filter(Q(resourcecategory=Piuser._meta.db_table) & Q(resourceid=userId)).delete()
             #清除用户的操作权限
             Pipermissionscope.objects.filter(Q(resourcecategory=Piuser._meta.db_table) & Q(resourceid=userId)).delete()
-            return True
         except Exception as e:
-            print(e)
             return False
 
 

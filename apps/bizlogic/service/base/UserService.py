@@ -5,6 +5,8 @@ __date__ = '2018/12/11 15:01'
 from apps.bizlogic.models import Piuser
 from apps.bizlogic.models import Piuserrole
 from apps.bizlogic.models import Pistaff
+from apps.bizlogic.models import Piorganize
+from apps.bizlogic.models import Piuserorganize
 
 from django.db.utils import DatabaseError
 from django.db.transaction import TransactionManagementError
@@ -373,34 +375,169 @@ class UserSerivce(object):
         Returns:
             returnValue (True or False): 删除结果
         """
+        # 已删除用户Piuser表中的DELETEMARK设置为1
         try:
-            # 已删除用户Piuser表中的DELETEMARK设置为1
-            Piuser.objects.filter(id__in=ids).update(deletemark=1)
-            # 用户已经被删除的员工的UserId设置为Null
-            Pistaff.objects.filter(userid__in=Piuser.objects.filter(id__in=ids)).update(userid=None)
-            # 清除用户的操作权限
-            for id in ids:
-                UserPermission.ClearUserPermissionByUserId(self, id)
-            return True
+            user = Piuser.objects.filter(id__in=ids)
+            if len(user) == 0:
+                return False
+            user.update(deletemark=1)
         except Exception as e:
-            print(e)
             return False
+        # 用户已经被删除的员工的UserId设置为Null
+        Pistaff.objects.filter(userid__in=Piuser.objects.filter(id__in=ids)).update(userid=None)
+        # 清除用户的操作权限
+        for id in ids:
+            UserPermission.ClearUserPermissionByUserId(self, id)
+        return True
 
 
     def SetDeleted(self, ids):
-        pass
+        """
+        批量打删除标志
+        Args:
+            ids (string[]): 用户主键列表
+        Returns:
+            returnValue (True or False): 影响行数
+        """
+        try:
+            user = Piuser.objects.filter(id__in=ids)
+            if len(user) == 0:
+                return False
+            user.update(deletemark=1)
+        except Exception as e:
+            return False
+        # 清除用户的操作权限
+        for id in ids:
+            UserPermission.ClearUserPermissionByUserId(self, id)
+        return True
 
     def BatchSave(self, dataTable):
-        pass
+        """
+        批量保存
+        Args:
+            dataTable (Piuser[]): 用户列表
+        Returns:
+            returnValue (True or False): 保存结果
+        """
+        try:
+            for user in dataTable:
+                user.save()
+            return True
+        except:
+            return False
 
-    def GetCompanyUser(self):
-        pass
+    def GetCompanyUser(self, user):
+        """
+        得到当前用户所在公司的用户列表
+        Args:
+            user (Piuser): 当前用户
+        Returns:
+            returnValue (Piuser[]): 用户列表
+        """
+        returnValue = Piuser.objects.filter(Q(companyname=user.companyname) & Q(deletemark=0) & Q(enabled=1) & Q(isvisible=1)).order_by('sortcode')
+        return returnValue
 
-    def GetDepartmentUser(self):
-        pass
+    def GetDepartmentUser(self, user):
+        """
+        得到当前用户所在部门的用户列表
+        Args:
+            user (Piuser): 当前用户
+        Returns:
+            returnValue (Piuser[]): 用户列表
+        """
+        returnValue = Piuser.objects.filter(
+            Q(companyname=user.companyname) & Q(deletemark=0) & Q(departmentname=user.departmentname) & Q(enabled=1) & Q(isvisible=1)).order_by('sortcode')
+        return returnValue
 
-    def GetDepartmentUser(self, departmentId, containChildren):
-        pass
+    def GetDTByOrganizes(self, organizeIds):
+
+        organizeList = StringHelper.ArrayToList(self, organizeIds,'\'')
+        print(organizeList)
+
+        sqlQuery = " SELECT * " \
+            + " FROM " + Piuser._meta.db_table \
+            + " WHERE (" + Piuser._meta.db_table + ".deletemark = 0 ) " \
+            + "       AND (" + Piuser._meta.db_table + ".workgroupid IN ( " + organizeList + ") " \
+            + "       OR " + Piuser._meta.db_table + ".departmentid IN (" + organizeList + ") " \
+            + "       OR " + Piuser._meta.db_table + ".companyid IN (" + organizeList + ")) " \
+            + " OR id IN (" \
+            + " SELECT userid" \
+            + "   FROM " + Piuserorganize._meta.db_table \
+            + "  WHERE (" + Piuserorganize._meta.db_table + ".deletemark = 0 ) " \
+            + "       AND (" + Piuserorganize._meta.db_table + ".workgroupid IN ( " + organizeList + ") " \
+            + "       OR " + Piuserorganize._meta.db_table + ".departmentid IN (" + organizeList + ") " \
+            + "       OR " + Piuserorganize._meta.db_table + ".companyid IN (" + organizeList + "))) " \
+            + " ORDER BY " + Piuser._meta.db_table + ".sortcode";
+
+        return DbCommonLibaray.executeQuery(self, sqlQuery)
+
+    def GetDataTableByDepartment(self, departmentId):
+        """
+        得到指定组织包含的用户列表
+        Args:
+            departmentId (string): 组织机构主键
+            containChildren (string): 是否包含子部门
+        Returns:
+            returnValue (List[Dic[Piuser]]): 用户列表
+        """
+        sqlQuery = " SELECT " + Piuser._meta.db_table + ".*  FROM " + Piuser._meta.db_table \
+        + " WHERE (" + Piuser._meta.db_table + ".deletemark = 0 " \
+        + " AND " + Piuser._meta.db_table + ".enabled = 1 ) "
+
+        if departmentId:
+            sqlQuery = sqlQuery + " AND ((" + Piuser._meta.db_table + ".departmentid = '" + departmentId + "') "
+            sqlQuery =  sqlQuery + " OR id IN (" \
+            + " SELECT userid" \
+            + "   FROM " +Piuserorganize._meta.db_table \
+            + "  WHERE (" + Piuserorganize._meta.db_table + ".deletemark = 0 ) " \
+            + "       AND (" + Piuserorganize._meta.db_table + ".departmentid = '" + departmentId + "'))) "; \
+
+        returnValue = DbCommonLibaray.executeQuery(self, sqlQuery)
+        return returnValue
+
+
+    def GetDepartmentUsers(self, departmentId, containChildren):
+        """
+        得到指定部门包含的用户列表
+        Args:
+            departmentId (string): 部门主键
+            containChildren (string): 是否包含子部门
+        Returns:
+            returnValue (List[Dic[Piuser]]): 用户列表
+        """
+        returnValue = []
+        if not departmentId:
+            returnValue = Piuser.objects.filter(Q(deletemark=0)).order_by('sortcode')
+        elif containChildren:
+
+            organizeIds = OrganizeService.GetChildrensIdByCode(self, Piorganize.objects.get(id = departmentId).code)
+            returnValue = UserSerivce.GetDTByOrganizes(self, organizeIds)
+        else:
+            returnValue = UserSerivce.GetDataTableByDepartment(self, departmentId)
+
+        return returnValue
+
 
     def GetListByDepartment(self, departmentId, containChildren):
+        """
+        得到指定组织包含的用户列表
+        Args:
+            departmentId (string): 组织机构主键
+            containChildren (string): 是否包含子部门
+        Returns:
+            returnValue (List[Dic[Piuser]]): 用户列表
+        """
+        sqlQuery = " SELECT " + Piuser._meta.db_table + ".*  FROM " + Piuser._meta.db_table \
+                   + " WHERE (" + Piuser._meta.db_table + ".deletemark = 0 " \
+                   + " AND " + Piuser._meta.db_table + ".enabled = 1 ) "
+
+        if departmentId:
+            sqlQuery = sqlQuery + " AND ((" + Piuser._meta.db_table + ".departmentid = '" + departmentId + "') "
+            sqlQuery = sqlQuery + " OR id IN (" \
+                       + " SELECT userid" \
+                       + "   FROM " + Piuserorganize._meta.db_table \
+                       + "  WHERE (" + Piuserorganize._meta.db_table + ".deletemark = 0 ) " \
+                       + "       AND (" + Piuserorganize._meta.db_table + ".departmentid = '" + departmentId + "'))) "; \
+        returnValue = DbCommonLibaray.executeQuery(self, sqlQuery)
+        return returnValue
         pass

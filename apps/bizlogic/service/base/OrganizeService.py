@@ -4,6 +4,8 @@ __date__ = '2018/12/11 14:25'
 
 from apps.bizlogic.models import Piorganize
 
+from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
+
 class OrganizeService(object):
     def Add(self, entity, statusCode, statusMessage):
         pass
@@ -65,3 +67,18 @@ class OrganizeService(object):
 
     def Update(self, entity, statusMessage):
         pass
+
+    def GetChildrensIdByCode(self, code):
+        """
+        根据编号获取子节点列表
+        Args:
+            code (string): 编号
+        Returns:
+            returnValue (List): 子节点列表
+        """
+        returnValue = []
+        sqlQuery = "select id from piorganize where (LEFT(CODE,LENGTH('" + code + "'))='" + code + "')"
+        childrens = DbCommonLibaray.executeQuery(self, sqlQuery)
+        for c in childrens:
+            returnValue.append(c.get('id'))
+        return returnValue

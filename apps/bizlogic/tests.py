@@ -12,6 +12,7 @@ from apps.bizlogic.models import Piorganize
 from apps.bizlogic.models import Piuserrole
 from apps.bizlogic.models import Pipermission
 from apps.bizlogic.models import Pipermissionscope
+from apps.bizlogic.models import Piuserorganize
 
 # Create your tests here.
 class ExceptionServiceTest(TestCase):
@@ -326,6 +327,7 @@ class UserServiceTest(TestCase):
 
     #批量删除用户
     def test_BatchDelete(self):
+
         #####################################################
         user = Piuser()
         user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
@@ -423,9 +425,473 @@ class UserServiceTest(TestCase):
 
         idsTrue = ['0003d3f5-6aa1-4475-adf6-50961c8bd739', '0003d3f5-6aa1-4475-adf6-50961c8bd731']
         idsFalse = ['0003d3f5-6aa1-4475-adf6-50961c8bd733']
-        self.assertEqual(UserSerivce.Delete(self, idsTrue), True)
-        self.assertEqual(UserSerivce.Delete(self, idsFalse), False)
-        print('单个删除用户测试完成  ' + str(datetime.datetime.now()))
+        self.assertEqual(UserSerivce.BatchDelete(self, idsTrue), True)
+        self.assertEqual(UserSerivce.BatchDelete(self, idsFalse), False)
+        print('批量删除用户测试完成  ' + str(datetime.datetime.now()))
+
+    #批量打删除标志
+    def test_SetDeleted(self):
+        #####################################################
+        user = Piuser()
+        user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        user.username = 'wuyujia'
+        user.realname = '邬育佳'
+        user.isstaff = 1
+        user.isvisible = 1
+        user.isdimission = 1
+        user.deletemark = 0
+        user.enabled = 1
+        user.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user)
+
+        piuserrole = Piuserrole()
+        piuserrole.id = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A82'
+        piuserrole.roleid = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81'
+        piuserrole.enabled = 1
+        piuserrole.deletemark = 0
+        piuserrole.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole.userid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        piuserrole.save()
+
+        pipermission = Pipermission()
+        pipermission.id = '0058389d-cdba-47ca-8785-06f5c9a92f09'
+        pipermission.resourcecategory = 'PIUSER'
+        pipermission.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        pipermission.enabled = 1
+        pipermission.deletemark = 0
+        pipermission.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission.save()
+
+        pipermissionscope = Pipermissionscope()
+        pipermissionscope.id = '021578bc-a8c7-4c35-9e2b-2c11c970dd78'
+        pipermissionscope.resourcecategory = 'PIUSER'
+        pipermissionscope.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        pipermissionscope.enabled = 1
+        pipermissionscope.deletemark = 0
+        pipermissionscope.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope.save()
+        ##########################################################################################
+        user1 = Piuser()
+        user1.id = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        user1.username = 'wuyujia'
+        user1.realname = '邬育佳1'
+        user1.isstaff = 1
+        user1.isvisible = 1
+        user1.isdimission = 1
+        user1.deletemark = 0
+        user1.enabled = 1
+        user1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user1)
+
+        piuserrole1 = Piuserrole()
+        piuserrole1.id = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A83'
+        piuserrole1.roleid = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A85'
+        piuserrole1.enabled = 1
+        piuserrole1.deletemark = 0
+        piuserrole1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole1.userid = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        piuserrole1.save()
+
+        pipermission1 = Pipermission()
+        pipermission1.id = '0058389d-cdba-47ca-8785-06f5c9a92f01'
+        pipermission1.resourcecategory = 'PIUSER'
+        pipermission1.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        pipermission1.enabled = 1
+        pipermission1.deletemark = 0
+        pipermission1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission1.save()
+
+        pipermissionscope1 = Pipermissionscope()
+        pipermissionscope1.id = '021578bc-a8c7-4c35-9e2b-2c11c970dd70'
+        pipermissionscope1.resourcecategory = 'PIUSER'
+        pipermissionscope1.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        pipermissionscope1.enabled = 1
+        pipermissionscope1.deletemark = 0
+        pipermissionscope1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope1.save()
+        ##############################################################################################
+        self.assertEqual(Piuser.objects.get(id='0003d3f5-6aa1-4475-adf6-50961c8bd739').username, 'wuyujia')
+        self.assertEqual(Piuserrole.objects.get(id='27A40BF7-D68C-4BF5-9B40-056A8D3E9A82').roleid,
+                         '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81')
+        self.assertEqual(Pipermission.objects.get(id='0058389d-cdba-47ca-8785-06f5c9a92f09').resourcecategory, 'PIUSER')
+        self.assertEqual(Pipermissionscope.objects.get(id='021578bc-a8c7-4c35-9e2b-2c11c970dd78').resourceid,
+                         '0003d3f5-6aa1-4475-adf6-50961c8bd739')
+
+        self.assertEqual(Piuser.objects.get(id='0003d3f5-6aa1-4475-adf6-50961c8bd731').username, 'wuyujia')
+        self.assertEqual(Piuserrole.objects.get(id='27A40BF7-D68C-4BF5-9B40-056A8D3E9A83').roleid,
+                         '27A40BF7-D68C-4BF5-9B40-056A8D3E9A85')
+        self.assertEqual(Pipermission.objects.get(id='0058389d-cdba-47ca-8785-06f5c9a92f01').resourcecategory, 'PIUSER')
+        self.assertEqual(Pipermissionscope.objects.get(id='021578bc-a8c7-4c35-9e2b-2c11c970dd70').resourceid,
+                         '0003d3f5-6aa1-4475-adf6-50961c8bd731')
+
+        idsTrue = ['0003d3f5-6aa1-4475-adf6-50961c8bd739', '0003d3f5-6aa1-4475-adf6-50961c8bd731']
+        idsFalse = ['0003d3f5-6aa1-4475-adf6-50961c8bd733']
+        self.assertEqual(UserSerivce.SetDeleted(self, idsTrue), True)
+        self.assertEqual(UserSerivce.SetDeleted(self, idsFalse), False)
+        print('批量打删除标志测试完成  ' + str(datetime.datetime.now()))
+
+    #批量保存
+    def test_BatchSave(self):
+        #####################################################
+        user = Piuser()
+        user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        user.username = 'wuyujia'
+        user.realname = '邬育佳'
+        user.isstaff = 1
+        user.isvisible = 1
+        user.isdimission = 1
+        user.deletemark = 0
+        user.enabled = 1
+        user.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user)
+
+        piuserrole = Piuserrole()
+        piuserrole.id = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A82'
+        piuserrole.roleid = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81'
+        piuserrole.enabled = 1
+        piuserrole.deletemark = 0
+        piuserrole.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole.userid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        piuserrole.save()
+
+        pipermission = Pipermission()
+        pipermission.id = '0058389d-cdba-47ca-8785-06f5c9a92f09'
+        pipermission.resourcecategory = 'PIUSER'
+        pipermission.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        pipermission.enabled = 1
+        pipermission.deletemark = 0
+        pipermission.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission.save()
+
+        pipermissionscope = Pipermissionscope()
+        pipermissionscope.id = '021578bc-a8c7-4c35-9e2b-2c11c970dd78'
+        pipermissionscope.resourcecategory = 'PIUSER'
+        pipermissionscope.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        pipermissionscope.enabled = 1
+        pipermissionscope.deletemark = 0
+        pipermissionscope.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope.save()
+        ##########################################################################################
+        user1 = Piuser()
+        user1.id = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        user1.username = 'wuyujia'
+        user1.realname = '邬育佳1'
+        user1.isstaff = 1
+        user1.isvisible = 1
+        user1.isdimission = 1
+        user1.deletemark = 0
+        user1.enabled = 1
+        user1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user1)
+
+        piuserrole1 = Piuserrole()
+        piuserrole1.id = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A83'
+        piuserrole1.roleid = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A85'
+        piuserrole1.enabled = 1
+        piuserrole1.deletemark = 0
+        piuserrole1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole1.userid = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        piuserrole1.save()
+
+        pipermission1 = Pipermission()
+        pipermission1.id = '0058389d-cdba-47ca-8785-06f5c9a92f01'
+        pipermission1.resourcecategory = 'PIUSER'
+        pipermission1.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        pipermission1.enabled = 1
+        pipermission1.deletemark = 0
+        pipermission1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission1.save()
+
+        pipermissionscope1 = Pipermissionscope()
+        pipermissionscope1.id = '021578bc-a8c7-4c35-9e2b-2c11c970dd70'
+        pipermissionscope1.resourcecategory = 'PIUSER'
+        pipermissionscope1.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        pipermissionscope1.enabled = 1
+        pipermissionscope1.deletemark = 0
+        pipermissionscope1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope1.save()
+        ##############################################################################################
+        self.assertEqual(Piuser.objects.get(id='0003d3f5-6aa1-4475-adf6-50961c8bd739').username, 'wuyujia')
+        self.assertEqual(Piuserrole.objects.get(id='27A40BF7-D68C-4BF5-9B40-056A8D3E9A82').roleid,
+                         '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81')
+        self.assertEqual(Pipermission.objects.get(id='0058389d-cdba-47ca-8785-06f5c9a92f09').resourcecategory, 'PIUSER')
+        self.assertEqual(Pipermissionscope.objects.get(id='021578bc-a8c7-4c35-9e2b-2c11c970dd78').resourceid,
+                         '0003d3f5-6aa1-4475-adf6-50961c8bd739')
+
+        self.assertEqual(Piuser.objects.get(id='0003d3f5-6aa1-4475-adf6-50961c8bd731').username, 'wuyujia')
+        self.assertEqual(Piuserrole.objects.get(id='27A40BF7-D68C-4BF5-9B40-056A8D3E9A83').roleid,
+                         '27A40BF7-D68C-4BF5-9B40-056A8D3E9A85')
+        self.assertEqual(Pipermission.objects.get(id='0058389d-cdba-47ca-8785-06f5c9a92f01').resourcecategory, 'PIUSER')
+        self.assertEqual(Pipermissionscope.objects.get(id='021578bc-a8c7-4c35-9e2b-2c11c970dd70').resourceid,
+                         '0003d3f5-6aa1-4475-adf6-50961c8bd731')
+
+        dataTable = [user, user1]
+        self.assertEqual(UserSerivce.BatchSave(self, dataTable), True)
+        print('批量保存测试完成  ' + str(datetime.datetime.now()))
+
+    #得到当前用户所在公司的用户列表
+    def test_GetCompanyUser(self):
+        #####################################################
+        user = Piuser()
+        user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        user.username = 'wuyujia'
+        user.realname = '邬育佳'
+        user.isstaff = 1
+        user.isvisible = 1
+        user.isdimission = 1
+        user.deletemark = 0
+        user.enabled = 1
+        user.companyname = 'hstecs.com'
+        user.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user)
+
+        piuserrole = Piuserrole()
+        piuserrole.id = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A82'
+        piuserrole.roleid = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81'
+        piuserrole.enabled = 1
+        piuserrole.deletemark = 0
+        piuserrole.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole.userid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        piuserrole.save()
+
+        pipermission = Pipermission()
+        pipermission.id = '0058389d-cdba-47ca-8785-06f5c9a92f09'
+        pipermission.resourcecategory = 'PIUSER'
+        pipermission.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        pipermission.enabled = 1
+        pipermission.deletemark = 0
+        pipermission.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission.save()
+
+        pipermissionscope = Pipermissionscope()
+        pipermissionscope.id = '021578bc-a8c7-4c35-9e2b-2c11c970dd78'
+        pipermissionscope.resourcecategory = 'PIUSER'
+        pipermissionscope.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        pipermissionscope.enabled = 1
+        pipermissionscope.deletemark = 0
+        pipermissionscope.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope.save()
+        ##########################################################################################
+        user1 = Piuser()
+        user1.id = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        user1.username = 'wuyujia'
+        user1.realname = '邬育佳1'
+        user1.isstaff = 1
+        user1.isvisible = 1
+        user1.isdimission = 1
+        user1.deletemark = 0
+        user1.enabled = 1
+        user1.companyname = 'hstecs.com'
+        user1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user1)
+
+        piuserrole1 = Piuserrole()
+        piuserrole1.id = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A83'
+        piuserrole1.roleid = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A85'
+        piuserrole1.enabled = 1
+        piuserrole1.deletemark = 0
+        piuserrole1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole1.userid = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        piuserrole1.save()
+
+        pipermission1 = Pipermission()
+        pipermission1.id = '0058389d-cdba-47ca-8785-06f5c9a92f01'
+        pipermission1.resourcecategory = 'PIUSER'
+        pipermission1.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        pipermission1.enabled = 1
+        pipermission1.deletemark = 0
+        pipermission1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission1.save()
+
+        pipermissionscope1 = Pipermissionscope()
+        pipermissionscope1.id = '021578bc-a8c7-4c35-9e2b-2c11c970dd70'
+        pipermissionscope1.resourcecategory = 'PIUSER'
+        pipermissionscope1.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        pipermissionscope1.enabled = 1
+        pipermissionscope1.deletemark = 0
+        pipermissionscope1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope1.save()
+        ##############################################################################################
+        self.assertEqual(Piuser.objects.get(id='0003d3f5-6aa1-4475-adf6-50961c8bd739').username, 'wuyujia')
+        self.assertEqual(Piuserrole.objects.get(id='27A40BF7-D68C-4BF5-9B40-056A8D3E9A82').roleid,
+                         '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81')
+        self.assertEqual(Pipermission.objects.get(id='0058389d-cdba-47ca-8785-06f5c9a92f09').resourcecategory, 'PIUSER')
+        self.assertEqual(Pipermissionscope.objects.get(id='021578bc-a8c7-4c35-9e2b-2c11c970dd78').resourceid,
+                         '0003d3f5-6aa1-4475-adf6-50961c8bd739')
+
+        self.assertEqual(Piuser.objects.get(id='0003d3f5-6aa1-4475-adf6-50961c8bd731').username, 'wuyujia')
+        self.assertEqual(Piuserrole.objects.get(id='27A40BF7-D68C-4BF5-9B40-056A8D3E9A83').roleid,
+                         '27A40BF7-D68C-4BF5-9B40-056A8D3E9A85')
+        self.assertEqual(Pipermission.objects.get(id='0058389d-cdba-47ca-8785-06f5c9a92f01').resourcecategory, 'PIUSER')
+        self.assertEqual(Pipermissionscope.objects.get(id='021578bc-a8c7-4c35-9e2b-2c11c970dd70').resourceid,
+                         '0003d3f5-6aa1-4475-adf6-50961c8bd731')
+
+        returnValue = UserSerivce.GetCompanyUser(self, user)
+        self.assertEqual(returnValue[0].realname, '邬育佳')
+        self.assertEqual(returnValue[1].realname, '邬育佳1')
+        print('得到当前用户所在公司的用户列表测试完成  ' + str(datetime.datetime.now()))
+
+    # 得到当前用户所在部门的用户列表
+    def test_GetDepartmentUser(self):
+        #####################################################
+        user = Piuser()
+        user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        user.username = 'wuyujia'
+        user.realname = '邬育佳'
+        user.isstaff = 1
+        user.isvisible = 1
+        user.isdimission = 1
+        user.deletemark = 0
+        user.enabled = 1
+        user.companyname = 'hstecs.com'
+        user.departmentname = '研发部'
+        user.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user)
+
+        piuserrole = Piuserrole()
+        piuserrole.id = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A82'
+        piuserrole.roleid = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81'
+        piuserrole.enabled = 1
+        piuserrole.deletemark = 0
+        piuserrole.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole.userid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        piuserrole.save()
+
+        pipermission = Pipermission()
+        pipermission.id = '0058389d-cdba-47ca-8785-06f5c9a92f09'
+        pipermission.resourcecategory = 'PIUSER'
+        pipermission.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        pipermission.enabled = 1
+        pipermission.deletemark = 0
+        pipermission.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission.save()
+
+        pipermissionscope = Pipermissionscope()
+        pipermissionscope.id = '021578bc-a8c7-4c35-9e2b-2c11c970dd78'
+        pipermissionscope.resourcecategory = 'PIUSER'
+        pipermissionscope.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        pipermissionscope.enabled = 1
+        pipermissionscope.deletemark = 0
+        pipermissionscope.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope.save()
+        ##########################################################################################
+        user1 = Piuser()
+        user1.id = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        user1.username = 'wuyujia'
+        user1.realname = '邬育佳1'
+        user1.isstaff = 1
+        user1.isvisible = 1
+        user1.isdimission = 1
+        user1.deletemark = 0
+        user1.enabled = 1
+        user1.companyname = 'hstecs.com'
+        user1.departmentname = '研发部'
+        user1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user1)
+
+        piuserrole1 = Piuserrole()
+        piuserrole1.id = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A83'
+        piuserrole1.roleid = '27A40BF7-D68C-4BF5-9B40-056A8D3E9A85'
+        piuserrole1.enabled = 1
+        piuserrole1.deletemark = 0
+        piuserrole1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        piuserrole1.userid = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        piuserrole1.save()
+
+        pipermission1 = Pipermission()
+        pipermission1.id = '0058389d-cdba-47ca-8785-06f5c9a92f01'
+        pipermission1.resourcecategory = 'PIUSER'
+        pipermission1.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        pipermission1.enabled = 1
+        pipermission1.deletemark = 0
+        pipermission1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermission1.save()
+
+        pipermissionscope1 = Pipermissionscope()
+        pipermissionscope1.id = '021578bc-a8c7-4c35-9e2b-2c11c970dd70'
+        pipermissionscope1.resourcecategory = 'PIUSER'
+        pipermissionscope1.resourceid = '0003d3f5-6aa1-4475-adf6-50961c8bd731'
+        pipermissionscope1.enabled = 1
+        pipermissionscope1.deletemark = 0
+        pipermissionscope1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        pipermissionscope1.save()
+        ##############################################################################################
+        self.assertEqual(Piuser.objects.get(id='0003d3f5-6aa1-4475-adf6-50961c8bd739').username, 'wuyujia')
+        self.assertEqual(Piuserrole.objects.get(id='27A40BF7-D68C-4BF5-9B40-056A8D3E9A82').roleid,
+                         '27A40BF7-D68C-4BF5-9B40-056A8D3E9A81')
+        self.assertEqual(Pipermission.objects.get(id='0058389d-cdba-47ca-8785-06f5c9a92f09').resourcecategory,
+                         'PIUSER')
+        self.assertEqual(Pipermissionscope.objects.get(id='021578bc-a8c7-4c35-9e2b-2c11c970dd78').resourceid,
+                         '0003d3f5-6aa1-4475-adf6-50961c8bd739')
+
+        self.assertEqual(Piuser.objects.get(id='0003d3f5-6aa1-4475-adf6-50961c8bd731').username, 'wuyujia')
+        self.assertEqual(Piuserrole.objects.get(id='27A40BF7-D68C-4BF5-9B40-056A8D3E9A83').roleid,
+                         '27A40BF7-D68C-4BF5-9B40-056A8D3E9A85')
+        self.assertEqual(Pipermission.objects.get(id='0058389d-cdba-47ca-8785-06f5c9a92f01').resourcecategory,
+                         'PIUSER')
+        self.assertEqual(Pipermissionscope.objects.get(id='021578bc-a8c7-4c35-9e2b-2c11c970dd70').resourceid,
+                         '0003d3f5-6aa1-4475-adf6-50961c8bd731')
+
+        returnValue = UserSerivce.GetCompanyUser(self, user)
+        self.assertEqual(returnValue[0].realname, '邬育佳')
+        self.assertEqual(returnValue[1].realname, '邬育佳1')
+        self.assertEqual(returnValue[0].companyname, returnValue[1].companyname)
+        self.assertEqual(returnValue[0].departmentname, returnValue[1].departmentname)
+        print('得到当前用户所在部门的用户列表测试完成  ' + str(datetime.datetime.now()))
+
+    #得到指定部门包含的用户列表
+    def test_GetDepartmentUsers(self):
+        #####################################################
+        user = Piuser()
+        user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        user.username = 'wuyujia'
+        user.realname = '邬育佳'
+        user.isstaff = 1
+        user.isvisible = 1
+        user.isdimission = 1
+        user.deletemark = 0
+        user.enabled = 1
+        user.companyname = 'hstecs.com'
+        user.departmentname = '研发部'
+        user.departmentid = '9007C958-4C6A-432E-BD06-E50F8A2F110A'
+        user.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user)
+        ##############################################################################################
+        organzie = Piuserorganize()
+        organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
+        organzie.deletemark = 0
+        organzie.enabled = 1
+        organzie.userid = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        organzie.departmentid = '9007C958-4C6A-432E-BD06-E50F8A2F110A'
+        organzie.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie.save()
+        returnValue = UserSerivce.GetDepartmentUsers(self, '9007C958-4C6A-432E-BD06-E50F8A2F110A', False)
+        self.assertEqual(returnValue[0].get('ID'), '0003d3f5-6aa1-4475-adf6-50961c8bd739')
 
 
 class UserOrganzieServiceTest(TestCase):
