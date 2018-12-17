@@ -540,4 +540,3 @@ class UserSerivce(object):
                        + "       AND (" + Piuserorganize._meta.db_table + ".departmentid = '" + departmentId + "'))) "; \
         returnValue = DbCommonLibaray.executeQuery(self, sqlQuery)
         return returnValue
-        pass

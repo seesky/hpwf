@@ -1,5 +1,6 @@
 import datetime
 from django.test import TestCase
+from django.db.models import Q
 from apps.bizlogic.service.base import ExceptionService
 from apps.bizlogic.models import Ciexception
 import uuid
@@ -923,3 +924,100 @@ class UserOrganzieServiceTest(TestCase):
         self.assertEqual(len(returnValue), 1)
         self.assertEqual(returnValue[0], '07DF66FA-644E-4B1F-9994-AE7332796059')
         print('根据组织机构主键获取其指定分类下的子节点列表测试完成  ' + str(datetime.datetime.now()))
+
+    #添加组织
+    def test_Add(self):
+        organzie = Piorganize()
+        organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
+        organzie.fullname = 'o1'
+        organzie.isinnerorganize = 1
+        organzie.deletemark = 0
+        organzie.enabled = 1
+        organzie.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode,returnMessage,returnValue = OrganizeService.Add(self, organzie)
+        self.assertEqual(returnValue, '07DF66FA-644E-4B1F-9994-AE7332796058')
+        self.assertEqual(returnCode, 11)
+        self.assertEqual(returnMessage, '新增成功。')
+        print('添加组织测试完成  ' + str(datetime.datetime.now()))
+
+    #批量物理删除组织机构
+    def test_BatchDelete(self):
+        ids = ['07DF66FA-644E-4B1F-9994-AE7332796058','07DF66FA-644E-4B1F-9994-AE7332796059']
+        organzie = Piorganize()
+        organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
+        organzie.fullname = 'o1'
+        organzie.isinnerorganize = 1
+        organzie.deletemark = 0
+        organzie.enabled = 1
+        organzie.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = OrganizeService.Add(self, organzie)
+
+        organzie1 = Piorganize()
+        organzie1.id = '07DF66FA-644E-4B1F-9994-AE7332796059';
+        organzie1.fullname = 'o1'
+        organzie1.isinnerorganize = 1
+        organzie1.deletemark = 0
+        organzie1.enabled = 1
+        organzie1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode1, returnMessage1, returnValue1 = OrganizeService.Add(self, organzie1)
+
+        self.assertEqual(returnValue, '07DF66FA-644E-4B1F-9994-AE7332796058')
+        self.assertEqual(returnCode, 11)
+        self.assertEqual(returnMessage, '新增成功。')
+
+        self.assertEqual(returnValue1, '07DF66FA-644E-4B1F-9994-AE7332796059')
+        self.assertEqual(returnCode1, 11)
+        self.assertEqual(returnMessage1, '新增成功。')
+
+        self.assertEqual(OrganizeService.BatchDelete(self, ids), True)
+
+        names = ['id','deletemark']
+        values = ['07DF66FA-644E-4B1F-9994-AE7332796058']
+
+        returnValue3 = Piorganize.objects.filter(Q(id = '07DF66FA-644E-4B1F-9994-AE7332796058') & Q(deletemark = 0))
+        self.assertEqual(len(returnValue3), 0)
+        returnValue3 = Piorganize.objects.filter(Q(id='07DF66FA-644E-4B1F-9994-AE7332796059') & Q(deletemark=0))
+        self.assertEqual(len(returnValue3), 0)
+        print('批量物理删除组织机构测试完成  ' + str(datetime.datetime.now()))
+
+    #批量移动组织机构
+    def test_BatchMoveTo(self):
+        ids = ['07DF66FA-644E-4B1F-9994-AE7332796058', '07DF66FA-644E-4B1F-9994-AE7332796059']
+        organzie = Piorganize()
+        organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
+        organzie.fullname = 'o1'
+        organzie.isinnerorganize = 1
+        organzie.deletemark = 0
+        organzie.enabled = 1
+        organzie.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = OrganizeService.Add(self, organzie)
+
+        organzie1 = Piorganize()
+        organzie1.id = '07DF66FA-644E-4B1F-9994-AE7332796059';
+        organzie1.fullname = 'o1'
+        organzie1.isinnerorganize = 1
+        organzie1.deletemark = 0
+        organzie1.enabled = 1
+        organzie1.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode1, returnMessage1, returnValue1 = OrganizeService.Add(self, organzie1)
+
+        self.assertEqual(OrganizeService.BatchMoveTo(self, ids, '123456789'), True)
+
+        for o in Piorganize.objects.filter(id__in=ids):
+            self.assertEqual(o.parentid, '123456789')
+        print('批量移动组织机构测试完成  ' + str(datetime.datetime.now()))
+
+
+
+
+
+
+
+
