@@ -25,6 +25,7 @@ class UserServiceTest(TestCase):
 
     # 新增用户
     def test_AddUser(self):
+        print('新增用户测试...  ' + str(datetime.datetime.now()))
         #添加失败
         # user = Piuser()
         # returnCode, returnMessage, returnValue = UserSerivce.AddUser(self, user)
@@ -45,10 +46,11 @@ class UserServiceTest(TestCase):
         returnCode,returnMessage,returnValue = UserSerivce.AddUser(self, user)
         self.assertEqual(returnCode, 11)
         self.assertEqual(returnMessage, '新增成功。')
-        print('新增用户测试完成  ' + str(datetime.datetime.now()))
+
 
     # 根据用户id获取用户实体
     def test_GetEntity(self):
+        print('根据用户id获取用户实体测试...  ' + str(datetime.datetime.now()))
         #不存在
         user = UserSerivce.GetEntity('0003d3f5-6aa1-4475-adf6-50961c8bd739')
         self.assertEqual(user, None)
@@ -66,10 +68,11 @@ class UserServiceTest(TestCase):
         UserSerivce.AddUser(self, user)
         user = UserSerivce.GetEntity('0003d3f5-6aa1-4475-adf6-50961c8bd739')
         self.assertEqual(user.realname, '邬育佳')
-        print('根据用户id获取用户实体测试完成  ' + str(datetime.datetime.now()))
+
 
     #用户名是否重复
     def test_Exists(self):
+        print('用户名是否重复测试...  ' + str(datetime.datetime.now()))
         # 不存在重复
         exists = UserSerivce.Exists(self, 'id', '0003d3f5-6aa1-4475-adf6-50961c8bd739')
         self.assertEqual(exists, False)
@@ -87,10 +90,11 @@ class UserServiceTest(TestCase):
         UserSerivce.AddUser(self, user)
         exists = UserSerivce.Exists(self, 'id', '0003d3f5-6aa1-4475-adf6-50961c8bd739')
         self.assertEqual(exists, True)
-        print('用户名是否重复测试完成  ' + str(datetime.datetime.now()))
+
 
     #根据用户名获取用户实体
     def test_GetEntityByUserName(self):
+        print('根据用户名获取用户实体测试...  ' + str(datetime.datetime.now()))
         # 不存在
         user = UserSerivce.GetEntityByUserName(self, 'wuyujia')
         self.assertEqual(user, None)
@@ -108,10 +112,11 @@ class UserServiceTest(TestCase):
         UserSerivce.AddUser(self, user)
         user = UserSerivce.GetEntityByUserName(self, 'wuyujia')
         self.assertNotEqual(user, None)
-        print('根据用户名获取用户实体测试完成  ' + str(datetime.datetime.now()))
+
 
     #获取用户列表
     def test_GetDT(self):
+        print('获取用户列表测试...  ' + str(datetime.datetime.now()))
         #没有用户
         returnValue = UserSerivce.GetDT(self)
         self.assertEqual(len(returnValue), 0)
@@ -129,10 +134,11 @@ class UserServiceTest(TestCase):
         UserSerivce.AddUser(self, user)
         returnValue = UserSerivce.GetDT(self)
         self.assertEqual(len(returnValue), 1)
-        print('获取用户列表测试完成  ' + str(datetime.datetime.now()))
+
 
     #分页查询
     def test_GetDTByPage(self):
+        print('用户分页查询测试...  ' + str(datetime.datetime.now()))
         user = Piuser()
         user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
         user.username = 'wuyujia'
@@ -180,6 +186,7 @@ class UserServiceTest(TestCase):
 
     #获取用户列表
     def test_GetList(self):
+        print('获取用户列表测试...  ' + str(datetime.datetime.now()))
         # 没有用户
         returnValue = UserSerivce.GetDT(self)
         self.assertEqual(len(returnValue), 0)
@@ -197,10 +204,11 @@ class UserServiceTest(TestCase):
         UserSerivce.AddUser(self, user)
         returnValue = UserSerivce.GetDT(self)
         self.assertEqual(len(returnValue), 1)
-        print('获取用户列表测试完成  ' + str(datetime.datetime.now()))
+
 
     #按主键获取用户列表
     def test_GetDTByIds(self):
+        print('按主键获取用户列表测试...  ' + str(datetime.datetime.now()))
         # 没有用户
         ids = ['0003d3f5-6aa1-4475-adf6-50961c8bd739','0003d3f5-6aa1-4475-adf6-50961c8bd738']
         returnValue = UserSerivce.GetDTByIds(self, ids)
@@ -233,19 +241,21 @@ class UserServiceTest(TestCase):
         UserSerivce.AddUser(self, user1)
         returnValue = UserSerivce.GetDTByIds(self, ids)
         self.assertEqual(len(returnValue), 2)
-        print('按主键获取用户列表测试完成  ' + str(datetime.datetime.now()))
+
 
     #更新用户
     def test_UpdateUser(self):
+        print('更新用户测试...  ' + str(datetime.datetime.now()))
         #更新失败
         user = Piuser()
         returnCode,returnMessage = UserSerivce.UpdateUser(self, user)
         self.assertEqual(returnCode, 9)
         self.assertEqual(returnMessage, '发生未知错误。')
-        print('更新用户测试完成  ' + str(datetime.datetime.now()))
+
 
     #查询用户
     def test_Search(self):
+        print('查询用户测试...  ' + str(datetime.datetime.now()))
         user = Piuser()
         user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
         user.username = 'wuyujia'
@@ -271,10 +281,11 @@ class UserServiceTest(TestCase):
         roleIds = ['27A40BF7-D68C-4BF5-9B40-056A8D3E9A81']
         returnValue = UserSerivce.Search(self, '', '', roleIds)
         self.assertEqual(len(returnValue), 1)
-        print('查询用户测试完成  ' + str(datetime.datetime.now()))
+
 
     #单个删除用户
     def test_Delete(self):
+        print('单个删除用户测试...  ' + str(datetime.datetime.now()))
         user = Piuser()
         user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
         user.username = 'wuyujia'
@@ -324,11 +335,11 @@ class UserServiceTest(TestCase):
 
         self.assertEqual(UserSerivce.Delete(self, '0003d3f5-6aa1-4475-adf6-50961c8bd730'), False)
         self.assertEqual(UserSerivce.Delete(self, '0003d3f5-6aa1-4475-adf6-50961c8bd739'), True)
-        print('单个删除用户测试完成  ' + str(datetime.datetime.now()))
+
 
     #批量删除用户
     def test_BatchDelete(self):
-
+        print('批量删除用户测试...  ' + str(datetime.datetime.now()))
         #####################################################
         user = Piuser()
         user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
@@ -428,10 +439,11 @@ class UserServiceTest(TestCase):
         idsFalse = ['0003d3f5-6aa1-4475-adf6-50961c8bd733']
         self.assertEqual(UserSerivce.BatchDelete(self, idsTrue), True)
         self.assertEqual(UserSerivce.BatchDelete(self, idsFalse), False)
-        print('批量删除用户测试完成  ' + str(datetime.datetime.now()))
+
 
     #批量打删除标志
     def test_SetDeleted(self):
+        print('批量打删除标志测试...  ' + str(datetime.datetime.now()))
         #####################################################
         user = Piuser()
         user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
@@ -535,10 +547,11 @@ class UserServiceTest(TestCase):
         idsFalse = ['0003d3f5-6aa1-4475-adf6-50961c8bd733']
         self.assertEqual(UserSerivce.SetDeleted(self, idsTrue), True)
         self.assertEqual(UserSerivce.SetDeleted(self, idsFalse), False)
-        print('批量打删除标志测试完成  ' + str(datetime.datetime.now()))
+
 
     #批量保存
     def test_BatchSave(self):
+        print('批量保存测试...  ' + str(datetime.datetime.now()))
         #####################################################
         user = Piuser()
         user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
@@ -640,10 +653,11 @@ class UserServiceTest(TestCase):
 
         dataTable = [user, user1]
         self.assertEqual(UserSerivce.BatchSave(self, dataTable), True)
-        print('批量保存测试完成  ' + str(datetime.datetime.now()))
+
 
     #得到当前用户所在公司的用户列表
     def test_GetCompanyUser(self):
+        print('得到当前用户所在公司的用户列表测试...  ' + str(datetime.datetime.now()))
         #####################################################
         user = Piuser()
         user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
@@ -748,10 +762,11 @@ class UserServiceTest(TestCase):
         returnValue = UserSerivce.GetCompanyUser(self, user)
         self.assertEqual(returnValue[0].realname, '邬育佳')
         self.assertEqual(returnValue[1].realname, '邬育佳1')
-        print('得到当前用户所在公司的用户列表测试完成  ' + str(datetime.datetime.now()))
+
 
     # 得到当前用户所在部门的用户列表
     def test_GetDepartmentUser(self):
+        print('得到当前用户所在部门的用户列表测试...  ' + str(datetime.datetime.now()))
         #####################################################
         user = Piuser()
         user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
@@ -862,10 +877,11 @@ class UserServiceTest(TestCase):
         self.assertEqual(returnValue[1].realname, '邬育佳1')
         self.assertEqual(returnValue[0].companyname, returnValue[1].companyname)
         self.assertEqual(returnValue[0].departmentname, returnValue[1].departmentname)
-        print('得到当前用户所在部门的用户列表测试完成  ' + str(datetime.datetime.now()))
+
 
     #得到指定部门包含的用户列表
     def test_GetDepartmentUsers(self):
+        print('得到指定部门包含的用户列表测试...  ' + str(datetime.datetime.now()))
         #####################################################
         user = Piuser()
         user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
@@ -899,6 +915,7 @@ class UserOrganzieServiceTest(TestCase):
 
     #根据组织机构主键获取其指定分类下的子节点列表
     def test_GetChildrensById(self):
+        print('根据组织机构主键获取其指定分类下的子节点列表测试...  ' + str(datetime.datetime.now()))
         organzie = Piorganize()
         organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
         organzie.fullname = 'o1'
@@ -923,10 +940,11 @@ class UserOrganzieServiceTest(TestCase):
         returnValue = OrganizeService.GetChildrensById(self, '07DF66FA-644E-4B1F-9994-AE7332796058')
         self.assertEqual(len(returnValue), 1)
         self.assertEqual(returnValue[0], '07DF66FA-644E-4B1F-9994-AE7332796059')
-        print('根据组织机构主键获取其指定分类下的子节点列表测试完成  ' + str(datetime.datetime.now()))
+
 
     #添加组织
     def test_Add(self):
+        print('添加组织测试...  ' + str(datetime.datetime.now()))
         organzie = Piorganize()
         organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
         organzie.fullname = 'o1'
@@ -939,10 +957,11 @@ class UserOrganzieServiceTest(TestCase):
         self.assertEqual(returnValue, '07DF66FA-644E-4B1F-9994-AE7332796058')
         self.assertEqual(returnCode, 11)
         self.assertEqual(returnMessage, '新增成功。')
-        print('添加组织测试完成  ' + str(datetime.datetime.now()))
+
 
     #批量物理删除组织机构
     def test_BatchDelete(self):
+        print('批量物理删除组织机构测试...  ' + str(datetime.datetime.now()))
         ids = ['07DF66FA-644E-4B1F-9994-AE7332796058','07DF66FA-644E-4B1F-9994-AE7332796059']
         organzie = Piorganize()
         organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
@@ -981,10 +1000,11 @@ class UserOrganzieServiceTest(TestCase):
         self.assertEqual(len(returnValue3), 0)
         returnValue3 = Piorganize.objects.filter(Q(id='07DF66FA-644E-4B1F-9994-AE7332796059') & Q(deletemark=0))
         self.assertEqual(len(returnValue3), 0)
-        print('批量物理删除组织机构测试完成  ' + str(datetime.datetime.now()))
+
 
     #批量移动组织机构
     def test_BatchMoveTo(self):
+        print('批量移动组织机构测试...  ' + str(datetime.datetime.now()))
         ids = ['07DF66FA-644E-4B1F-9994-AE7332796058', '07DF66FA-644E-4B1F-9994-AE7332796059']
         organzie = Piorganize()
         organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
@@ -1012,12 +1032,279 @@ class UserOrganzieServiceTest(TestCase):
 
         for o in Piorganize.objects.filter(id__in=ids):
             self.assertEqual(o.parentid, '123456789')
-        print('批量移动组织机构测试完成  ' + str(datetime.datetime.now()))
 
 
+    #批量保存
+    def test_BatchSave(self):
+        print('批量保存测试...  ' + str(datetime.datetime.now()))
+        organzie = Piorganize()
+        organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
+        organzie.fullname = 'o1'
+        organzie.isinnerorganize = 1
+        organzie.deletemark = 0
+        organzie.enabled = 1
+        organzie.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        organzie1 = Piorganize()
+        organzie1.id = '07DF66FA-644E-4B1F-9994-AE7332796059';
+        organzie1.fullname = 'o1'
+        organzie1.isinnerorganize = 1
+        organzie1.deletemark = 0
+        organzie1.enabled = 1
+        organzie1.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        org = [organzie, organzie1]
+        returnValue = OrganizeService.BatchSave(self, org)
+        self.assertEqual(returnValue, True)
+
+        self.assertEqual(len(Piorganize.objects.filter(id__in=['07DF66FA-644E-4B1F-9994-AE7332796058', '07DF66FA-644E-4B1F-9994-AE7332796059'])), 2)
 
 
+    #单个删除组织机构
+    def test_Delete(self):
+        print('单个删除组织机构测试...  ' + str(datetime.datetime.now()))
+        organzie = Piorganize()
+        organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
+        organzie.fullname = 'o1'
+        organzie.isinnerorganize = 1
+        organzie.deletemark = 0
+        organzie.enabled = 1
+        organzie.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = OrganizeService.Add(self, organzie)
+        self.assertEqual(returnValue, '07DF66FA-644E-4B1F-9994-AE7332796058')
+        OrganizeService.Delete(self, '07DF66FA-644E-4B1F-9994-AE7332796058')
+        o = OrganizeService.GetEntity(self, '07DF66FA-644E-4B1F-9994-AE7332796058')
+        self.assertEqual(OrganizeService.GetEntity(self, '07DF66FA-644E-4B1F-9994-AE7332796058').deletemark, 1)
 
 
+    #获取组织机构列表
+    def test_GetDT(self):
+        print('获取组织机构列表测试...  ' + str(datetime.datetime.now()))
+        ids = ['07DF66FA-644E-4B1F-9994-AE7332796058', '07DF66FA-644E-4B1F-9994-AE7332796059']
+        organzie = Piorganize()
+        organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
+        organzie.fullname = 'o1'
+        organzie.isinnerorganize = 1
+        organzie.deletemark = 0
+        organzie.enabled = 1
+        organzie.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = OrganizeService.Add(self, organzie)
+
+        organzie1 = Piorganize()
+        organzie1.id = '07DF66FA-644E-4B1F-9994-AE7332796059';
+        organzie1.fullname = 'o1'
+        organzie1.isinnerorganize = 1
+        organzie1.deletemark = 0
+        organzie1.enabled = 1
+        organzie1.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode1, returnMessage1, returnValue1 = OrganizeService.Add(self, organzie1)
+
+        returnValue = OrganizeService.GetDT(self)
+        self.assertEqual(len(returnValue), 2)
+
+    #按主键获取组织机构列表
+    def test_GetDTByIds(self):
+        print('按主键获取组织机构列表测试...  ' + str(datetime.datetime.now()))
+        ids = ['07DF66FA-644E-4B1F-9994-AE7332796058', '07DF66FA-644E-4B1F-9994-AE7332796059']
+        organzie = Piorganize()
+        organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
+        organzie.fullname = 'o1'
+        organzie.isinnerorganize = 1
+        organzie.deletemark = 0
+        organzie.enabled = 1
+        organzie.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = OrganizeService.Add(self, organzie)
+
+        organzie1 = Piorganize()
+        organzie1.id = '07DF66FA-644E-4B1F-9994-AE7332796059';
+        organzie1.fullname = 'o1'
+        organzie1.isinnerorganize = 1
+        organzie1.deletemark = 0
+        organzie1.enabled = 1
+        organzie1.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode1, returnMessage1, returnValue1 = OrganizeService.Add(self, organzie1)
+
+        org = OrganizeService.GetDTByIds(self, ids)
+        self.assertEqual(len(org), 2)
+
+    #按父节点获取列表
+    def test_GetDTByParent(self):
+        print('按父节点获取列表测试...  ' + str(datetime.datetime.now()))
+        organzie = Piorganize()
+        organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
+        organzie.fullname = 'o1'
+        organzie.isinnerorganize = 1
+        organzie.deletemark = 0
+        organzie.enabled = 1
+        organzie.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = OrganizeService.Add(self, organzie)
+
+        organzie1 = Piorganize()
+        organzie1.id = '07DF66FA-644E-4B1F-9994-AE7332796059';
+        organzie1.fullname = 'o1'
+        organzie1.isinnerorganize = 1
+        organzie1.deletemark = 0
+        organzie1.enabled = 1
+        organzie1.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode1, returnMessage1, returnValue1 = OrganizeService.Add(self, organzie1)
+
+        organzie2 = Piorganize()
+        organzie2.id = '07DF66FA-644E-4B1F-9994-AE7332796050';
+        organzie2.fullname = 'o1'
+        organzie2.isinnerorganize = 1
+        organzie2.deletemark = 0
+        organzie2.enabled = 1
+        organzie2.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie2.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie2.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode1, returnMessage1, returnValue1 = OrganizeService.Add(self, organzie2)
+
+        org = OrganizeService.GetDTByParent(self, '07DF66FA-644E-4B1F-9994-AE7332796059')
+        self.assertEqual(len(org), 3)
+
+    #按键值对获取列表
+    def test_GetDTByValues(self):
+        print('按键值对获取列表测试...  ' + str(datetime.datetime.now()))
+        organzie = Piorganize()
+        organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
+        organzie.fullname = 'o1'
+        organzie.isinnerorganize = 1
+        organzie.deletemark = 0
+        organzie.enabled = 1
+        organzie.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = OrganizeService.Add(self, organzie)
+
+        organzie1 = Piorganize()
+        organzie1.id = '07DF66FA-644E-4B1F-9994-AE7332796059';
+        organzie1.fullname = 'o1'
+        organzie1.isinnerorganize = 1
+        organzie1.deletemark = 1
+        organzie1.enabled = 1
+        organzie1.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode1, returnMessage1, returnValue1 = OrganizeService.Add(self, organzie1)
+
+        organzie2 = Piorganize()
+        organzie2.id = '07DF66FA-644E-4B1F-9994-AE7332796050';
+        organzie2.fullname = 'o1'
+        organzie2.isinnerorganize = 1
+        organzie2.deletemark = 0
+        organzie2.enabled = 1
+        organzie2.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie2.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie2.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode2, returnMessage2, returnValue2 = OrganizeService.Add(self, organzie2)
+        valueDic3 = {'id': '07DF66FA-644E-4B1F-9994-AE7332796050'}
+        valueDic = {'parentid': '07DF66FA-644E-4B1F-9994-AE7332796059', 'id': '07DF66FA-644E-4B1F-9994-AE7332796050'}
+        self.assertEqual(len(OrganizeService.GetDTByValues(self, valueDic)), 1)
+        self.assertEqual(len(OrganizeService.GetDTByValues(self, valueDic3)), 1)
+
+    #获取组织机构实体
+    def test_GetEntity(self):
+        print('获取组织机构实体测试...  ' + str(datetime.datetime.now()))
+        organzie = Piorganize()
+        organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
+        organzie.fullname = 'o1'
+        organzie.isinnerorganize = 1
+        organzie.deletemark = 0
+        organzie.enabled = 1
+        organzie.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = OrganizeService.Add(self, organzie)
+
+        self.assertEqual(OrganizeService.GetEntity(self, '07DF66FA-644E-4B1F-9994-AE7332796058').parentid, '07DF66FA-644E-4B1F-9994-AE7332796059')
+
+    #移动组织机构
+    def test_MoveTo(self):
+        print('移动组织机构测试...  ' + str(datetime.datetime.now()))
+        organzie = Piorganize()
+        organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
+        organzie.fullname = 'o1'
+        organzie.isinnerorganize = 1
+        organzie.deletemark = 0
+        organzie.enabled = 1
+        organzie.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = OrganizeService.Add(self, organzie)
+
+        self.assertEqual(OrganizeService.GetEntity(self, '07DF66FA-644E-4B1F-9994-AE7332796058').parentid, '07DF66FA-644E-4B1F-9994-AE7332796059')
+        OrganizeService.MoveTo(self, '07DF66FA-644E-4B1F-9994-AE7332796058', '07DF66FA-644E-4B1F-9994-AE7332796058')
+        self.assertEqual(OrganizeService.GetEntity(self, '07DF66FA-644E-4B1F-9994-AE7332796058').parentid,
+                         '07DF66FA-644E-4B1F-9994-AE7332796058')
+
+    #批量打删除标志
+    def test_SetDeleted(self):
+        print('批量打删除标志测试...  ' + str(datetime.datetime.now()))
+        organzie = Piorganize()
+        organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
+        organzie.fullname = 'o1'
+        organzie.isinnerorganize = 1
+        organzie.deletemark = 0
+        organzie.enabled = 1
+        organzie.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = OrganizeService.Add(self, organzie)
+
+        organzie1 = Piorganize()
+        organzie1.id = '07DF66FA-644E-4B1F-9994-AE7332796059';
+        organzie1.fullname = 'o1'
+        organzie1.isinnerorganize = 1
+        organzie1.deletemark = 1
+        organzie1.enabled = 1
+        organzie1.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode1, returnMessage1, returnValue1 = OrganizeService.Add(self, organzie1)
+
+        ids = ['07DF66FA-644E-4B1F-9994-AE7332796058', '07DF66FA-644E-4B1F-9994-AE7332796059']
+        OrganizeService.SetDeleted(self, ids)
+        self.assertEqual(Piorganize.objects.get(id='07DF66FA-644E-4B1F-9994-AE7332796058').deletemark, 1)
+        self.assertEqual(Piorganize.objects.get(id='07DF66FA-644E-4B1F-9994-AE7332796059').deletemark, 1)
+
+    #更新组织机构
+    def test_Update(self):
+        print('更新组织机构测试...  ' + str(datetime.datetime.now()))
+        organzie = Piorganize()
+        organzie.id = '07DF66FA-644E-4B1F-9994-AE7332796058';
+        organzie.fullname = 'o1'
+        organzie.isinnerorganize = 1
+        organzie.deletemark = 0
+        organzie.enabled = 1
+        organzie.parentid = '07DF66FA-644E-4B1F-9994-AE7332796059'
+        organzie.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        organzie.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = OrganizeService.Add(self, organzie)
+
+        organzie.enabled = 0
+        returnValue,returnMessage = OrganizeService.Update(self, organzie)
+        self.assertEqual(returnValue, 14)
+
+    #根据编号获取子节点列表
+    def test_GetChildrensIdByCode(self):
+        print('更新组织机构测试...SQLITE不支持部分SQL操作  ' + str(datetime.datetime.now()))
 
 

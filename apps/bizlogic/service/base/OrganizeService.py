@@ -4,6 +4,7 @@ __date__ = '2018/12/11 14:25'
 
 from django.db.utils import DatabaseError
 from django.db.transaction import TransactionManagementError
+from django.db.models import Q
 
 from apps.bizlogic.models import Piorganize
 from apps.bizlogic.models import Piuser
@@ -171,19 +172,19 @@ class OrganizeService(object):
             print(e)
         return returnValue
 
-    def GetDTByValues(self, names, values):
+    def GetDTByValues(self, valueDic):
         """
-        按父节点获取列表
+        按键值对获取列表
+        valueDic = {key:value, key:value, ...}
         Args:
-            parentId (string): 父节点主键
+            valueDic (Dic{key:value}): 参数和值对
         Returns:
-            returnValue (List[Dic{}]): 组织机构列表
+            returnValue (Pioranize[]): 组织机构列表
         """
-        sqlQuery = 'select * from piorganize where '
-        for name,value in names,values:
-            sqlQuery = sqlQuery + names + '=' + value + ' AND '
-        sqlQuery.rstrip(' AND ')
-        returnValue = DbCommonLibaray.executeQuery(self, sqlQuery)
+        q = Q()
+        for i in valueDic:
+            q.add(Q(**{i: valueDic[i]}), Q.AND)
+        returnValue = Piorganize.objects.filter(q)
         return returnValue
 
     def GetEntity(self, id):
@@ -278,11 +279,11 @@ class OrganizeService(object):
         except Exception as e:
             return False
 
-    def Update(self, entity, statusMessage):
+    def Update(self, entity):
         """
-        更新用户
+        更新组织机构
         Args:
-            userEntity (Piuser): 用户实体
+            userEntity (Piorganize): 用户实体
         Returns:
             returnValue (string): 状态码
             returnMessage (string): 状态信息
@@ -292,7 +293,8 @@ class OrganizeService(object):
             returnCode = StatusCode.statusCodeDic['OKUpdate']
             returnMessage = FrameworkMessage.MSG0010
             return returnCode,returnMessage
-        except:
+        except Exception as e:
+            print(e)
             returnCode = StatusCode.statusCodeDic['Error']
             returnMessage = FrameworkMessage.MSG0001
             return returnCode, returnMessage
