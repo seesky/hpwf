@@ -131,7 +131,7 @@ class UserSerivce(object):
             pageSize (int): 每页显示
             order (string): 排序
         Returns:
-            returnValue (List): 用户分页列表
+            returnValue (Paginator): 用户分页列表
         """
         countSqlQuery =' SELECT * FROM ' +  Piuser._meta.db_table + ' WHERE '
 
@@ -452,7 +452,6 @@ class UserSerivce(object):
     def GetDTByOrganizes(self, organizeIds):
 
         organizeList = StringHelper.ArrayToList(self, organizeIds,'\'')
-        print(organizeList)
 
         sqlQuery = " SELECT * " \
             + " FROM " + Piuser._meta.db_table \

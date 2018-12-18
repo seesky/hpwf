@@ -591,7 +591,7 @@ class Pirole(models.Model):
 
 
 class Pistaff(models.Model):
-    id = models.CharField(db_column='ID', primary_key=True, max_length=40)  # Field name made lowercase.
+    id = models.CharField(db_column='ID', primary_key=True, default=uuid.uuid1(), max_length=40)  # Field name made lowercase.
     code = models.CharField(db_column='CODE', max_length=50, blank=True, null=True)  # Field name made lowercase.
     userid = models.CharField(db_column='USERID', max_length=40, blank=True, null=True)  # Field name made lowercase.
     username = models.CharField(db_column='USERNAME', max_length=50, blank=True, null=True)  # Field name made lowercase.
@@ -652,7 +652,7 @@ class Pistaff(models.Model):
 
 
 class Pistafforganize(models.Model):
-    id = models.CharField(db_column='ID', primary_key=True, max_length=40)  # Field name made lowercase.
+    id = models.CharField(db_column='ID', primary_key=True, default=uuid.uuid4(), max_length=40)  # Field name made lowercase.
     staffid = models.CharField(db_column='STAFFID', max_length=40, blank=True, null=True)  # Field name made lowercase.
     organizeid = models.CharField(db_column='ORGANIZEID', max_length=40, blank=True, null=True)  # Field name made lowercase.
     enabled = models.IntegerField(db_column='ENABLED', blank=True, null=True)  # Field name made lowercase.
