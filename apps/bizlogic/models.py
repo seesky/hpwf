@@ -490,16 +490,16 @@ class Pipermissionitem(models.Model):
     moduleid = models.CharField(db_column='MODULEID', max_length=40, blank=True, null=True)  # Field name made lowercase.
     code = models.CharField(db_column='CODE', max_length=50)  # Field name made lowercase.
     fullname = models.CharField(db_column='FULLNAME', max_length=50)  # Field name made lowercase.
-    categorycode = models.CharField(db_column='CATEGORYCODE', max_length=50)  # Field name made lowercase.
-    isscope = models.IntegerField(db_column='ISSCOPE')  # Field name made lowercase.
-    ispublic = models.IntegerField(db_column='ISPUBLIC')  # Field name made lowercase.
-    allowedit = models.IntegerField(db_column='ALLOWEDIT')  # Field name made lowercase.
-    allowdelete = models.IntegerField(db_column='ALLOWDELETE')  # Field name made lowercase.
+    categorycode = models.CharField(db_column='CATEGORYCODE', max_length=50, default='Application')  # Field name made lowercase.
+    isscope = models.IntegerField(db_column='ISSCOPE', default=0)  # Field name made lowercase.
+    ispublic = models.IntegerField(db_column='ISPUBLIC', default=0)  # Field name made lowercase.
+    allowedit = models.IntegerField(db_column='ALLOWEDIT', default=1)  # Field name made lowercase.
+    allowdelete = models.IntegerField(db_column='ALLOWDELETE', default=1)  # Field name made lowercase.
     jsevent = models.CharField(db_column='JSEVENT', max_length=100, blank=True, null=True)  # Field name made lowercase.
     lastcall = models.DateTimeField(db_column='LASTCALL', blank=True, null=True)  # Field name made lowercase.
-    issplit = models.IntegerField(db_column='ISSPLIT')  # Field name made lowercase.
-    enabled = models.IntegerField(db_column='ENABLED')  # Field name made lowercase.
-    deletemark = models.IntegerField(db_column='DELETEMARK')  # Field name made lowercase.
+    issplit = models.IntegerField(db_column='ISSPLIT', default=0)  # Field name made lowercase.
+    enabled = models.IntegerField(db_column='ENABLED', default=1)  # Field name made lowercase.
+    deletemark = models.IntegerField(db_column='DELETEMARK', default=0)  # Field name made lowercase.
     sortcode = models.IntegerField(db_column='SORTCODE', blank=True, null=True)  # Field name made lowercase.
     description = models.CharField(db_column='DESCRIPTION', max_length=255, blank=True, null=True)  # Field name made lowercase.
     createon = models.DateTimeField(db_column='CREATEON')  # Field name made lowercase.

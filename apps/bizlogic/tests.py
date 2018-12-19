@@ -8,6 +8,7 @@ import uuid
 from apps.bizlogic.service.base.UserService import UserSerivce
 from apps.bizlogic.service.base.OrganizeService import OrganizeService
 from apps.bizlogic.service.base.StaffService import StaffService
+from apps.bizlogic.service.base.PermissionItemService import PermissionItemService
 
 from apps.bizlogic.models import Piuser
 from apps.bizlogic.models import Piorganize
@@ -17,6 +18,7 @@ from apps.bizlogic.models import Pipermissionscope
 from apps.bizlogic.models import Piuserorganize
 from apps.bizlogic.models import Pistaff
 from apps.bizlogic.models import Pistafforganize
+from apps.bizlogic.models import Pipermissionitem
 
 # Create your tests here.
 class ExceptionServiceTest(TestCase):
@@ -1794,6 +1796,7 @@ class UserStaffServiceTest(TestCase):
 
     #获取主键
     def test_GetId(self):
+        print('获取员工主键测试...  ' + str(datetime.datetime.now()))
         staff = Pistaff()
         staff.id = uuid.uuid1()
         staff.isdimission = 0
@@ -1810,6 +1813,53 @@ class UserStaffServiceTest(TestCase):
 
         returnValue = StaffService.GetId(self, valueDic)
         self.assertEqual(len(returnValue), 1)
+
+class PermissionItemServiceTest(TestCase):
+
+    #添加操作权限项
+    def test_Add(self):
+        print('添加操作权限项测试...  ' + str(datetime.datetime.now()))
+        item = Pipermissionitem()
+        returnCode,returnMessage,returnValue = PermissionItemService.Add(self, item)
+        self.assertEqual(returnCode, 11)
+
+    #添加操作权限项
+    def test_AddByDetail(self):
+        print('添加操作权限项测试...  ' + str(datetime.datetime.now()))
+        returnCode,returnMessage,returnValue = PermissionItemService.AddByDetail(self, '0001', 'Add_Enable')
+        self.assertEqual(returnCode, 11)
+
+    #获取权限项列表
+    def test_GetDT(self):
+        returnValue = PermissionItemService.GetDT(self)
+        self.assertEqual(len(returnValue), 0)
+        item = Pipermissionitem()
+        PermissionItemService.Add(self, item)
+        returnValue = PermissionItemService.GetDT(self)
+        self.assertEqual(len(returnValue), 1)
+
+    #获取权限项列表
+    def test_GetDTByParent(self):
+        item = Pipermissionitem()
+        item.parentid=uuid.uuid1()
+        PermissionItemService.Add(self, item)
+        parentId = item.parentid
+        returnValue = PermissionItemService.GetDTByParent(self, parentId)
+        self.assertEqual(len(returnValue), 1)
+
+    #按主键数组获取列表
+    def test_GetDTByIds(self):
+        item = Pipermissionitem()
+        PermissionItemService.Add(self, item)
+        item1 = Pipermissionitem()
+        PermissionItemService.Add(self, item1)
+
+        ids = [item.id, item1.id]
+
+        returnValue = PermissionItemService.GetDTByIds(self, ids)
+        self.assertEqual(len(returnValue), 2)
+
+
 
 
 
