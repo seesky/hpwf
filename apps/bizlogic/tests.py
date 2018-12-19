@@ -16,6 +16,7 @@ from apps.bizlogic.models import Pipermission
 from apps.bizlogic.models import Pipermissionscope
 from apps.bizlogic.models import Piuserorganize
 from apps.bizlogic.models import Pistaff
+from apps.bizlogic.models import Pistafforganize
 
 # Create your tests here.
 class ExceptionServiceTest(TestCase):
@@ -1433,8 +1434,9 @@ class UserStaffServiceTest(TestCase):
         staffId = staff.id
         self.assertEqual(StaffService.GetEntity(self, staffId).gender, '男')
 
-    #更新用户
+    #更新员工
     def test_UpdateStaff(self):
+        print('更新员工测试...  ' + str(datetime.datetime.now()))
         staff = Pistaff()
         staff.id = uuid.uuid1()
         staff.isdimission = 0
@@ -1450,6 +1452,370 @@ class UserStaffServiceTest(TestCase):
         staff.gender = '女'
         returnCode,returnMessage = StaffService.UpdateStaff(self, staff)
         self.assertEqual(returnCode, 14)
+
+    #按主键获取员工列表
+    def test_GetDTByIds(self):
+        print('按主键获取员工列表测试...  ' + str(datetime.datetime.now()))
+        staff = Pistaff()
+        staff.id = uuid.uuid1()
+        staff.isdimission = 0
+        staff.deletemark = 0
+        staff.enabled = 1
+        staff.gender = '男'
+        staff.realname = '张三'
+        staff.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        staff.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = StaffService.Add(self, staff)
+        staffId = staff.id
+
+        staff1 = Pistaff()
+        staff1.id = uuid.uuid1()
+        staff1.isdimission = 0
+        staff1.deletemark = 0
+        staff1.enabled = 1
+        staff1.gender = '男'
+        staff1.realname = '张三'
+        staff1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        staff1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = StaffService.Add(self, staff1)
+        staffId1 = staff1.id
+
+        ids = [staffId, staffId1]
+
+        self.assertEqual(len(StaffService.GetDTByIds(self, ids)), 2)
+
+    #按组织结构获取员工列表
+    def test_GetDTByOrganize(self):
+        print('按组织机构主键获取员工列表测试...  ' + str(datetime.datetime.now()))
+
+        staff = Pistaff()
+        staff.id = uuid.uuid1()
+        staff.isdimission = 0
+        staff.deletemark = 0
+        staff.enabled = 1
+        staff.gender = '男'
+        staff.realname = '张三'
+        staff.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        staff.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = StaffService.Add(self, staff)
+        staffId = staff.id
+
+        staff1 = Pistaff()
+        staff1.id = uuid.uuid1()
+        staff1.isdimission = 0
+        staff1.deletemark = 0
+        staff1.enabled = 1
+        staff1.gender = '男'
+        staff1.realname = '张三'
+        staff1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        staff1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = StaffService.Add(self, staff1)
+
+        starffOrg = Pistafforganize()
+        starffOrg.id = '17B501A9-697A-4226-816D-003903FC8AA5'
+        starffOrg.deletemark = 0
+        starffOrg.enabled = 1
+        starffOrg.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        starffOrg.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        starffOrg.staffid = staffId
+        starffOrg.organizeid = '07B501A9-697A-4226-816D-003903FC8AA5'
+        starffOrg.save()
+
+        self.assertEqual(len(StaffService.GetDTByOrganize(self, '07B501A9-697A-4226-816D-003903FC8AA5', False)), 1)
+
+    #得到未设置组织机构的员工列表
+    def test_GetDTNotOrganize(self):
+        print('得到未设置组织机构的员工列表测试...  ' + str(datetime.datetime.now()))
+
+        staff = Pistaff()
+        staff.id = uuid.uuid1()
+        staff.isdimission = 0
+        staff.deletemark = 0
+        staff.enabled = 1
+        staff.gender = '男'
+        staff.realname = '张三'
+        staff.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        staff.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = StaffService.Add(self, staff)
+        staffId = staff.id
+        #
+        # staff1 = Pistaff()
+        # staff1.id = uuid.uuid1()
+        # staff1.isdimission = 0
+        # staff1.deletemark = 0
+        # staff1.enabled = 1
+        # staff1.gender = '男'
+        # staff1.realname = '张三'
+        # staff1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # staff1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # returnCode, returnMessage, returnValue = StaffService.Add(self, staff1)
+
+        starffOrg = Pistafforganize()
+        starffOrg.id = '07B501A9-697A-4226-816D-003903FC8AA8'
+        starffOrg.deletemark = 0
+        starffOrg.enabled = 1
+        starffOrg.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        starffOrg.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        starffOrg.staffid = staffId
+        starffOrg.organizeid = '07B501A9-697A-4226-816D-003903FC8AA5'
+        starffOrg.save()
+        pistafforganize = Pistafforganize.objects.all()
+        print(pistafforganize)
+
+    #员工关联用户
+    def test_SetStaffUser(self):
+        print('员工关联用户测试...  ' + str(datetime.datetime.now()))
+
+        user = Piuser()
+        user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        user.username = 'wuyujia'
+        user.realname = '邬育佳'
+        user.isstaff = 1
+        user.isvisible = 1
+        user.isdimission = 1
+        user.deletemark = 0
+        user.enabled = 1
+        user.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user)
+
+        staff = Pistaff()
+        staff.id = uuid.uuid1()
+        staff.isdimission = 0
+        staff.deletemark = 0
+        staff.enabled = 1
+        staff.gender = '男'
+        staff.realname = '张三'
+        staff.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        staff.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = StaffService.Add(self, staff)
+        staffId = staff.id
+
+        returnValue = StaffService.SetStaffUser(self, staffId, '0003d3f5-6aa1-4475-adf6-50961c8bd739')
+        self.assertEqual(returnValue, True)
+        returnValue = StaffService.SetStaffUser(self, staffId, '0003d3f5-6aa1-4475-adf6-50961c8bd739')
+        self.assertEqual(returnValue, False)
+
+    #删除员工关联的用户
+    def test_DeleteUser(self):
+        print('删除员工关联的用户测试...  ' + str(datetime.datetime.now()))
+
+        user = Piuser()
+        user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        user.username = 'wuyujia'
+        user.realname = '邬育佳'
+        user.isstaff = 1
+        user.isvisible = 1
+        user.isdimission = 1
+        user.deletemark = 0
+        user.enabled = 1
+        user.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user)
+
+        staff = Pistaff()
+        staff.id = uuid.uuid1()
+        staff.isdimission = 0
+        staff.deletemark = 0
+        staff.enabled = 1
+        staff.gender = '男'
+        staff.realname = '张三'
+        staff.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        staff.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = StaffService.Add(self, staff)
+        staffId = staff.id
+
+        returnValue = StaffService.SetStaffUser(self, staffId, '0003d3f5-6aa1-4475-adf6-50961c8bd739')
+        self.assertEqual(returnValue, True)
+
+        userCheck = Piuser.objects.get(id='0003d3f5-6aa1-4475-adf6-50961c8bd739')
+        self.assertEqual(userCheck.deletemark, 0)
+
+        returnValue = StaffService.DeleteUser(self, staffId)
+        self.assertEqual(returnValue, True)
+
+        userCheck = Piuser.objects.get(id='0003d3f5-6aa1-4475-adf6-50961c8bd739')
+        self.assertEqual(userCheck.deletemark, 1)
+
+    #单个删除
+    def test_Delete(self):
+        print('删除员工关联的用户测试...  ' + str(datetime.datetime.now()))
+
+        user = Piuser()
+        user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        user.username = 'wuyujia'
+        user.realname = '邬育佳'
+        user.isstaff = 1
+        user.isvisible = 1
+        user.isdimission = 1
+        user.deletemark = 0
+        user.enabled = 1
+        user.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user)
+
+        staff = Pistaff()
+        staff.id = uuid.uuid1()
+        staff.isdimission = 0
+        staff.deletemark = 0
+        staff.enabled = 1
+        staff.gender = '男'
+        staff.realname = '张三'
+        staff.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        staff.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = StaffService.Add(self, staff)
+        staffId = staff.id
+
+        returnValue = StaffService.SetStaffUser(self, staffId, '0003d3f5-6aa1-4475-adf6-50961c8bd739')
+        self.assertEqual(returnValue, True)
+
+        StaffService.Delete(self, staffId)
+
+        self.assertEqual(len(Pistaff.objects.filter(id=staffId)), 0)
+        userCheck = Piuser.objects.get(id='0003d3f5-6aa1-4475-adf6-50961c8bd739')
+        self.assertEqual(userCheck.deletemark, 1)
+
+    #批量删除
+    def test_BatchDelete(self):
+        print('批量删除员工测试...  ' + str(datetime.datetime.now()))
+
+        user = Piuser()
+        user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        user.username = 'wuyujia'
+        user.realname = '邬育佳'
+        user.isstaff = 1
+        user.isvisible = 1
+        user.isdimission = 1
+        user.deletemark = 0
+        user.enabled = 1
+        user.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user)
+
+        staff = Pistaff()
+        staff.id = uuid.uuid1()
+        staff.isdimission = 0
+        staff.deletemark = 0
+        staff.enabled = 1
+        staff.gender = '男'
+        staff.realname = '张三'
+        staff.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        staff.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = StaffService.Add(self, staff)
+        staffId = staff.id
+
+        returnValue = StaffService.SetStaffUser(self, staffId, '0003d3f5-6aa1-4475-adf6-50961c8bd739')
+        self.assertEqual(returnValue, True)
+
+
+        ids = [staffId]
+        StaffService.BatchDelete(self, ids)
+
+        self.assertEqual(len(Pistaff.objects.filter(id__in=ids)), 0)
+        userCheck = Piuser.objects.get(id='0003d3f5-6aa1-4475-adf6-50961c8bd739')
+        self.assertEqual(userCheck.deletemark, 1)
+
+    #批量打删除标志
+    def test_SetDeleted(self):
+        print('批量打员工删除标志测试...  ' + str(datetime.datetime.now()))
+
+        user = Piuser()
+        user.id = '0003d3f5-6aa1-4475-adf6-50961c8bd739'
+        user.username = 'wuyujia'
+        user.realname = '邬育佳'
+        user.isstaff = 1
+        user.isvisible = 1
+        user.isdimission = 1
+        user.deletemark = 0
+        user.enabled = 1
+        user.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        UserSerivce.AddUser(self, user)
+
+        staff = Pistaff()
+        staff.id = uuid.uuid1()
+        staff.isdimission = 0
+        staff.deletemark = 0
+        staff.enabled = 1
+        staff.gender = '男'
+        staff.realname = '张三'
+        staff.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        staff.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = StaffService.Add(self, staff)
+        staffId = staff.id
+
+        returnValue = StaffService.SetStaffUser(self, staffId, '0003d3f5-6aa1-4475-adf6-50961c8bd739')
+        self.assertEqual(returnValue, True)
+
+        ids = [staffId]
+        StaffService.SetDeleted(self, ids)
+
+        staff = Pistaff.objects.get(id=staffId)
+        self.assertEqual(staff.deletemark, 1)
+        userCheck = Piuser.objects.get(id='0003d3f5-6aa1-4475-adf6-50961c8bd739')
+        self.assertEqual(userCheck.deletemark, 1)
+
+    #移动员工数据到指定组织机构
+    def test_MoveTo(self):
+        print('移动员工数据到指定组织机构测试...  ' + str(datetime.datetime.now()))
+
+        staffOrg = Pistafforganize()
+        staffOrg.id = uuid.uuid1()
+        staffOrg.deletemark = 0
+        staffOrg.enabled = 1
+        staffOrg.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        staffOrg.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        staffOrg.organizeid = 'ssss'
+        staffOrg.staffid = uuid.uuid1()
+        staffOrgId = staffOrg.id
+        staffId = staffOrg.staffid
+        staffOrg.save()
+
+        StaffService.MoveTo(self, staffId, 'mmmm')
+        staffOrg = Pistafforganize.objects.get(id = staffOrgId)
+        self.assertEqual(staffOrg.organizeid, 'mmmm')
+
+    #批量移动员工数据到指定组织机构
+    def test_BatchMoveTo(self):
+        print('移动员工数据到指定组织机构测试...  ' + str(datetime.datetime.now()))
+
+        staffOrg = Pistafforganize()
+        staffOrg.id = uuid.uuid1()
+        staffOrg.deletemark = 0
+        staffOrg.enabled = 1
+        staffOrg.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        staffOrg.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        staffOrg.organizeid = 'ssss'
+        staffOrg.staffid = uuid.uuid1()
+        staffOrgId = staffOrg.id
+        staffId = staffOrg.staffid
+        staffOrg.save()
+
+        ids = [staffId]
+
+        StaffService.BatchMoveTo(self, ids, 'mmmm')
+        staffOrg = Pistafforganize.objects.get(id=staffOrgId)
+        self.assertEqual(staffOrg.organizeid, 'mmmm')
+
+    #获取主键
+    def test_GetId(self):
+        staff = Pistaff()
+        staff.id = uuid.uuid1()
+        staff.isdimission = 0
+        staff.deletemark = 0
+        staff.enabled = 1
+        staff.gender = '男'
+        staff.realname = '张三'
+        staff.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        staff.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        returnCode, returnMessage, returnValue = StaffService.Add(self, staff)
+        staffId = staff.id
+
+        valueDic = {'id':staffId}
+
+        returnValue = StaffService.GetId(self, valueDic)
+        self.assertEqual(len(returnValue), 1)
+
+
+
+
+
+
 
 
 
