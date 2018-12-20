@@ -82,7 +82,6 @@ class StaffService(object):
         """
         分页查询
         Args:
-            recordCount (int): 所有员工数
             searchValue (string): 查询字段
             pageSize (int): 每页显示
             order (string): 排序

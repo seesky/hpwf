@@ -539,3 +539,16 @@ class UserSerivce(object):
                        + "       AND (" + Piuserorganize._meta.db_table + ".departmentid = '" + departmentId + "'))) "; \
         returnValue = DbCommonLibaray.executeQuery(self, sqlQuery)
         return returnValue
+
+    def GetUserIdsInRole(self, roleId):
+        """
+        获取员工的角色主键数组
+        Args:
+            roleId (string): 角色主键
+        Returns:
+            returnValue (List): 主键数组
+        """
+        q1 = Piuser.objects.filter(Q(roleid=roleId) & Q(deletemark=0) & Q(enabled=1)).values_list('id', flat=True)
+        q2 = Piuserrole.objects.filter(Q(roleid=roleId) & Q(userid__in=Piuser.objects.filter(deletemark=0).values_list('id')) & Q(deletemark=0)).values_list('userid', flat=True)
+        returnValue = q1.union(q2)
+        return returnValue
