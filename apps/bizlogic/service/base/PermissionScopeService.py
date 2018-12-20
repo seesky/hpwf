@@ -9,6 +9,7 @@ from apps.bizlogic.models import Piuserrole
 
 from apps.utilities.message.PermissionScope import PermissionScope
 from apps.utilities.publiclibrary.StringHelper import StringHelper
+from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 
 from django.db.models import Q
 
@@ -23,13 +24,14 @@ class PermissionScopeService(object):
             returnValue(bool): 已存在
         """
         resourceScopeIds = None
-        resourceScopeIds = PermissionScopeService.GetResourceScopeIds(userId, tableName, permissionItemCode)
+        resourceScopeIds = PermissionScopeService.GetResourceScopeIds(self, userId, tableName, permissionItemCode)
 
         idList = StringHelper.ArrayToList(self, resourceScopeIds, '\'')
 
         if idList:
-            
-
+            sqlQuery = 'select id from ( select id from ' + tableName + ' where (id in (' + idList + ')) UNION ALL select ResourceTree.Id AS ID FROM ' + tableName + ' AS ResourceTree INNER JOIN pipermissionscope AS A ON A.Id = ResourceTree.ParentId) AS PermissionScopeTree'
+            dataTable = DbCommonLibaray.executeQuery(self, sqlQuery)
+        return resourceScopeIds
 
     def GetResourceScopeIds(self, userId, targetCategory, permissionItemCode):
         """
@@ -44,8 +46,8 @@ class PermissionScopeService(object):
         permissionItemId = Pipermissionitem.objects.get(code=permissionItemCode).id
         defaultRoleId = Piuser.objects.get(id=userId).roleid
 
-        q1 = Pipermissionscope.objects.filter(Q(resourcecategory='piuser') & Q(resourceid=userId) & Q(targetcategory=targetCategory) & Q(permissionid=permissionItemId) & Q(enabled=1) & Q(deletemark=0)).values_list('tragetid', flat=True)
-        q2 = Pipermissionscope.objects.filter(Q(resourceategory='pirole') & Q(resourcecategory=targetCategory) & Q(permissionid=permissionItemId) & Q(deletemark=0) & Q(enabled=1) & Q(resourceid__in=Piuserrole.objects.filter(Q(userid=userId) & Q(enabled=1) & Q(deletemark=0)).values_list('resourceid', flat=True))).values_list('tragetid', flat=True)
+        q1 = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory=targetCategory) & Q(permissionid=permissionItemId) & Q(enabled=1) & Q(deletemark=0)).values_list('targetid', flat=True)
+        q2 = Pipermissionscope.objects.filter(Q(resourcecategory='PIROLE') & Q(resourcecategory=targetCategory) & Q(permissionid=permissionItemId) & Q(deletemark=0) & Q(enabled=1) & Q(resourceid__in=Piuserrole.objects.filter(Q(userid=userId) & Q(enabled=1) & Q(deletemark=0)).values_list('roleid', flat=True))).values_list('targetid', flat=True)
         resourceIds = q1.union(q2)
 
         if targetCategory == 'piorganize':

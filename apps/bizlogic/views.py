@@ -14,48 +14,25 @@ from django.views.decorators.csrf import csrf_protect
 from apps.bizlogic.service.base.UserService import UserSerivce
 from apps.bizlogic.service.base.OrganizeService import OrganizeService
 from apps.bizlogic.service.base.StaffService import StaffService
+from apps.bizlogic.service.base.PermissionItemService import PermissionItemService
 from apps.bizlogic.models import Piorganize
 from apps.bizlogic.models import Pistaff
 from apps.bizlogic.models import Pistafforganize
+from apps.bizlogic.models import Piuser
+from apps.bizlogic.models import Pirole
 
 
 # Create your views here.
 
 class PiuserTest(View):
     def get(self, request):
-        staff = Pistaff()
-        staff.id = uuid.uuid1()
-        staff.isdimission = 0
-        staff.deletemark = 0
-        staff.enabled = 1
-        staff.gender = '男'
-        staff.realname = '张三'
-        staff.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        staff.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        returnCode, returnMessage, returnValue = StaffService.Add(self, staff)
-        staffId = staff.id
+        # userId = '26F43BC9-AE6D-42D2-BAC9-F4237A949484'
+        # q1 = Piuser.objects.filter(Q(id=userId) & Q(deletemark=0) & Q(enabled=1))
+        # q2 = Piuserrole.objects.filter(
+        #     Q(userid=userId) & Q(roleid__in=Pirole.objects.filter(deletemark=0).values('id')) & Q(
+        #         deletemark=0)).values_list('roleid', flat=True)
+        # returnValue = q1.union(q2)
 
-        staff1 = Pistaff()
-        staff1.id = uuid.uuid1()
-        staff1.isdimission = 0
-        staff1.deletemark = 0
-        staff1.enabled = 1
-        staff1.gender = '男'
-        staff1.realname = '张三'
-        staff1.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        staff1.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        returnCode, returnMessage, returnValue = StaffService.Add(self, staff1)
-
-        starffOrg = Pistafforganize()
-        starffOrg.id = uuid.uuid1()
-        starffOrg.deletemark = 0
-        starffOrg.enabled = 1
-        starffOrg.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        starffOrg.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        starffOrg.staffid = staffId
-        starffOrg.organizeid = '07B501A9-697A-4226-816D-003903FC8AA5'
-        starffOrg.save()
-        print(len(Pistaff.objects.all()))
-        print(len(Pistafforganize.objects.all()))
+        returnValue = PermissionItemService.GetLicensedDT(self, "333FCB67-A69B-4821-98CC-CD8CDBF7FC2C", 'OrganizeManagement.Permission')
         return HttpResponse(returnValue)
 

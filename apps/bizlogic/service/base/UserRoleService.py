@@ -2,6 +2,8 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/11 16:17'
 
+import uuid
+
 from django.db.models import Q
 
 from apps.bizlogic.models import Piuserrole
@@ -24,10 +26,10 @@ class UserRoleService(object):
         returnValue = False
         if not roleCode:
             return False
-        roleId = Pirole.objects.get(Q(deletemark=0) & Q(code=roleCode))
+        roleId = Pirole.objects.get(Q(deletemark=0) & Q(code=roleCode)).id
         if not roleId:
             return False
-        roleIds = UserRoleService.GetAllRoleIds(self, roleId)
+        roleIds = UserRoleService.GetAllRoleIds(self, userId)
         if roleId in roleIds:
             return True
         else:
@@ -63,7 +65,9 @@ class UserRoleService(object):
             sqlQuery = sqlQuery + ' (enabled=1) union select roleid from piuserrole where (userid=\'' + userId + '\') AND '
             sqlQuery = sqlQuery + '(roleid in (select id from pirole where (deletemark = 0 ))) AND (deletemark=0)'
 
-            q1 = Piuser.objects.filter(Q(id=userId) & Q(deletemark=0) & Q(enabled=1)).values('roleid')
-            q2 = Piuserrole.objects.filter(Q(userid=userId) & Q(roleid__in=Pirole.objects.filter(deletemark=0).values('id')) & Q(deletemark=0)).values('roleid')
-            returnValue = q1.union(q2)
+            list1 = Piuser.objects.filter(Q(id=userId) & Q(deletemark=0) & Q(enabled=1)).values_list('roleid', flat=True)
+            #q1 = Piuser.objects.get(Q(id=userId) & Q(deletemark=0) & Q(enabled=1))
+            list2 = Piuserrole.objects.filter(Q(userid=userId) & Q(roleid__in=Pirole.objects.filter(deletemark=0).values('id')) & Q(deletemark=0)).values_list('roleid', flat=True)
+            returnValue = list1.union(list2)
+            return returnValue
 

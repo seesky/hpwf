@@ -11,6 +11,7 @@ from django.db.transaction import TransactionManagementError
 
 from apps.bizlogic.models import Pipermissionitem
 from apps.bizlogic.service.base.UserRoleService import UserRoleService
+from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
 from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
 
@@ -136,11 +137,12 @@ class PermissionItemService(object):
         returnValue = Pipermissionitem.objects.filter(Q(id__in=ids) & Q(deletemark=0))
         return returnValue
 
-    def GetLicensedDT(self, userId):
+    def GetLicensedDT(self, userId, permissionItemCode):
         """
         获取授权范围
         Args:
             userId (string): 用户主键
+            permissionItemCode (string): 权限代码
         Returns:
             returnValue (PipermissionItem[]): 权限项列表
         """
@@ -149,14 +151,17 @@ class PermissionItemService(object):
         isRole = False
         isRole = UserRoleService.UserInRole(self, userId, 'UserAdmin')
         if(isRole):
-            returnValue = Pipermissionitem.objects.filter(Q(categorycode='System') & Q(deletemark=0) & Q(enabled=1)).sort_by('sortcode')
+            returnValue = Pipermissionitem.objects.filter(Q(categorycode='System') & Q(deletemark=0) & Q(enabled=1)).order_by('sortcode')
             return returnValue
         isRole = UserRoleService.UserInRole(self, userId, 'Admin')
         if(isRole):
             returnValue = Pipermissionitem.objects.filter(
-                Q(categorycode='Application') & Q(deletemark=0) & Q(enabled=1)).sort_by('sortcode')
+                Q(categorycode='Application') & Q(deletemark=0) & Q(enabled=1)).order_by('sortcode')
             return returnValue
-        permissionItemIds =
+        permissionItemIds = PermissionScopeService.GetTreeResourceScopeIds(self, userId, 'pipermissionitem', permissionItemCode, True)
+        returnValue = Pipermissionitem.objects.filter(
+            Q(id__in=permissionItemIds) & Q(deletemark=0) & Q(enabled=1)).order_by('sortcode')
+        return returnValue
 
 
     def GetEntity(self, id):
