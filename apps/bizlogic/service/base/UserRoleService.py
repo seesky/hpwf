@@ -60,13 +60,12 @@ class UserRoleService(object):
         if not userId:
             return []
         else:
-            sqlQuery = 'select roleid from piuser where (id=\'' + userId + '\') AND '
-            sqlQuery = sqlQuery + '(deletemark=0) AND '
-            sqlQuery = sqlQuery + ' (enabled=1) union select roleid from piuserrole where (userid=\'' + userId + '\') AND '
-            sqlQuery = sqlQuery + '(roleid in (select id from pirole where (deletemark = 0 ))) AND (deletemark=0)'
+            # sqlQuery = 'select roleid from piuser where (id=\'' + userId + '\') AND '
+            # sqlQuery = sqlQuery + '(deletemark=0) AND '
+            # sqlQuery = sqlQuery + ' (enabled=1) union select roleid from piuserrole where (userid=\'' + userId + '\') AND '
+            # sqlQuery = sqlQuery + '(roleid in (select id from pirole where (deletemark = 0 ))) AND (deletemark=0)'
 
             list1 = Piuser.objects.filter(Q(id=userId) & Q(deletemark=0) & Q(enabled=1)).values_list('roleid', flat=True)
-            #q1 = Piuser.objects.get(Q(id=userId) & Q(deletemark=0) & Q(enabled=1))
             list2 = Piuserrole.objects.filter(Q(userid=userId) & Q(roleid__in=Pirole.objects.filter(deletemark=0).values('id')) & Q(deletemark=0)).values_list('roleid', flat=True)
             returnValue = list1.union(list2)
             return returnValue

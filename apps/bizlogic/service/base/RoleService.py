@@ -2,68 +2,70 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/11 16:29'
 
-def Add(entity, statusCode, statsMessage):
-    pass
+class RoleService(object):
 
-def Update(entity, statsCode, statusMessage):
-    pass
+    def Add(self, entity, statusCode, statsMessage):
+        pass
 
-def GetDT():
-    pass
+    def Update(self, entity, statsCode, statusMessage):
+        pass
 
-def GetList():
-    pass
+    def GetDT(self):
+        pass
 
-def GetDtByPage(recordCount, pageIndex=1, pageSize=20, whereConditional="", order=""):
-    pass
+    def GetList(self):
+        pass
 
-def GetEntity(id):
-    pass
+    def GetDtByPage(self, recordCount, pageIndex=1, pageSize=20, whereConditional="", order=""):
+        pass
 
-def GetDTByIds(ids):
-    pass
+    def GetEntity(self, id):
+        pass
 
-def GetDTByValues(names, values):
-    pass
+    def GetDTByIds(self, ids):
+        pass
 
-def GetDTByOrganize(organizeId, showUser=True):
-    pass
+    def GetDTByValues(self, names, values):
+        pass
 
-def GetApplicationRole():
-    pass
+    def GetDTByOrganize(self, organizeId, showUser=True):
+        pass
 
-def BatchSave(entites):
-    pass
+    def GetApplicationRole(self):
+        pass
 
-def Delete(id):
-    pass
+    def BatchSave(self, entites):
+        pass
 
-def BatchDelete(ids):
-    pass
+    def Delete(self, id):
+        pass
 
-def SetDeleted(ids):
-    pass
+    def BatchDelete(self, ids):
+        pass
 
-def EliminateRoleUser(roleId):
-    pass
+    def SetDeleted(self, ids):
+        pass
 
-def GetRoleUserIds(roleId):
-    pass
+    def EliminateRoleUser(self, roleId):
+        pass
 
-def AddUserToRole(roleId, addUserIds):
-    pass
+    def GetRoleUserIds(self, roleId):
+        pass
 
-def RemoveUserFromRole(roleId, userIds):
-    pass
+    def AddUserToRole(self, roleId, addUserIds):
+        pass
 
-def ClearRoleUser(roleId):
-    pass
+    def RemoveUserFromRole(roleId, userIds):
+        pass
 
-def SetUsersToRole(roleId, userIds):
-    pass
+    def ClearRoleUser(roleId):
+        pass
 
-def ResetSortCode(organizeId):
-    pass
+    def SetUsersToRole(roleId, userIds):
+        pass
 
-def MoveTo(id, targetOrganizedId):
-    pass
+    def ResetSortCode(organizeId):
+        pass
+
+    def MoveTo(id, targetOrganizedId):
+        pass

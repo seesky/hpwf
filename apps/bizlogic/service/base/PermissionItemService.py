@@ -10,11 +10,12 @@ from django.db.utils import DatabaseError
 from django.db.transaction import TransactionManagementError
 
 from apps.bizlogic.models import Pipermissionitem
+from apps.bizlogic.models import Pipermission
 from apps.bizlogic.service.base.UserRoleService import UserRoleService
 from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
-from apps.bizlogic.service.base.ModuleService import ModuleService
 from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
+
 
 class PermissionItemService(object):
 
@@ -325,5 +326,5 @@ class PermissionItemService(object):
         Returns:
             returnValue (string[]): 主键数组
         """
-        returnValue = ModuleService.GetPermissionIds(self, moduleId)
+        returnValue = Pipermission.objects.filter(Q(resourcecategory='PIMODULE') & Q(resourceid=moduleId) & Q(deletemark=0))
         return returnValue

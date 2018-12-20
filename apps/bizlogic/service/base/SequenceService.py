@@ -2,50 +2,59 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/11 16:22'
 
-def Add(sequenceEntity, statusCode, statsMessage):
-    pass
+class SequenceService(object):
+    FillZeroPrefix = True  # 是否前缀补零
+    DefaultSequence = 1000  # 默认升序序列号
+    DefaultReduction = 9999999  # 默认降序序列号
+    DefaultPrefix = ""  # 默认的前缀
+    DefaultSeparator = ""  # 默认分隔符
+    DefaultStep = 1  # 递增或者递减数步调
+    DefaultSequenceLength = 8  # 默认的排序码长度
+    SequenceLength = 8  # 序列长度
+    UsePrefix = True  # 是否采用前缀，补充0方式
 
-def Add(dataTable, statusCode, statusMessage):
-    pass
+    def Add(self, sequenceEntity, statusCode, statsMessage):
+        pass
 
-def GetDT():
-    pass
+    def Add(self, dataTable, statusCode, statusMessage):
+        pass
 
-def GetDTByPage(recordCount, pageIndex=1, pageSize=20, whereConditional="", order=""):
-    pass
+    def GetDT(self):
+        pass
 
-def GetEntity(id):
-    pass
+    def GetDTByPage(self, recordCount, pageIndex=1, pageSize=20, whereConditional="", order=""):
+        pass
 
-def Update(entity, statusCode, statusMessage):
-    pass
+    def GetEntity(self, id):
+        pass
 
-def Update(dataTable, statsCode, statsMessage):
-    pass
+    def Update(self, entity, statusCode, statusMessage):
+        pass
 
-def GetSequence(fullName):
-    pass
+    def GetSequence(self, fullName):
+        pass
 
-def GetOldSequence(fullName, defaultSequence, sequenceLength, fillZeroPrefix):
-    pass
+    def GetOldSequence(self, fullName, defaultSequence, sequenceLength, fillZeroPrefix):
+        pass
 
-def GetNewSequence(fullName, defaultSequence, sequenceLength, fillZeroPrefix):
-    pass
+    def GetNewSequence(self, fullName, defaultSequence, sequenceLength, fillZeroPrefix):
+        pass
 
-def GetBatchSequence(fullName, count):
-    pass
+    def GetBatchSequence(self, fullName, count):
+        returnValue = []
+        pass
 
-def GetReduction(fullName):
-    pass
+    def GetReduction(self, fullName):
+        pass
 
-def Reset(ids):
-    pass
+    def Reset(self, ids):
+        pass
 
-def Delete(id):
-    pass
+    def Delete(self, id):
+        pass
 
-def SetDeleted(id):
-    pass
+    def SetDeleted(self, id):
+        pass
 
-def BatchDelete(ids):
-    pass
+    def BatchDelete(self, ids):
+        pass
