@@ -33,6 +33,7 @@ class PiuserTest(View):
         #         deletemark=0)).values_list('roleid', flat=True)
         # returnValue = q1.union(q2)
 
-        returnValue = PermissionItemService.GetLicensedDT(self, "333FCB67-A69B-4821-98CC-CD8CDBF7FC2C", 'OrganizeManagement.Permission')
+        #returnValue = PermissionItemService.GetLicensedDT(self, "333FCB67-A69B-4821-98CC-CD8CDBF7FC2C", 'OrganizeManagement.Permission')
+        returnValue = PermissionItemService.GetIdsByModule(self, "8895495B-F4A8-4EDD-8401-4ADAA0F9A67A")
         return HttpResponse(returnValue)
 

@@ -2,68 +2,78 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/11 15:55'
 
-def GetDT():
-    pass
+from apps.bizlogic.models import Pipermission
 
-def GetDTByCondition(condition):
-    pass
+from django.db.models import Q
 
-def GetList():
-    pass
+class ModuleService(object):
 
-def GetDTByIds(ids):
-    pass
+    def GetDT(self):
+        pass
 
-def GetEntity():
-    pass
+    def GetDTByCondition(self, condition):
+        pass
 
-def GetFullNameByCode(code):
-    pass
+    def GetList(self):
+        pass
 
-def Add(moduleEntity, statusCode, statusMessage):
-    pass
+    def GetDTByIds(self, ids):
+        pass
 
-def Update(moduleEntity, statusCode, statusMessage):
-    pass
+    def GetEntity(self):
+        pass
 
-def GetDTByParent(parentId):
-    pass
+    def GetFullNameByCode(self, code):
+        pass
 
-def Delete(id):
-    pass
+    def Add(self, moduleEntity, statusCode, statusMessage):
+        pass
 
-def BatchDelete(ids):
-    pass
+    def Update(self, moduleEntity, statusCode, statusMessage):
+        pass
 
-def SetDeleted(ids):
-    pass
+    def GetDTByParent(self, parentId):
+        pass
 
-def MoveTo(moduleId, parentId):
-    pass
+    def Delete(self, id):
+        pass
 
-def BatchMoveTo(moduleIds, parentId):
-    pass
+    def BatchDelete(self, ids):
+        pass
 
-def BatchSave(dataTable):
-    pass
+    def SetDeleted(self, ids):
+        pass
 
-def SetSortCode(ids):
-    pass
+    def MoveTo(self, moduleId, parentId):
+        pass
 
-def GetPermissionDT(moduleId):
-    pass
+    def BatchMoveTo(self, moduleIds, parentId):
+        pass
 
-def GetIdsByPermission(permissionItemId):
-    pass
+    def BatchSave(self, dataTable):
+        pass
 
-def BatchAddPermissions(moduleId, permissionItemIds):
-    pass
+    def SetSortCode(self, ids):
+        pass
 
-def BatchAddModules(permissionItemId, moduleIds):
-    pass
+    def GetPermissionDT(self, moduleId):
+        pass
 
-def BatchDeletePermissions(moduleId, permissionItemIds):
-    pass
+    def GetIdsByPermission(self, permissionItemId):
+        pass
 
-def BatchDeleteModules(permissionItemId, modulesIds):
-    pass
+    def BatchAddPermissions(self, moduleId, permissionItemIds):
+        pass
+
+    def BatchAddModules(self, permissionItemId, moduleIds):
+        pass
+
+    def BatchDeletePermissions(self, moduleId, permissionItemIds):
+        pass
+
+    def BatchDeleteModules(self, permissionItemId, modulesIds):
+        pass
+
+    def GetPermissionIds(self, moduleId):
+        returnValue = Pipermission.objects.filter(Q(resourcecategory='PIMODULE') & Q(resourceid=moduleId) & Q(deletemark=0))
+        return returnValue

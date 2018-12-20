@@ -12,6 +12,7 @@ from django.db.transaction import TransactionManagementError
 from apps.bizlogic.models import Pipermissionitem
 from apps.bizlogic.service.base.UserRoleService import UserRoleService
 from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
+from apps.bizlogic.service.base.ModuleService import ModuleService
 from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
 
@@ -165,34 +166,164 @@ class PermissionItemService(object):
 
 
     def GetEntity(self, id):
-        pass
+        """
+        获取权限项实体
+        Args:
+            id (string): 权限项主键
+        Returns:
+            returnValue (PipermissionItem): 权限项实体
+        """
+        try:
+            returnValue = Pipermissionitem.objects.get(id=id)
+            return returnValue
+        except Pipermissionitem.DoesNotExist as e:
+            return None
 
     def GetEntityByCode(self, code):
-        pass
+        """
+        按编号获取权限项实体
+        Args:
+            code (string): 权限项编号
+        Returns:
+            returnValue (PipermissionItem): 权限项实体
+        """
+        try:
+            returnValue = Pipermissionitem.objects.get(code=code)
+            return returnValue
+        except Pipermissionitem.DoesNotExist as e:
+            return None
 
-    def Update(self, permissionItemEntity, statusCode, statusMessage):
-        pass
+    def Update(self, permissionItemEntity):
+        """
+        更新权限项
+        Args:
+            userEntity (Piuser): 用户实体
+        Returns:
+            returnValue (string): 状态码
+            returnMessage (string): 状态信息
+        """
+        try:
+            permissionItemEntity.save()
+            returnCode = StatusCode.statusCodeDic['OKUpdate']
+            returnMessage = FrameworkMessage.MSG0010
+            return returnCode, returnMessage
+        except:
+            returnCode = StatusCode.statusCodeDic['Error']
+            returnMessage = FrameworkMessage.MSG0001
+            return returnCode, returnMessage
 
     def MoveTo(self, permissionItemId, parentId):
-        pass
+        """
+        移动权限项
+        Args:
+            permissionItemId (string): 权限项主键
+            parentId (string): 更改后的父节点主键
+        Returns:
+            returnValue (True or False): 保存结果
+        """
+        try:
+            organize = Pipermissionitem.objects.get(id=permissionItemId)
+            organize.parentid = parentId
+            organize.save()
+            return True
+        except Pipermissionitem.DoesNotExist:
+            return False
 
     def BatchMoveTo(self, permissionItemIds, parentId):
-        pass
+        """
+        批量移动权限项
+        Args:
+            permissionItemIds (string): 权限项主键列表
+            parentId (string): 更改后的父节点主键
+        Returns:
+            returnValue (True or False): 保存结果
+        """
+        try:
+            organize = Pipermissionitem.objects.filter(id__in=permissionItemIds).update(parentid=parentId)
+            return True
+        except:
+            return False
 
     def Delete(self, id):
-        pass
+        """
+        删除权限项
+        Args:
+            id (string): 权限项主键
+        Returns:
+            returnValue (True or False): 删除结果
+        """
+        try:
+            try:
+                organize = Pipermissionitem.objects.get(id=id)
+            except Pipermissionitem.DoesNotExist as e:
+                return False
+            organize.deletemark = 1
+            organize.save()
+            return True
+        except Exception as e:
+            return False
 
     def BatchDelete(self, ids):
-        pass
+        """
+        批量删除权限项
+        Args:
+            ids (string): 权限项主键列表
+        Returns:
+            returnValue (True or False): 删除结果
+        """
+        try:
+            organize = Pipermissionitem.objects.filter(id__in=ids).update(deletemark=1)
+            return True
+        except Exception as e:
+            return False
 
     def SetDeleted(self, ids):
-        pass
+        """
+        批量打删除标志
+        Args:
+            ids (string): 权限项主键列表
+        Returns:
+            returnValue (True or False): 删除结果
+        """
+        try:
+            organize = Pipermissionitem.objects.filter(id__in=ids).update(deletemark=1)
+            return True
+        except Exception as e:
+            return False
 
     def BatchSave(self, dataTable):
-        pass
+        """
+        批量保存实体
+        Args:
+            dataTable (Pipermissionitem[]): 权限项实体列表
+        Returns:
+            returnValue (True or False): 保存结果
+        """
+
+        try:
+            for item in dataTable:
+                item.save()
+            return True
+        except:
+            return False
 
     def BatchSetSortCode(self, ids):
+        """
+        重新生成排序码
+        Args:
+            ids (string[]): 权限项实体列表
+        Returns:
+            returnValue (True or False): 保存结果
+        """
         pass
 
     def GetIdsByModule(self, moduleId):
-        pass
+        """
+        得到指定模块的操作权限主健数组
+        Args:
+            moduleId (string): 权限项实体列表
+        Returns:
+            returnValue (string[]): 主键数组
+        """
+        returnValue = ModuleService.GetPermissionIds(self, moduleId)
+        return returnValue
