@@ -13,7 +13,9 @@ from utilities.message.StatusCode import StatusCode
 from utilities.message.FrameworkMessage import FrameworkMessage
 from utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 from apps.bizlogic.models import Piuser
+from apps.bizlogic.models import Piuserrole
 from apps.bizlogic.service.base.UserService import UserSerivce
+from apps.bizlogic.service.base.UserRoleService import UserRoleService
 
 class RoleService(object):
     """
@@ -176,7 +178,6 @@ class RoleService(object):
     def GetDTByOrganize(self, organizeId, showUser=True):
         """
         按组织机构获取角色列表
-        valueDic = {key:value, key:value, ...}
         Args:
             organizeId (string) : 组织机构主键
             showUser (bool) : 显示用户
@@ -198,40 +199,130 @@ class RoleService(object):
 
 
     def GetApplicationRole(self):
-        pass
+        """
+        获取业务角色列表
+        Args:
+        Returns:
+            returnValue (Pirole[]): 业务角色列表
+        """
+        returnValue = Pirole.objects.filter(Q(deletemark=0) & Q(category='ApplicationRole'))
+        return returnValue
 
     def BatchSave(self, entites):
-        pass
+        """
+        批量保存
+        Args:
+            dataTable (Piuser[]): 用户列表
+        Returns:
+            returnValue (True or False): 保存结果
+        """
+        try:
+            for role in entites:
+                role.save()
+            return True
+        except:
+            return False
 
     def Delete(self, id):
-        pass
+        """
+        单个删除角色
+        Args:
+            id (string): 主键
+        Returns:
+            returnValue (True or False): 删除结果
+        """
+        returnValue = 0
+        returnValue = returnValue + Piuserrole.objects.filter(roleid=id).delete()
+        returnValue = returnValue + Pirole.objects.filter(Q(id=id) & Q(allowdelete=1)).delete()
+        return returnValue
 
     def BatchDelete(self, ids):
-        pass
+        """
+        批量删除
+        Args:
+            ids (string[]): 主键列表
+        Returns:
+            returnValue (True or False): 删除结果
+        """
+        returnValue = 0
+        for id in ids:
+            returnValue = returnValue + RoleService.Delete(self, id)
+        return returnValue
 
     def SetDeleted(self, ids):
-        pass
+        """
+        批量逻辑删除角色
+        Args:
+            ids (string[]): 主键列表
+        Returns:
+            returnValue (True or False): 删除结果
+        """
+        #TODO:此处还应该把角色相应的权限，所拥有的用户等也做统一处理。
+        returnValue = Pirole.objects.filter(Q(id__in=ids)).update(deletemark=1)
+        return returnValue
 
     def EliminateRoleUser(self, roleId):
-        pass
+        """
+        移除角色用户关联
+        Args:
+            id (string): 角色主键
+        Returns:
+            returnValue (int): 移除影响行数
+        """
+        returnValue = 0
+        returnValue = UserRoleService.EliminateRoleUser(self, roleId)
+        return returnValue
 
     def GetRoleUserIds(self, roleId):
-        pass
+        """
+        获得角色中的用户主键
+        Args:
+            roleId (string): 角色主键
+        Returns:
+            returnValue (string[]): 用户主键列表
+        """
+        returnValue = UserRoleService.GetUserIds(self, roleId)
+        return returnValue
 
     def AddUserToRole(self, roleId, addUserIds):
+        """
+        用户添加到角色
+        Args:
+            roleId (string): 角色主键
+            addUserIds (string): 用户主键列表
+        Returns:
+            returnValue (int): 影响行数
+        """
+        returnValue = UserRoleService.AddToRolesU(self, addUserIds, roleId)
+        return returnValue
+
+    def RemoveUserFromRole(self, userIds, roleId):
+        """
+       将用户从角色中移除
+       Args:
+           userIds (string[]): 角色主键列表
+           roleId (string): 角色主键
+       Returns:
+           returnValue (int): 影响行数
+       """
+        returnValue = UserRoleService.RemoveFromRoleU(self, userIds, roleId)
+        return returnValue
+
+    def ClearRoleUser(self, roleId):
+        """
+       清除角色用户关联
+       Args:
+           roleId (string): 角色主键
+       Returns:
+           returnValue (int): 影响行数
+       """
         pass
 
-    def RemoveUserFromRole(roleId, userIds):
+    def SetUsersToRole(self, roleId, userIds):
         pass
 
-    def ClearRoleUser(roleId):
+    def ResetSortCode(self, organizeId):
         pass
 
-    def SetUsersToRole(roleId, userIds):
-        pass
-
-    def ResetSortCode(organizeId):
-        pass
-
-    def MoveTo(id, targetOrganizedId):
+    def MoveTo(self, id, targetOrganizedId):
         pass
