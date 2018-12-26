@@ -2,30 +2,126 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/11 16:02'
 
-import apps.bizlogic.models
+from apps.bizlogic.models import Ciexception
+
+from django.core.paginator import Paginator
+from django.db.utils import DatabaseError
+from django.db.transaction import TransactionManagementError
+from django.db.models import Q
+from utilities.message.StatusCode import StatusCode
+from utilities.message.FrameworkMessage import FrameworkMessage
 
 
 class ExceptionService(object):
-    def Add(self, entity, statusCode, statusMessage):
-        pass
+    def Add(self, entity):
+        """
+        添加异常数据
+        Args:
+            entity (Ciexception): 异常主键
+        Returns:
+            returnValue (string): 异常主键
+        """
+        try:
+            entity.save()
+            returnCode = StatusCode.statusCodeDic['OKAdd']
+            returnMessage = FrameworkMessage.MSG0009
+            returnValue = entity.id
+            return returnCode, returnMessage, returnValue
+        except DatabaseError as e:
+            print(e)
+            returnCode = StatusCode.statusCodeDic['DbError']
+            returnMessage = FrameworkMessage.MSG0001
+            returnValue = None
+            return returnCode, returnMessage, returnValue
+        except TransactionManagementError as e:
+            print(e)
+            returnCode = StatusCode.statusCodeDic['DbError']
+            returnMessage = FrameworkMessage.MSG0001
+            returnValue = None
+            return returnCode, returnMessage, returnValue
 
     def GetDT(self):
-        pass
+        """
+        取得列表
+        Args:
+        Returns:
+            returnValue (Ciexception[]): 异常实体列表
+        """
+        returnValue = Ciexception.objects.all()
+        return returnValue
 
-    def GetDTByPage(self, recordCount, pageIndex=1, pageSize=20, whereConditional="", order=""):
-        pass
+    def GetDTByPage(self, searchValue, departmentId, roleId, pageSize=50, order=None):
+        """
+        获取系统异常分页列表
+        Args:
+            searchValue (string): 查询字段
+            departmentId (string): 部门主键
+            roleId (string): 角色主键
+            pageSize (int): 每页显示
+            order (string): 排序
+        Returns:
+            returnValue (Paginator): 异常分页列表
+        """
+        data = Ciexception.objects.all()
+        returnValue = Paginator(data, pageSize)
+        return returnValue
 
     def GetEntity(self, id):
-        pass
+        """
+        获取实体
+        Args:
+            id (string): 主键
+        Returns:
+            returnValue (Ciexception): 异常实体
+        """
+        returnValue = Ciexception.objects.filter(id=id)
+        return returnValue
 
-    def GetDTByValues(self, names, values):
+    def GetDTByValues(self, valueDic):
+        """
+        按键值对获取列表
+        valueDic = {key:value, key:value, ...}
+        Args:
+            valueDic (Dic{key:value}): 参数和值对
+        Returns:
+            returnValue (Pioranize[]): 组织机构列表
+        """
+        q = Q()
+        for i in valueDic:
+            q.add(Q(**{i: valueDic[i]}), Q.AND)
+        returnValue = Ciexception.objects.filter(q)
+        return returnValue
         pass
 
     def Delete(self, id):
-        pass
+        """
+        删除异常
+        Args:
+            id (string): 主键
+        Returns:
+            returnValue (int): 受影响行数
+        """
+        returnValue = Ciexception.objects.filter(id=id).delete()
+        return returnValue
 
     def BatchDelete(self, ids):
-        pass
+        """
+        批量删除异常
+        Args:
+            ids (string): 主键列表
+        Returns:
+            returnValue (int): 受影响行数
+        """
+        returnValue = Ciexception.objects.filter(id__in=ids).delete()
+        return returnValue
 
     def Truncate(self):
-        pass
+        """
+        全部清除异常
+        Args:
+            ids (string): 主键列表
+        Returns:
+            returnValue (int): 受影响行数
+        """
+        returnValue = Ciexception.objects.all().delete()
+        return returnValue
