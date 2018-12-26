@@ -10,19 +10,56 @@ from apps.bizlogic.models import Piuserrole
 from apps.bizlogic.models import Pirole
 from apps.bizlogic.models import Piuser
 
+from apps.bizlogic.service.base.UserService import UserSerivce
+from apps.utilities.message.DefaultRole import DefaultRole
 
 class UserRoleService(object):
 
     def GetDTByRole(self, roleId):
-        pass
+        """
+        按角色获取用户列表
+        Args:
+            roleId (string): 角色主键
+        Returns:
+            returnValue (Piuser[]): 用户列表
+        """
+        returnValue = Piuser.objects.filter(Q(enabled=1) & Q(deletemark=0) & (Q(roleid=roleId) | Q(id__in=Piuserrole.objects.filter(Q(roleid=roleId) & Q(enabled=1) & Q(deletemark=0)).valus_list('userid', flat=True)))).order_by('sortcode')
+        return returnValue
 
     def GetListByRole(self, roleIds):
-        pass
+        """
+        按角色获取用户列表
+        Args:
+            roleIds (string): 角色主键列表
+        Returns:
+            returnValue (Piuser[]): 用户列表
+        """
+        returnValue = Piuser.objects.filter(Q(enabled=1) & Q(deletemark=0) &  Q(id__in=Piuserrole.objects.filter(Q(roleid__in=roleIds) & Q(enabled=1) & Q(deletemark=0)).valus_list('userid',flat=True))).order_by( 'sortcode')
+        return returnValue
 
-    def GetRoleDT(self):
-        pass
+    def GetRoleDT(self, user):
+        """
+        获取用户的角色列表
+        Args:
+        Returns:
+            returnValue (Pirole[]): 角色列表
+        """
+        #TODO:此处缺少判断用户是否位管理员的方法，暂时用True代替
+        if True:
+            dataTable = Pirole.objects.filter(Q(deletemark=0) & Q(enabled=1) & ~Q(code=DefaultRole.Administrators)).order_by('sortcode')
+        else:
+            dataTable = Pirole.objects.filter(Q(deletemark=0) & Q(enabled=1)).order_by('sortcode')
+
 
     def UserInRole(self, userId, roleCode):
+        """
+        用户是否在某个角色里的判断
+        Args:
+            userId (string): 用户ID
+            roleCode (string): 角色编号
+        Returns:
+            returnValue (Pirole[]): 角色列表
+        """
         returnValue = False
         if not roleCode:
             return False
@@ -36,25 +73,93 @@ class UserRoleService(object):
             return False
 
     def SetDefaultRole(self, userId, roleId):
-        pass
+        """
+        设置用户的默认角色
+        Args:
+            userId (string): 用户ID
+            roleCode (string): 角色编号
+        Returns:
+            returnValue (Pirole[]): 影响行数
+        """
+        returnValue = Piuser.objects.filter(userid=userId).update(roleid=roleId)
+        return returnValue
 
     def BatchSetDefaultRole(self, userIds, roleId):
-        pass
+        """
+        设置用户的默认角色
+        Args:
+            userId (string): 用户ID
+            roleCode (string): 角色编号
+        Returns:
+            returnValue (Pirole[]): 影响行数
+        """
+        returnValue = Piuser.objects.filter(userid__in=userIds).update(roleid=roleId)
 
     def GetUserRoleIds(self, userId):
-        pass
+        """
+        获取用户角色列表
+        Args:
+            userId (string): 用户ID
+        Returns:
+            returnValue (string[]): 角色主键列表
+        """
+        returnValue = Piuserrole.objects.filter(userid=userId).values_list('id', flat=True)
+        return returnValue
 
     def GetAllUserRoleIds(self, userId):
-        pass
+        """
+        获取用户角色列表
+        Args:
+            userId (string): 用户ID
+        Returns:
+            returnValue (string[]): 角色主键列表
+        """
+        returnValue = Piuserrole.objects.filter(userid=userId).values_list('id', flat=True)
+        return returnValue
 
     def AddUserToRole(self, userId, addRoleIds):
-        pass
+        """
+       用户添加到角色
+       Args:
+           userId (string): 用户ID
+           addRoleIds (string[]): 角色主键ID
+       Returns:
+           returnValue (string): 主键
+       """
+        try:
+            Piuserrole.objects.get(Q(userid=userId) & Q(roleid=addRoleIds) & Q(enabled=1) & Q(deletemark=0))
+        except Piuserrole.DoesNotExist as e:
+            userrole = Piuserrole()
+            userrole.userid = userId
+            userrole.roleid = addRoleIds
+            userrole.enabled = 1
+            userrole.deletemark = 0
+            userrole.save()
+            return userrole.id
 
     def RemoveUserFromRole(self, userId, removeRoleIds):
-        pass
+        """
+       从角色中删除员工
+       Args:
+           userId (string): 员工主键
+           addRoleIds (string): 角色主键
+       Returns:
+           returnValue (int): 影响行数
+       """
+        returnValue = Piuserrole.objects.filter(Q(userId=userId) & Q(roleid=removeRoleIds)).delete()
+        return returnValue
+
 
     def ClearUserRole(self, userId):
-        pass
+        """
+       清除用户归属的角色
+       Args:
+           userId (string): 员工主键
+       Returns:
+           returnValue (int): 影响行数
+       """
+        returnValue = Piuserrole.objects.filter(userid=userId).delete()
+        return returnValue
 
     def GetAllRoleIds(self, userId):
         if not userId:
