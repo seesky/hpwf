@@ -2,44 +2,46 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/11 17:25'
 
-def GetServiceConfig(key):
-    pass
+class ParameterService(object):
 
-def GetParameter(categoryKey, parameterId, parameterCode):
-    pass
+    def GetServiceConfig(self, key):
+        pass
 
-def GetEntity(id):
-    pass
+    def GetParameter(self, categoryKey, parameterId, parameterCode):
+        pass
 
-def SetParameter(categoryKey, parameterId, parameterCode, parameterContent, allowEdit=0, allowDelete=0):
-    pass
+    def GetEntity(self, id):
+        pass
 
-def GetDTByParameter(categoryKey, parameterId):
-    pass
+    def SetParameter(self, categoryKey, parameterId, parameterCode, parameterContent, allowEdit=0, allowDelete=0):
+        pass
 
-def GetListByParameter(categoryKey, parameterId):
-    pass
+    def GetDTByParameter(self, categoryKey, parameterId):
+        pass
 
-def GetDTByParameterCode(categoryKey, parameterId, parameterCode):
-    pass
+    def GetListByParameter(self, categoryKey, parameterId):
+        pass
 
-def GetListByParameterCode(categoryKey, parameterId, parameterCode):
-    pass
+    def GetDTByParameterCode(self, categoryKey, parameterId, parameterCode):
+        pass
 
-def GetDTByPage(recordCount, pageIndex=1, pageSize=20, whereConditional="", order=""):
-    pass
+    def GetListByParameterCode(self, categoryKey, parameterId, parameterCode):
+        pass
 
-def SetDeleted(id):
-    pass
+    def GetDTByPage(self, recordCount, pageIndex=1, pageSize=20, whereConditional="", order=""):
+        pass
 
-def DeleteByParameter(categoryKey, parameterId):
-    pass
+    def SetDeleted(self, id):
+        pass
 
-def DeleteByParameterCode(categoryKey, parameterId, parameterCode):
-    pass
+    def DeleteByParameter(self, categoryKey, parameterId):
+        pass
 
-def Delete(id):
-    pass
+    def DeleteByParameterCode(self, categoryKey, parameterId, parameterCode):
+        pass
 
-def BatchDelete(ids):
-    pass
+    def Delete(self, id):
+        pass
+
+    def BatchDelete(self, ids):
+        pass

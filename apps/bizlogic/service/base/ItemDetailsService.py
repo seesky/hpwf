@@ -2,35 +2,37 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/12 8:01'
 
-def Add(entity, statusMessage):
-    pass
+class ItemDetailsService(object):
 
-def GetDT():
-    pass
+    def Add(self, entity, statusMessage):
+        pass
 
-def GetEntity(id):
-    pass
+    def GetDT(self):
+        pass
 
-def Update(entity, statusMessage):
-    pass
+    def GetEntity(self, id):
+        pass
 
-def GetDTByIds(ids):
-    pass
+    def Update(self, entity, statusMessage):
+        pass
 
-def GetDTByValues(names, values):
-    pass
+    def GetDTByIds(self, ids):
+        pass
 
-def BatchSave(entites):
-    pass
+    def GetDTByValues(self, names, values):
+        pass
 
-def Delete(id):
-    pass
+    def BatchSave(self, entites):
+        pass
 
-def BatchDelete(ids):
-    pass
+    def Delete(self, id):
+        pass
 
-def SetDeleted(ids):
-    pass
+    def BatchDelete(self, ids):
+        pass
 
-def GetDTByCode(code):
-    pass
+    def SetDeleted(self, ids):
+        pass
+
+    def GetDTByCode(self, code):
+        pass

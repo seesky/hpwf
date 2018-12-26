@@ -2,41 +2,43 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/11 15:41'
 
-def WriteLog(processId, processName, methodId, methodName):
-    pass
+class LogService(object):
 
-def WriteExit(logId):
-    pass
+    def WriteLog(self, processId, processName, methodId, methodName):
+        pass
 
-def GetLogGeneral():
-    pass
+    def WriteExit(self, logId):
+        pass
 
-def GetDTByDate(beginDate, endDate, userId, moduleId):
-    pass
+    def GetLogGeneral(self):
+        pass
 
-def GetDTByModule(processId, beginDate, endDate):
-    pass
+    def GetDTByDate(self, beginDate, endDate, userId, moduleId):
+        pass
 
-def GetDTByUser(userId, beginDate, endDate):
-    pass
+    def GetDTByModule(self, processId, beginDate, endDate):
+        pass
 
-def GetDTByPage(recordCount, pageIndex=1, pageSize=20, whereConditional="", order=""):
-    pass
+    def GetDTByUser(self, userId, beginDate, endDate):
+        pass
 
-def Delete(id):
-    pass
+    def GetDTByPage(self, recordCount, pageIndex=1, pageSize=20, whereConditional="", order=""):
+        pass
 
-def BatchDelete(ids):
-    pass
+    def Delete(self, id):
+        pass
 
-def Truncate():
-    pass
+    def BatchDelete(self, ids):
+        pass
 
-def GetDTApplicationByDate(beginDate, endDate):
-    pass
+    def Truncate(self):
+        pass
 
-def BatchDeleteApplication(ids):
-    pass
+    def GetDTApplicationByDate(self, beginDate, endDate):
+        pass
 
-def TruncateApplication():
-    pass
+    def BatchDeleteApplication(self, ids):
+        pass
+
+    def TruncateApplication(self):
+        pass

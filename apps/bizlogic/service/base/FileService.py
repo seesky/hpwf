@@ -2,53 +2,99 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/11 16:56'
 
-def GetEntity(id):
-    pass
+from apps.bizlogic.models import Cifile
+from django.db.models import Q
 
-def Exists(folderId, fileName):
-    pass
+class FileService(object):
 
-def Download(id):
-    pass
+    def UpdateReadCount(self, id):
+        """
+        阅读次数要加一
+        Args:
+            id (string): 主键
+        Returns:
+            returnValue (True or False): 成功失败
+        """
+        try:
+            file = Cifile.objects.get(id=id)
+            file.readcount = file.readcount + 1
+            file.save()
+            return True
+        except Cifile.DoesNotExist as e:
+            return False
 
-def Upload(folderId, fileName, file, enabled):
-    pass
+    def GetEntity(self, id):
+        """
+        获取实体
+        Args:
+            id (string): 主键
+        Returns:
+            returnValue (Cifile[]): 文件列表
+        """
+        try:
+            user = Cifile.objects.get(id=id)
+            return user
+        except Cifile.DoesNotExist:
+            return None
 
-def GetDTByFolder(folderId):
-    pass
+    def Exists(self, folderId, fileName):
+        """
+        判断是否存在
+        Args:
+            folderId (string): 目录id
+            fileName (string): 文件名
+        Returns:
+            returnValue (True or False): 是否存在
+        """
+        try:
+            Cifile.objects.get(Q(folderid=folderId) & Q(filename=fileName))
+            return False
+        except Cifile.DoesNotExist as e:
+            return True
 
-def GetFileDTByPage(recordCount, pageIndex=1, pageSize=20, whereConditional="", order=""):
-    pass
+    def Download(self, id):
+        FileService.UpdateReadCount(self, id)
+        fileCountent = None
+        pass
 
-def DeleteByFolder(folderId):
-    pass
+    def Upload(self, folderId, fileName, file, enabled):
+        pass
 
-def Add(folderId, fileName, file, description, catefory, enabled, statusCode, statusMessage):
-    pass
+    def GetDTByFolder(self, folderId):
+        pass
 
-def Update(id, folderId, fileName, description, enabled, statusCode, statusMessage):
-    pass
+    def GetFileDTByPage(self, recordCount, pageIndex=1, pageSize=20, whereConditional="", order=""):
+        pass
 
-def UpdateFile(id, fileName, file, statusCode, statusMessage):
-    pass
+    def DeleteByFolder(self, folderId):
+        pass
 
-def Rename(id, newName, enabled, statusCode, statusMessage):
-    pass
+    def Add(self, folderId, fileName, file, description, catefory, enabled, statusCode, statusMessage):
+        pass
 
-def Search(searchValue):
-    pass
+    def Update(self, id, folderId, fileName, description, enabled, statusCode, statusMessage):
+        pass
 
-def MoveTo(id, folderId):
-    pass
+    def UpdateFile(self, id, fileName, file, statusCode, statusMessage):
+        pass
 
-def BatchMoveTo(ids, folderId):
-    pass
+    def Rename(self, id, newName, enabled, statusCode, statusMessage):
+        pass
 
-def Delete(id):
-    pass
+    def Search(self, searchValue):
+        pass
 
-def BatchDelete(ids):
-    pass
+    def MoveTo(self, id, folderId):
+        pass
 
-def BatchSave(dataTable):
-    pass
+    def BatchMoveTo(self, ids, folderId):
+        pass
+
+    def Delete(self, id):
+        pass
+
+    def BatchDelete(self, ids):
+        pass
+
+    def BatchSave(self, dataTable):
+        pass

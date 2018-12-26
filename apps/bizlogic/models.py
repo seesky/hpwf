@@ -138,7 +138,7 @@ class Cifile(models.Model):
     folderid = models.CharField(db_column='FOLDERID', max_length=40, blank=True, null=True)  # Field name made lowercase.
     filename = models.CharField(db_column='FILENAME', max_length=200, blank=True, null=True)  # Field name made lowercase.
     filepath = models.CharField(db_column='FILEPATH', max_length=255, blank=True, null=True)  # Field name made lowercase.
-    filecontent = models.TextField(db_column='FILECONTENT', blank=True, null=True)  # Field name made lowercase.
+    filecontent = models.BinaryField(db_column='FILECONTENT', blank=True, null=True)  # Field name made lowercase.
     filesize = models.FloatField(db_column='FILESIZE', blank=True, null=True)  # Field name made lowercase.
     imageurl = models.CharField(db_column='IMAGEURL', max_length=200, blank=True, null=True)  # Field name made lowercase.
     readcount = models.IntegerField(db_column='READCOUNT', blank=True, null=True)  # Field name made lowercase.

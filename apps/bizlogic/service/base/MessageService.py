@@ -2,59 +2,61 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/11 15:54'
 
-def GetInnerOrganizeDT():
-    pass
+class MessageService(object):
 
-def GetUserDTByOrganize(organizeId):
-    pass
+    def GetInnerOrganizeDT(self):
+        pass
 
-def GetUserDTByRole(roleId):
-    pass
+    def GetUserDTByOrganize(self, organizeId):
+        pass
 
-def Send(receiverId, contents):
-    pass
+    def GetUserDTByRole(self, roleId):
+        pass
 
-def SendGroupMessage(organizeId, roleId, contents):
-    pass
+    def Send(self, receiverId, contents):
+        pass
 
-def Remind(receiverId, contents):
-    pass
+    def SendGroupMessage(self, organizeId, roleId, contents):
+        pass
 
-def BatchSend(receiverIds, organizeIds, roleIds, messageEntity):
-    pass
+    def Remind(self, receiverId, contents):
+        pass
 
-def Broadcast(message):
-    pass
+    def BatchSend(self, receiverIds, organizeIds, roleIds, messageEntity):
+        pass
 
-def MessageChek(onLineState, lastChekDate):
-    pass
+    def Broadcast(self, message):
+        pass
 
-def GetDTNew(openId):
-    pass
+    def MessageChek(self, onLineState, lastChekDate):
+        pass
 
-def ReadFromReceiver(reveiverId):
-    pass
+    def GetDTNew(self, openId):
+        pass
 
-def Read(id):
-    pass
+    def ReadFromReceiver(self, reveiverId):
+        pass
 
-def CheckOnLine(onLineState):
-    pass
+    def Read(self, id):
+        pass
 
-def GetOnLineState():
-    pass
+    def CheckOnLine(self, onLineState):
+        pass
 
-def GetUserSentMessagesByPage(userId, whereConditional, recordCount, pageIndex=0, pageSize=20, order=None):
-    pass
+    def GetOnLineState(self):
+        pass
 
-def GetUserReceivedMessagesByPage(userId, whereConditional, recordCount, pageIndex=0, pageSize=20, order=None):
-    pass
+    def GetUserSentMessagesByPage(self, userId, whereConditional, recordCount, pageIndex=0, pageSize=20, order=None):
+        pass
 
-def GetMessagesByConditional(whereConditional, recordCount, pageIndex=0, pageSize=20, order=None):
-    pass
+    def GetUserReceivedMessagesByPage(self, userId, whereConditional, recordCount, pageIndex=0, pageSize=20, order=None):
+        pass
 
-def SetDeleted(ids):
-    pass
+    def GetMessagesByConditional(self, whereConditional, recordCount, pageIndex=0, pageSize=20, order=None):
+        pass
 
-def GetEntity(id):
-    pass
+    def SetDeleted(self, ids):
+        pass
+
+    def GetEntity(self, id):
+        pass

@@ -2,53 +2,55 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/11 17:04'
 
-def LogOnByOpenId(openId, returnStatusCode, returnStatusMessage):
-    pass
+class LogOnService(object):
 
-def LogOnByUserName(userName, returnStatusCode, returnStatusMessage):
-    pass
+    def LogOnByOpenId(self, openId, returnStatusCode, returnStatusMessage):
+        pass
 
-def UserLogOn(userName, password, openId, craeteOpenId, returnStatusCode, returnStatusMessage):
-    pass
+    def LogOnByUserName(self, userName, returnStatusCode, returnStatusMessage):
+        pass
 
-def GetEntity(id):
-    pass
+    def UserLogOn(self, userName, password, openId, craeteOpenId, returnStatusCode, returnStatusMessage):
+        pass
 
-def Update(entity):
-    pass
+    def GetEntity(self, id):
+        pass
 
-def GetUserDT():
-    pass
+    def Update(self, entity):
+        pass
 
-def GetStaffUserDT():
-    pass
+    def GetUserDT(self):
+        pass
 
-def AccountActivation(openId, statusCode, statusMessage):
-    pass
+    def GetStaffUserDT(self):
+        pass
 
-def OnLine(onLineState=1):
-    pass
+    def AccountActivation(self, openId, statusCode, statusMessage):
+        pass
 
-def OnExit():
-    pass
+    def OnLine(self, onLineState=1):
+        pass
 
-def ServerCheckOnLine():
-    pass
+    def OnExit(self):
+        pass
 
-def SetPassword(userIds, password, returnStatusCode, returnStatusMessage):
-    pass
+    def ServerCheckOnLine(self):
+        pass
 
-def ChangePassword(oldPassword, newPassword, statusCode, statusMessage):
-    pass
+    def SetPassword(self, userIds, password, returnStatusCode, returnStatusMessage):
+        pass
 
-def UserIsLogOn():
-    pass
+    def ChangePassword(self, oldPassword, newPassword, statusCode, statusMessage):
+        pass
 
-def LockUser(userName):
-    pass
+    def UserIsLogOn(self):
+        pass
 
-def UnLockUser(userName):
-    pass
+    def LockUser(self, userName):
+        pass
 
-def UserDimission(userName, dimissionCause, dimissionDate, dimissionWhither=None):
-    pass
+    def UnLockUser(self, userName):
+        pass
+
+    def UserDimission(self, userName, dimissionCause, dimissionDate, dimissionWhither=None):
+        pass

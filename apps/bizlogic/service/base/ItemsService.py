@@ -2,29 +2,31 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/12 7:57'
 
-def GetDT():
-    pass
+class ItemsService(object):
 
-def GetDTByParent(parentId):
-    pass
+    def GetDT(self):
+        pass
 
-def GetItemDetailDTByItemId(itemId):
-    pass
+    def GetDTByParent(self, parentId):
+        pass
 
-def GetEntity(id):
-    pass
+    def GetItemDetailDTByItemId(self, itemId):
+        pass
 
-def Add(itemsEntity, statusCode, statusMessage):
-    pass
+    def GetEntity(self, id):
+        pass
 
-def Update(itemsEntity, statusCode, statusMessage):
-    pass
+    def Add(self, itemsEntity, statusCode, statusMessage):
+        pass
 
-def CreateTable(tableName, statusCode, statusMessage):
-    pass
+    def Update(self, itemsEntity, statusCode, statusMessage):
+        pass
 
-def Delete(userInfo, tableName, id):
-    pass
+    def CreateTable(self, tableName, statusCode, statusMessage):
+        pass
 
-def SetDeleted(ids):
-    pass
+    def Delete(self, userInfo, tableName, id):
+        pass
+
+    def SetDeleted(self, ids):
+        pass

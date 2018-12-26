@@ -2,44 +2,46 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/11 16:05'
 
-def GetEntity(id):
-    pass
+class FolderService(object):
 
-def GetDT(name, value):
-    pass
+    def GetEntity(self, id):
+        pass
 
-def GetDTByParent(id):
-    pass
+    def GetDT(self, name, value):
+        pass
 
-def AddByFolderName(parentId, folderName, enabled, statusCode, statusMessage):
-    pass
+    def GetDTByParent(self, id):
+        pass
 
-def Add(folderEntity, statusCode, statusMessage):
-    pass
+    def AddByFolderName(self, parentId, folderName, enabled, statusCode, statusMessage):
+        pass
 
-def Update(folderEntity, statusCode, statusMessage):
-    pass
+    def Add(self, folderEntity, statusCode, statusMessage):
+        pass
 
-def GetDT():
-    pass
+    def Update(self, folderEntity, statusCode, statusMessage):
+        pass
 
-def Rename(id, newName, enabled, statusCode, statusMessage):
-    pass
+    def GetDT(self):
+        pass
 
-def Search(searchValue):
-    pass
+    def Rename(self, id, newName, enabled, statusCode, statusMessage):
+        pass
 
-def Delete(id):
-    pass
+    def Search(self, searchValue):
+        pass
 
-def BatchDelete(ids):
-    pass
+    def Delete(self, id):
+        pass
 
-def MoveTo(folderId, parentId):
-    pass
+    def BatchDelete(self, ids):
+        pass
 
-def BatchMoveTo(folderIds, parentId):
-    pass
+    def MoveTo(self, folderId, parentId):
+        pass
 
-def BatchSave(dataTable):
-    pass
+    def BatchMoveTo(self, folderIds, parentId):
+        pass
+
+    def BatchSave(self, dataTable):
+        pass

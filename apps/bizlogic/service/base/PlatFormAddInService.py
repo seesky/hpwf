@@ -2,33 +2,35 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/11 16:39'
 
-def Add(entity, statsCode, statsMessage):
-    pass
+class PlatFormAddInService(object):
 
-def GetDT():
-    pass
+    def Add(self, entity, statsCode, statsMessage):
+        pass
 
-def GetEntity(id):
-    pass
+    def GetDT(self):
+        pass
 
-def Update(entity, statusCode, statusMessage):
-    pass
+    def GetEntity(self, id):
+        pass
 
-def GetDTByIds(ids):
-    pass
+    def Update(self, entity, statusCode, statusMessage):
+        pass
 
-def GetDTByValues(names, values):
-    pass
+    def GetDTByIds(self, ids):
+        pass
 
-def Delete(id):
-    pass
+    def GetDTByValues(self, names, values):
+        pass
 
-def SetDeleted(ids):
-    pass
+    def Delete(self, id):
+        pass
 
-def SetEnabled(id, enabled):
-    pass
+    def SetDeleted(self, ids):
+        pass
 
-def GetTheLatestAddIn(Id):
-    pass
+    def SetEnabled(self, id, enabled):
+        pass
+
+    def GetTheLatestAddIn(self, Id):
+        pass
 

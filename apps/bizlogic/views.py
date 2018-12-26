@@ -11,7 +11,7 @@ import uuid
 
 from django.http import HttpResponse
 
-from bizlogic.service.base.RoleService import RoleService
+from apps.bizlogic.service.base.UserOrganizeSerivce import UserOrganizeService
 
 
 
@@ -21,6 +21,6 @@ from bizlogic.service.base.RoleService import RoleService
 class PiuserTest(View):
     def get(self, request):
 
-        returnValue = RoleService.GetRoleUserIds(self, '1ecaa1f5-22d4-43ca-96e2-26c50ab43b75')
+        returnValue = UserOrganizeService.UserIsInOrganize(self, '17CCE3FB-4883-4338-BB25-0D7996F9DD48', '上海分公司')
         return HttpResponse(returnValue)
 

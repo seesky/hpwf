@@ -112,7 +112,7 @@ class UserSerivce(object):
         """
         returnValue = []
         try:
-            for user in Piuser.objects.all():
+            for user in Piuser.objects.filter(deletemark=0).order_by('sortcode'):
                 returnValue.append(user)
             return returnValue
         except DatabaseError as e:
