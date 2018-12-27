@@ -11,6 +11,7 @@ from apps.bizlogic.models import Piuserlogon
 from apps.bizlogic.models import Piuser
 import time
 import datetime
+from apps.bizlogic.service.base.ParameterService import ParameterService
 
 from django.db.models import Q
 
@@ -184,7 +185,9 @@ class LogOnService(object):
                         return userInfo
         #08. 是否检查用户IP地址，是否进行访问限制？管理员不检查IP. && !this.IsAdministrator(userEntity.Id.ToString()
         if SystemInfo.EnableCheckIPAddress and userLogOnEntity.CheckIPAddress == 1 and (userEntity.username != 'Administrator' or userEntity.code == 'Administrator'):
-            pass
+            if ipAddress:
+                if ParameterService.Exists(self, userEntity.id, 'IPAddress'):
+                    pass
 
 
     def CheckOnLineLimit(self):

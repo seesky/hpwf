@@ -214,3 +214,18 @@ class ParameterService(object):
         """
         returnValue = Ciparameter.objects.filter(id__in=ids).delete()
         return returnValue
+
+    def Exists(self, parameterId, categoryKey):
+        """
+        判断参数是否存在
+        Args:
+            parameterId (string): 参数键值
+            categoryKey (string): 分类键值
+        Returns:
+            returnValue (True or False): 是否存在
+        """
+        try:
+            Ciparameter.objects.get(Q(parameterid=parameterId) & Q(categorykey=categoryKey))
+            return True
+        except Ciparameter.DoesNotExist as e:
+            return False
