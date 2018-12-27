@@ -2,35 +2,70 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/12 8:14'
 
-def IsInRole(userId, roleName):
-    pass
+from apps.bizlogic.models import Piuser
+from apps.bizlogic.service.base.UserRoleService import UserRoleService
+from apps.utilities.message.DefaultRole import DefaultRole
+from apps.bizlogic.models import Pirole
 
-def IsAuthorized(permissionItemCode, permissionItemName=None):
-    pass
+class PermissionService(object):
 
-def IsAuthorizedByUserId(userId, permissionItemCode, permissionItemName=None):
-    pass
+    def IsInRole(self, userId, roleName):
+        pass
 
-def IsAuthorizedByRoleId(roleId, permissionItemCode):
-    pass
+    def IsAuthorized(self, permissionItemCode, permissionItemName=None):
+        pass
 
-def IsAdministrator():
-    pass
+    def IsAuthorizedByUserId(self, userId, permissionItemCode, permissionItemName=None):
+        pass
 
-def IsAdministratorByUserId(userId):
-    pass
+    def IsAuthorizedByRoleId(self, roleId, permissionItemCode):
+        pass
 
-def GetPermissionDT():
-    pass
+    def IsAdministrator(self, entity):
+        """
+        当前用户是否超级管理员
+        Args:
+            userInfo (UserInfo): 用户
+        Returns:
+            returnValue(True or False): 当前用户是否为超级管理员，true：是，false：否
+        """
+        returnValue = False
+        userEntity = Piuser.objects.get(id=entity.Id)
+        if userEntity.id == 'Administrator':
+            return True
+        if userEntity.code and userEntity.code == 'Administrator':
+            return True
+        if userEntity.username and userEntity.username == 'Administrator':
+            return True
 
-def GetPermissionDTByUserId(userId):
-    pass
+        #TODO:if (this.UserInfo == null) return false;
 
-def IsModuleAuthorized(moduleCode):
-    pass
+        #用户的默认角色是超级管理员
+        roleEntity = None
+        if userEntity.roleid:
+            roleIds = UserRoleService.GetRoleIds(self, userEntity.id)
+            for tmpid in roleIds:
+                if tmpid == DefaultRole.Administrators:
+                    return True
+                roleEntity = Pirole.objects.get(id=tmpid)
+                if roleEntity.code and roleEntity.code == DefaultRole.Administrators:
+                    return True
+        return False
 
-def IsModuleAuthorizedByUserId(userId, moduleCode):
-    pass
+    def IsAdministratorByUserId(self, userId):
+        pass
 
-def GetPermissionScopeByUserId(userId, permissionItemCode):
-    pass
+    def GetPermissionDT(self):
+        pass
+
+    def GetPermissionDTByUserId(self, userId):
+        pass
+
+    def IsModuleAuthorized(self, moduleCode):
+        pass
+
+    def IsModuleAuthorizedByUserId(self, userId, moduleCode):
+        pass
+
+    def GetPermissionScopeByUserId(self, userId, permissionItemCode):
+        pass

@@ -257,3 +257,7 @@ class UserRoleService(object):
         returnValue = returnValue + Piuserrole.objects.filter(roleid=roleId).delete()
         return returnValue
 
+    def GetRoleIds(self, userId):
+        returnValue = Piuserrole.objects.filter(Q(userid=userId) & Q(roleid__in=Pirole.objects.filter(deletemark=0).values_list('id', flat=True)) & Q(deletemark=0)).values_list('roleid',flat=True)
+        return returnValue
+

@@ -22,3 +22,21 @@ class SystemInfo(object):
 
     #是否检查用户IP地址
     EnableCheckIPAddress = False
+
+    #禁止用户重复登录,只允许登录一次
+    CheckOnLine = False
+
+    #服务器端加密存储密码
+    EnableEncryptServerPassword = True
+
+    #密码错误锁定次数
+    PasswordErrorLockLimit = 5
+
+    #连续输入N次密码后，密码错误锁定周期(分钟),0 表示 需要系统管理员进行审核，帐户直接被设置为无效
+    PasswordErrorLockCycle = 30
+
+    #检查密码强度
+    EnableCheckPasswordStrength = False
+
+    #是否更新访问日期信息
+    UpdateVisit = True

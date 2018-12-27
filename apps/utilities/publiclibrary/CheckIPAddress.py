@@ -30,7 +30,7 @@ class CheckIPAddress(object):
                 elif parameterCode == 'Range':
                     returnValue = self.CheckIPAddressWithRange(ipAddress, parameterCotent)
                 elif parameterCode == 'Mask':
-                    returnValue = CheckIPAddressWithMask(ipAddress, parameterCotent)
+                    returnValue = self.CheckIPAddressWithMask(ipAddress, parameterCotent)
                 else:
                     pass
                 if returnValue:
@@ -78,3 +78,21 @@ class CheckIPAddress(object):
             elif a1 < a2:
                 return 0
         return 1
+
+    def CheckIPAddressWithMask(self, ipAddress, ipWithMask):
+        """
+        检查是否匹配带通配符的IP地址
+        Args:
+            ipAddress (string): 192.168.1.1
+            ipWithMask (string): 192.168.1.*
+        Returns:
+            returnValue(True or False):
+        """
+        #先判断是否符合192.168.1.*
+
+        arr1 = ipAddress.split('.')
+        arr2 = ipWithMask.split('.')
+        for i in range(0, arr1.len()):
+            if arr2[i] != '*' or arr1[i] == arr2[i]:
+                return False
+        return True
