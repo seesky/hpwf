@@ -19,3 +19,6 @@ class SystemInfo(object):
 
     #检查密码强度
     EnableCheckPasswordStrength = False
+
+    #是否检查用户IP地址
+    EnableCheckIPAddress = False

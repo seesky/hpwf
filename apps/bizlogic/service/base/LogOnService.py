@@ -9,6 +9,8 @@ from apps.utilities.message.AuditStatus import AuditStatus
 from utilities.message.StatusCode import StatusCode
 from apps.bizlogic.models import Piuserlogon
 from apps.bizlogic.models import Piuser
+import time
+import datetime
 
 from django.db.models import Q
 
@@ -156,8 +158,33 @@ class LogOnService(object):
                 return userInfo
 
             userLogOnEntity = Piuserlogon.objects.get(id=userEntity.id)
+            if userEntity.username or userEntity.username != 'Administrator':
+                #06. 允许登录时间是否有限制
+                if userLogOnEntity.AllowEndTime:
+                    userLogOnEntity.AllowEndTime = time.struct_time(tm_year=datetime.datetime.now().year, tm_mon=datetime.datetime.now().month, tm_mday=datetime.datetime.now().day, tm_hour=userLogOnEntity.AllowEndTime.Value.Minute, tm_min=userLogOnEntity.AllowEndTime.Value.Minute, tm_sec=userLogOnEntity.AllowEndTime.Value.Second)
+                if userLogOnEntity.AllowStartTime:
+                    userLogOnEntity.AllowStartTime = time.struct_time(tm_year=datetime.datetime.now().year,
+                                                                    tm_mon=datetime.datetime.now().month,
+                                                                    tm_mday=datetime.datetime.now().day,
+                                                                    tm_hour=userLogOnEntity.AllowStartTime.Value.Minute,
+                                                                    tm_min=userLogOnEntity.AllowStartTime.Value.Minute,
+                                                                    tm_sec=userLogOnEntity.AllowStartTime.Value.Second)
+                    if datetime.datetime.now() < userLogOnEntity.AllowStartTime:
+                        ReturnStatusCode = StatusCode.statusCodeDic['UserLocked']
+                        return userInfo
+                if userLogOnEntity.AllowEndTime:
+                    if datetime.datetime.now() > userLogOnEntity.AllowEndTime:
+                        ReturnStatusCode = StatusCode.statusCodeDic['UserLocked']
+                        return userInfo
 
-
+                #07. 锁定日期是否有限制
+                if userLogOnEntity.LockStartDate and datetime.datetime.now() > userLogOnEntity.LockStartDate:
+                    if userLogOnEntity.LockEndDate or datetime.datetime.now() < userLogOnEntity.LockEndDate:
+                        ReturnStatusCode = StatusCode.statusCodeDic['UserLocked']
+                        return userInfo
+        #08. 是否检查用户IP地址，是否进行访问限制？管理员不检查IP. && !this.IsAdministrator(userEntity.Id.ToString()
+        if SystemInfo.EnableCheckIPAddress and userLogOnEntity.CheckIPAddress == 1 and (userEntity.username != 'Administrator' or userEntity.code == 'Administrator'):
+            pass
 
 
     def CheckOnLineLimit(self):
