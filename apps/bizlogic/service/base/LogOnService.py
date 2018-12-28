@@ -18,6 +18,7 @@ from apps.bizlogic.models import Pirole
 from apps.bizlogic.service.permission.PermissionService import PermissionService
 import uuid
 from django.db.models import Q,F
+from apps.utilities.publiclibrary.ValidateUtil import ValidateUtil
 
 class LogOnService(object):
 
@@ -47,14 +48,50 @@ class LogOnService(object):
     def LogOnByUserName(self, userName, returnStatusCode, returnStatusMessage):
         pass
 
-    def UserLogOn(self, userName, password, openId, craeteOpenId, returnStatusCode, returnStatusMessage):
-        pass
+    def UserLogOn(self, userName, password, openId, createOpenId):
+        """
+        用户登录
+        Args:
+            userName (string): 用户名
+            password (string): 密码
+            openId (string): 单点登录标识
+            createOpenId (string): 重新创建单点登录标识
+        Returns:
+            returnValue (UserInfo): 实体
+        """
+        returnStatusCode = StatusCode.statusCodeDic['DbError']
+        returnCode = ''
+        returnMessage = ''
+        returnUserInfo = None
+        returnStatusCode,returnUserInfo = self.LogOn(self, userName, password, openId, createOpenId)
+        return returnUserInfo
 
     def GetEntity(self, id):
-        pass
+        """
+        获取实体
+        Args:
+            id (string): 主键
+        Returns:
+            returnValue (Piuserlogon or None): 实体
+        """
+        try:
+            return Piuserlogon.objects.get(id = id)
+        except Piuserlogon.DoesNotExist as e:
+            return None
 
     def Update(self, entity):
-        pass
+        """
+        更新实体
+        Args:
+            userId (Piuserlogon): 实体
+        Returns:
+            returnValue (True or False): 更新成功或失败
+        """
+        try:
+            entity.save()
+            return True
+        except:
+            return False
 
     def GetUserDT(self):
         pass
@@ -62,35 +99,163 @@ class LogOnService(object):
     def GetStaffUserDT(self):
         pass
 
-    def AccountActivation(self, openId, statusCode, statusMessage):
-        pass
+    def AccountActivation(self, userId, openId):
+        """
+        激活用户
+        Args:
+            userId (string): 用户主键
+            openId (string): 唯一识别码
+        Returns:
+            returnValue (Piuser): 用户实体
+        """
+        returnCode = ''
+        returnMessage = ''
+        self.CheckOnLine()
+        #用户没有找到状态
+        returnCode = StatusCode.statusCodeDic['UserNotFound']
+        #检查是否有效的合法的参数
+        if openId:
+            dataTable = Piuser.objects.filter(deletemark=0)
+            if dataTable.count() == 1:
+                userEntity = dataTable[0]
+                #用户是否被锁定？
+                if userEntity.enabled == 0:
+                    returnCode = StatusCode.statusCodeDic['UserLocked']
+                    return userEntity
+                if userEntity.enabled == 1:
+                    returnCode = StatusCode.statusCodeDic['UserIsActivate']
+                    return userEntity
+                if userEntity.enabled == -1:
+                    returnCode = StatusCode.statusCodeDic['OK']
+                    userEntity.enabled = 1
+                    userEntity.save()
+                    return userEntity
 
-    def OnLine(self, onLineState=1):
-        pass
 
-    def OnExit(self):
-        pass
+    def OnLine(self, userId, onLineState=1):
+        """
+        用户在线
+        Args:
+            userId (string): 用户主键
+            onLineState (string): 用户在线状态
+        Returns:
+        """
+        returnValue = 0
+        if not SystemInfo.UpdateVisit:
+            return returnValue
+        returnValue = Piuserlogon.objects.filter(Q(id=userId)).update(useronline=onLineState)
+        return returnValue
+
+    def OnExit(self, userId):
+        """
+        用户离线
+        Args:
+            userId (string): 用户主键
+        Returns:
+        """
+        returnValue = 0
+        #是否更新访问日期信息
+        if not SystemInfo.UpdateVisit:
+            return returnValue
+
+        returnValue = Piuserlogon.objects.filter(Q(id = userId)).update(previousvisit=F('lastvisit'), openid=uuid.uuid1(), useronline=0, lastvisit=datetime.datetime.now())
+        return returnValue
 
     def ServerCheckOnLine(self):
-        pass
+        """
+        服务器端检查在线状态
+        Args:
+        Returns:
+            returnValue(int): 离线人数
+        """
+        returnValue = 0
+        returnValue = self.CheckOnLine()
+        return returnValue
 
-    def SetPassword(self, userIds, password, returnStatusCode, returnStatusMessage):
-        pass
+    def SetPassword(self, userIds, password):
+        """
+        设置用户密码
+        Args:
+            userIds (string): 用户ID
+            password (string): 密码
+        Returns:
+            returnValue(int): 大于0操作成功
+        """
+        returnValue = 0
+        returnCode = ''
+        returnMessage = ''
+        enableCheckIPAddress = 0
+        if not userIds or userIds.count() == 0:
+            returnCode = StatusCode.statusCodeDic['NotFound']
+            return returnCode,returnValue
 
-    def ChangePassword(self, oldPassword, newPassword, statusCode, statusMessage):
-        pass
+        #设置密码
+        if SystemInfo.EnableEncryptServerPassword:
+            password = SecretHelper.AESEncrypt(self, password)
+
+        if SystemInfo.EnableCheckIPAddress:
+            enableCheckIPAddress = 1
+        for id in userIds:
+            Piuserlogon.objects.update_or_create(defaults={'id':id}, others={'checkipaddress':enableCheckIPAddress, 'userpassword':password, 'openid':uuid.uuid1()})
+            returnValue = returnValue + 1
+            returnCode = StatusCode.statusCodeDic['OK']
+        return returnCode,returnValue
 
     def UserIsLogOn(self):
         pass
 
     def LockUser(self, userName):
-        pass
+        """
+        锁定指定用户
+        Args:
+            userName (string): 用户名
+        Returns:
+            returnValue(int): 大于0操作成功
+        """
+        returnValue = 0
+        try:
+            user = Piuser.objects.get(Q(username=userName) & Q(enabled=1) & Q(deletemark=0))
+            returnValue = Piuserlogon.objects.filter(id = user.id).update(lockstartdate=datetime.datetime.now(), lockenddate=(datetime.datetime.now() + datetime.timedelta(minutes=SystemInfo.PasswordErrorLockCycle)))
+            return returnValue
+        except Piuser.DoesNotExist as e:
+            return returnValue
 
     def UnLockUser(self, userName):
-        pass
+        """
+        解锁指定用户
+        Args:
+            userName (string): 用户名
+        Returns:
+            returnValue(int): 大于0操作成功
+        """
+        returnValue = 0
+        try:
+            user = Piuser.objects.get(Q(username=userName) & Q(enabled=1) & Q(deletemark=0))
+            returnValue = Piuserlogon.objects.filter(id=user.id).update(lockstartdate=None, lockenddate=None)
+            return returnValue
+        except Piuser.DoesNotExist as e:
+            return returnValue
 
     def UserDimission(self, userName, dimissionCause, dimissionDate, dimissionWhither=None):
-        pass
+        """
+        用户离职
+        Args:
+            userName (string): 离职人员用户名
+            dimissionCause (string): 离职原因
+            dimissionDate (string): 离职日期
+            dimissionWhither (string): 离职去向
+        Returns:
+            returnValue(int): 大于0操作成功
+        """
+        returnValue = 0
+        userid = ''
+        user = Piuser.objects.get(Q(username=userName) & Q(enabled=1) & Q(deletemark=0))
+        returnValue = user.count()
+        if returnValue > 0:
+            user.update(enabled=0, isdimission=1, dimissioncause=dimissionCause, dimissionwhither=dimissionWhither, dimissiondate=dimissionDate)
+            userid = user[0].id
+            returnValue = returnValue + Piuserlogon.objects.filter(id=userid).update(lockstartdate=datetime.datetime.now())
+        return returnValue
 
     def CheckOnLine(self):
         """
@@ -256,7 +421,7 @@ class LogOnService(object):
                     ReturnStatusCode = StatusCode.statusCodeDic['ErrorLogOn']
                 else:
                     ReturnStatusCode = StatusCode.statusCodeDic['PasswordError']
-                return userInfo
+                return ReturnStatusCode,userInfo
 
         #12. 更新IP地址，更新MAC地址
         userLogOnEntity.passworderrorcount = 0
@@ -379,3 +544,48 @@ class LogOnService(object):
                 result = uuid.uuid1()
                 Piuserlogon.objects.filter(Q(id=userLogOnEntity.id)).update(passworderrorcount = 0, openid = result)
         return result
+
+    def ChangePassword(self, userId, oldPassword, newPassword):
+        """
+        更新密码
+        Args:
+            userId (string): 用户主键
+            oldPassword (string): 老密码
+            newPassword (string): 新密码
+        Returns:
+            returnValue (string): 影响行数
+        """
+        returnValue = 0
+        statusCode = ''
+        #密码强度检查
+        if SystemInfo.EnableCheckPasswordStrength:
+            if not newPassword:
+                statusCode = StatusCode.statusCodeDic['PasswordCanNotBeNull']
+                return statusCode,returnValue
+            #最小长度、字母数字组合等强度检查
+            if not ValidateUtil.EnableCheckPasswordStrength(self, newPassword):
+                statusCode = StatusCode.statusCodeDic['PasswordNotStrength']
+                return statusCode,returnValue
+
+        #加密密码
+        if SystemInfo.EnableEncryptServerPassword:
+            oldPassword = SecretHelper.AESEncrypt(self, oldPassword)
+            newPassword = SecretHelper.AESEncrypt(self, newPassword)
+
+        #判断输入原始密码是否正确
+        try:
+            entity = Piuserlogon.objects.get(id = userId)
+            if not entity.userpassword:
+                entity.userpassword = ''
+
+            if not entity.userpassword == oldPassword:
+                statusCode = StatusCode.statusCodeDic['OldPasswordError']
+                return statusCode,returnValue
+
+            entity.userpassword = newPassword
+            entity.changepassworddate = datetime.datetime.now()
+            entity.save()
+            statusCode = StatusCode.statusCodeDic['ChangePasswordOK']
+            return statusCode, 1
+        except Piuserlogon.DoesNotExist as e:
+            pass
