@@ -5,6 +5,16 @@ __date__ = '2018/12/11 15:41'
 class LogService(object):
 
     def WriteLog(self, processId, processName, methodId, methodName):
+        """
+        写入日志
+        Args:
+            processId (string): 服务主键
+            processName (string): 服务名称
+            methodId (string): 操作
+            methodName (string): 操作名称
+        Returns:
+        """
+
         pass
 
     def WriteExit(self, logId):

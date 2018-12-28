@@ -2,7 +2,7 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/27 13:51'
 
-from crypto.Cipher import AES
+from Crypto.Cipher import AES
 import base64
 import os
 

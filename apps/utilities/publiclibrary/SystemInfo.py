@@ -40,3 +40,6 @@ class SystemInfo(object):
 
     #是否更新访问日期信息
     UpdateVisit = True
+
+    #启用组织机构权限
+    EnableOrganizePermission = False

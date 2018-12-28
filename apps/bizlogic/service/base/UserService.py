@@ -552,4 +552,3 @@ class UserSerivce(object):
         q2 = Piuserrole.objects.filter(Q(roleid=roleId) & Q(userid__in=Piuser.objects.filter(deletemark=0).values_list('id')) & Q(deletemark=0)).values_list('userid', flat=True)
         returnValue = q1.union(q2)
         return returnValue
-

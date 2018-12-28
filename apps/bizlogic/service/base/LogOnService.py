@@ -63,8 +63,8 @@ class LogOnService(object):
         returnCode = ''
         returnMessage = ''
         returnUserInfo = None
-        returnStatusCode,returnUserInfo = self.LogOn(self, userName, password, openId, createOpenId)
-        return returnUserInfo
+        returnStatusCode,returnUserInfo = LogOnService.LogOn(self, userName, password, openId, createOpenId)
+        return returnStatusCode,returnUserInfo
 
     def GetEntity(self, id):
         """
@@ -110,7 +110,7 @@ class LogOnService(object):
         """
         returnCode = ''
         returnMessage = ''
-        self.CheckOnLine()
+        LogOnService.CheckOnLine()
         #用户没有找到状态
         returnCode = StatusCode.statusCodeDic['UserNotFound']
         #检查是否有效的合法的参数
@@ -169,7 +169,7 @@ class LogOnService(object):
             returnValue(int): 离线人数
         """
         returnValue = 0
-        returnValue = self.CheckOnLine()
+        returnValue = LogOnService.CheckOnLine()
         return returnValue
 
     def SetPassword(self, userIds, password):
@@ -289,7 +289,7 @@ class LogOnService(object):
                 macAddress = UserInfo.MACAddress
 
         #01: 系统是否采用了在线用户的限制
-        if SystemInfo.OnLineLimit > 0 and self.CheckOnLineLimit():
+        if SystemInfo.OnLineLimit > 0 and LogOnService.CheckOnLineLimit():
             ReturnStatusCode = StatusCode.statusCodeDic['ErrorOnLineLimit']
             return userInfo
 
@@ -313,62 +313,57 @@ class LogOnService(object):
         elif dataTable.count() == 1:
             #05. 判断密码，是否允许登录，是否离职是否正确
             userEntity = dataTable[0]
-            if userEntity.AuditStatus and userEntity.AuditStatus.endswith(AuditStatus.WaitForAudit):
+            if userEntity.auditstatus and userEntity.auditstatus.endswith(AuditStatus.WaitForAudit):
                 ReturnStatusCode = AuditStatus.WaitForAudit
-                return userInfo
+                return ReturnStatusCode,userInfo
 
             #用户无效、已离职的
             if userEntity.isdimission ==1 or userEntity.enabled ==0:
                 ReturnStatusCode = StatusCode.statusCodeDic['LogOnDeny']
-                return userInfo
+                return ReturnStatusCode,userInfo
 
             #用户是否有效的
             if userEntity.enabled == -1:
                 ReturnStatusCode = StatusCode.statusCodeDic['UserNotActive']
-                return userInfo
+                return ReturnStatusCode,userInfo
 
             userLogOnEntity = Piuserlogon.objects.get(id=userEntity.id)
-            if userEntity.username or userEntity.username != 'Administrator':
+            if (not userEntity.username) or (userEntity.username != 'Administrator'):
                 #06. 允许登录时间是否有限制
-                if userLogOnEntity.AllowEndTime:
-                    userLogOnEntity.AllowEndTime = time.struct_time(tm_year=datetime.datetime.now().year, tm_mon=datetime.datetime.now().month, tm_mday=datetime.datetime.now().day, tm_hour=userLogOnEntity.AllowEndTime.Value.Minute, tm_min=userLogOnEntity.AllowEndTime.Value.Minute, tm_sec=userLogOnEntity.AllowEndTime.Value.Second)
-                if userLogOnEntity.AllowStartTime:
-                    userLogOnEntity.AllowStartTime = time.struct_time(tm_year=datetime.datetime.now().year,
-                                                                    tm_mon=datetime.datetime.now().month,
-                                                                    tm_mday=datetime.datetime.now().day,
-                                                                    tm_hour=userLogOnEntity.AllowStartTime.Value.Minute,
-                                                                    tm_min=userLogOnEntity.AllowStartTime.Value.Minute,
-                                                                    tm_sec=userLogOnEntity.AllowStartTime.Value.Second)
-                    if datetime.datetime.now() < userLogOnEntity.AllowStartTime:
+                if userLogOnEntity.allowendtime:
+                    userLogOnEntity.allowendtime = datetime.datetime(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day, userLogOnEntity.allowendtime.hour, userLogOnEntity.allowendtime.minute, userLogOnEntity.allowendtime.second)
+                if userLogOnEntity.allowstarttime:
+                    userLogOnEntity.allowstarttime = datetime.datetime(datetime.datetime.now().year, datetime.datetime.now().month, datetime.datetime.now().day, userLogOnEntity.allowstarttime.hour, userLogOnEntity.allowstarttime.minute, userLogOnEntity.allowstarttime.second)
+                    if datetime.datetime.now() < userLogOnEntity.allowstarttime:
                         ReturnStatusCode = StatusCode.statusCodeDic['UserLocked']
-                        return userInfo
-                if userLogOnEntity.AllowEndTime:
-                    if datetime.datetime.now() > userLogOnEntity.AllowEndTime:
+                        return ReturnStatusCode,userInfo
+                if userLogOnEntity.allowendtime:
+                    if datetime.datetime.now() > userLogOnEntity.allowendtime:
                         ReturnStatusCode = StatusCode.statusCodeDic['UserLocked']
-                        return userInfo
+                        return ReturnStatusCode,userInfo
 
                 #07. 锁定日期是否有限制
-                if userLogOnEntity.LockStartDate and datetime.datetime.now() > userLogOnEntity.LockStartDate:
-                    if userLogOnEntity.LockEndDate or datetime.datetime.now() < userLogOnEntity.LockEndDate:
+                if userLogOnEntity.lockstartdate and datetime.datetime.now() > userLogOnEntity.lockstartdate:
+                    if userLogOnEntity.lockenddate or datetime.datetime.now() < userLogOnEntity.lockenddate:
                         ReturnStatusCode = StatusCode.statusCodeDic['UserLocked']
-                        return userInfo
+                        return ReturnStatusCode,userInfo
         #08. 是否检查用户IP地址，是否进行访问限制？管理员不检查IP. && !this.IsAdministrator(userEntity.Id.ToString()
-        if SystemInfo.EnableCheckIPAddress and userLogOnEntity.CheckIPAddress == 1 and (userEntity.username != 'Administrator' or userEntity.code == 'Administrator'):
+        if SystemInfo.EnableCheckIPAddress and userLogOnEntity.checkipAddress == 1 and (userEntity.username != 'Administrator' or userEntity.code == 'Administrator'):
             if ipAddress:
                 if ParameterService.Exists(self, userEntity.id, 'IPAddress'):
                     if not CheckIPAddress.CheckIPAddress(self, ipAddress, userEntity.id):
                         ReturnStatusCode = StatusCode.statusCodeDic['ErrorIPAddress']
-                        return userInfo
+                        return ReturnStatusCode,userInfo
 
             #没有设置MAC地址时不检查
             if macAddress:
                 if ParameterService.Exists(self,userEntity.id, 'MacAddress'):
                     if not CheckIPAddress.CheckIPAddress(self, macAddress, userEntity.id):
                         ReturnStatusCode = StatusCode.statusCodeDic['ErrorMacAddress']
-                        return userInfo
+                        return ReturnStatusCode,userInfo
 
         #10. 只允许登录一次，需要检查是否自己重新登录了，或者自己扮演自己了
-        if UserInfo and UserInfo.id != userEntity.id:
+        if UserInfo and UserInfo.Id != userEntity.id:
             if SystemInfo.CheckOnLine and userLogOnEntity.multiuserlogin == 0 and userLogOnEntity.useronline > 0:
                 isSelf = False
                 if openId:
@@ -377,11 +372,11 @@ class LogOnService(object):
                             isSelf = True
                 if not isSelf:
                     ReturnStatusCode = StatusCode.statusCodeDic['ErrorOnLine']
-                    return userInfo
+                    return ReturnStatusCode,userInfo
 
         #04. 系统是否采用了密码加密策略？
         if checkUserPassword and SystemInfo.EnableEncryptServerPassword:
-            password = SecretHelper.AESEncrypt(self, password)
+            password = SecretHelper.AESEncrypt(self, password).decode()
 
         #11. 密码是否正确(null 与空看成是相等的)
         if userLogOnEntity.userpassword and password:
@@ -437,7 +432,7 @@ class LogOnService(object):
         #13. 登录、重新登录、扮演时的在线状态进行更新
         #userLogOnManager.ChangeOnLine(userEntity.Id);
 
-        userInfo = self.ConvertToUserInfo(self, userInfo, userEntity, userLogOnEntity)
+        userInfo = LogOnService.ConvertToUserInfo(self, userInfo, userEntity, userLogOnEntity)
         userInfo.IPAddress = ipAddress
         userInfo.MACAddress = macAddress
         userInfo.Password = password
@@ -467,8 +462,8 @@ class LogOnService(object):
             if createNewOpenId:
                 userInfo.OpenId = self.UpdateVisitDate(self, userEntity.id, createNewOpenId)
             else:
-                self.UpdateVisitDate(self, userEntity.id, createNewOpenId)
-        return userInfo
+                LogOnService.UpdateVisitDate(self, userEntity.id, createNewOpenId)
+        return ReturnStatusCode,userInfo
 
     def CheckOnLineLimit(self):
         """
@@ -478,7 +473,7 @@ class LogOnService(object):
             returnValue(int): 影响行数
         """
         returnValue = False
-        self.CheckOnLine()
+        LogOnService.CheckOnLine()
         userOnLine = Piuserlogon.objects.filter(useronline__gt=0)
         if userOnLine and SystemInfo.OnLineLimit <= userOnLine.count():
             returnValue = True
@@ -498,6 +493,7 @@ class LogOnService(object):
         userInfo.DepartmentName = userEntity.departmentname
         userInfo.WorkgroupId = userEntity.workgroupid
         userInfo.WorkgroupName = userEntity.workgroupname
+        userInfo.RealName = userEntity.realname
 
         if userLogOnEntity:
             userInfo.OpenId = userLogOnEntity.openid

@@ -11,7 +11,7 @@ import uuid
 
 from django.http import HttpResponse
 
-from apps.bizlogic.service.base.UserOrganizeSerivce import UserOrganizeService
+from apps.bizlogic.service.base.LogOnService import LogOnService
 
 
 
@@ -21,6 +21,6 @@ from apps.bizlogic.service.base.UserOrganizeSerivce import UserOrganizeService
 class PiuserTest(View):
     def get(self, request):
 
-        returnValue = UserOrganizeService.UserIsInOrganize(self, '17CCE3FB-4883-4338-BB25-0D7996F9DD48', '上海分公司')
-        return HttpResponse(returnValue)
+        statusCode,returnValue = LogOnService.UserLogOn(self, 'gx', '1234567', '', False)
+        return HttpResponse(statusCode)
 
