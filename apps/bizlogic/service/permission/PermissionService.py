@@ -12,6 +12,8 @@ from apps.bizlogic.models import Pipermission
 from apps.bizlogic.models import Piuserrole
 from apps.utilities.publiclibrary.SystemInfo import SystemInfo
 from apps.bizlogic.service.base.UserOrganizeSerivce import UserOrganizeService
+from apps.bizlogic.service.base.ModuleService import ModuleService
+from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
 
 class PermissionService(object):
 
@@ -50,7 +52,25 @@ class PermissionService(object):
         return returnValue
 
     def IsAuthorizedByRoleId(self, roleId, permissionItemCode):
-        pass
+        """
+        指定角色是否有相应的权限
+        Args:
+            roleId (string): 角色主键
+            permissionItemCode (string): 权限编号
+        Returns:
+            returnValue(True or False): 是否有权限，true：是，false：否
+        """
+        returnValue = False
+        returnValue = roleId == 'Administrators'
+        if not returnValue:
+            permissionItemId = Pipermissionitem.objects.get(permissionitemcode=permissionItemCode).id
+            #判断当前判断的权限是否存在，否则很容易出现前台设置了权限，后台没此项权限
+            #需要自动的能把前台判断过的权限，都记录到后台来
+            if not permissionItemId:
+                return False
+
+            role = Pipermission.objects.filter(Q(resourcecategory='PIROLE') & Q(enabled=1) & Q(resourceid=roleId) & Q(permissionid=permissionItemId))
+            return role.count() > 0
 
     def IsAdministrator(self, entity):
         """
@@ -84,22 +104,68 @@ class PermissionService(object):
         return False
 
     def IsAdministratorByUserId(self, userId):
-        pass
-
-    def GetPermissionDT(self):
-        pass
+        """
+        指定用户是否超级管理员
+        Args:
+            userId (string): 用户
+        Returns:
+            returnValue(True or False): 是否超级管理员，true：是，false：否
+        """
+        returnValue = False
+        userEntity = Piuser.objects.get(id=userId)
+        return PermissionService.IsAdministrator(self, userEntity)
 
     def GetPermissionDTByUserId(self, userId):
-        pass
-
-    def IsModuleAuthorized(self, moduleCode):
-        pass
+        """
+        获得指定用户的所有权限列表
+        Args:
+            userId (string): 用户
+        Returns:
+            returnValue(Pipermission): 权限列表
+        """
+        if PermissionService.IsAdministrator(self, Piuser.objects.get(id=userId)):
+            return Pipermission.objects.all()
+        else:
+            #用户的权限
+            q1 = Pipermission.objects.filter(Q(enabled=1) & Q(id__in=Pipermission.objects.filter(Q(resourcecategory='PIUSER') & Q(enabled=1) & Q(resourceid=userId))))
+            #角色的权限
+            q2search1 = Piuserrole.objects.filter(Q(userid=userId) & Q(enabled=1)).values_list('roleid', flat=True)
+            q2search2 = Piuser.objects.filter(id=userId).values_list('roleid', flat=True)
+            q2 =Pipermission.objects.filter(Q(resourcecategory='PIROLE') & Q(enabled=1) & Q(resourceid__in=q2search1.union(q2search2)))
+            returnValue = q1.union(q2)
+            return returnValue
 
     def IsModuleAuthorizedByUserId(self, userId, moduleCode):
-        pass
+        """
+        指定用户是否对某个模块有相应的权限
+        Args:
+            userId (string): 用户
+            moduleCode (string): 模块编码
+        Returns:
+            returnValue(True or False): 是否有权限，true：是，false：否
+        """
+        returnValue = False
+        userEntity = Piuser.objects.get(id=userId)
+        returnValue = PermissionService.IsAdministrator(self, userEntity)
+        if not returnValue:
+            dateTable = ModuleService.GetDTByUser(self, userId)
+            for module in dateTable:
+                if module.code == moduleCode:
+                    returnValue = True
+        return returnValue
+
 
     def GetPermissionScopeByUserId(self, userId, permissionItemCode):
-        pass
+        """
+        获得指定用户的数据权限范围
+        Args:
+            userId (string): 用户
+            moduleCode (string): 模块编码
+        Returns:
+            returnValue(True or False):
+        """
+        returnValue = PermissionScopeService.GetUserPermissionScope(self, userId, permissionItemCode)
+        return returnValue
 
     def CheckUserOrganizePermission(self, userId, permissionItemId, organizeIds):
         if organizeIds.count() == 0:

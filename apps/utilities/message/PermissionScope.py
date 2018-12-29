@@ -12,5 +12,4 @@ class PermissionScope(object):
         'UserWorkgroup' : -5, # 用户所在工作组数据
         'User' : -6, # 自己的数据，仅本人
         'Detail' : -7 # 按详细设定的数据
-
     }

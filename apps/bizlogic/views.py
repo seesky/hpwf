@@ -11,7 +11,7 @@ import uuid
 
 from django.http import HttpResponse
 
-from apps.bizlogic.service.base.LogOnService import LogOnService
+from apps.bizlogic.service.permission.PermissionService import PermissionService
 
 
 
@@ -21,6 +21,6 @@ from apps.bizlogic.service.base.LogOnService import LogOnService
 class PiuserTest(View):
     def get(self, request):
 
-        statusCode,returnValue = LogOnService.UserLogOn(self, 'gx', '1234567', '', False)
-        return HttpResponse(statusCode)
+        returnCode = PermissionService.GetPermissionScopeByUserId(self, '26F43BC9-AE6D-42D2-BAC9-F4237A949484', 'UserAdmin')
+        return HttpResponse(returnCode)
 

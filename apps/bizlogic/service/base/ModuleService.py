@@ -13,6 +13,7 @@ from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
 from apps.bizlogic.service.permission.ModulePermission import ModulePermission
 from apps.bizlogic.service.base.PermissionItemService import PermissionItemService
+from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
 
 class ModuleService(object):
     def GetDT(self):
@@ -331,3 +332,34 @@ class ModuleService(object):
             return True
         except Pimodule.DoesNotExist as e:
             return False
+
+
+    def GetIDsByUser(self, userId):
+        """
+        获取用户有权限访问的模块主键
+        Args:
+            userId (string): 用户主键
+        Returns:
+            returnValue (string[]): 主键列表
+        """
+        #公开的模块谁都可以访问
+        openModuleIds = Pimodule.objects.filter(Q(ispublic=1) & Q(enabled=1) & Q(deletemark=0)).values_list('id', flat=True)
+        #非公开的模块
+        if userId:
+            #模块访问，连同用户本身的，还有角色的，全部获取出来
+            permissionItemCode = 'Resource.AccessPermission'
+            otherModuleIds = PermissionScopeService.GetResourceScopeIds(self, userId, 'PIMODULE', permissionItemCode)
+
+        return openModuleIds.union(otherModuleIds)
+
+
+    def GetDTByUser(self, userId):
+        """
+        某个用户可以访问的所有菜单列表
+        Args:
+            userId (string): 用户主键
+        Returns:
+            returnValue (Pimodule): 数据表
+        """
+        moduleIds = ModuleService.GetIDsByUser(self, userId)
+        return ModuleService.GetDTByIds(self, moduleIds)

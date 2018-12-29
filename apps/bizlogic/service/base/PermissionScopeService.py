@@ -82,4 +82,35 @@ class PermissionScopeService(object):
             return resourceIds,permissionScope
 
 
+    def GetOrganizeIdsSql(self, managerUserId, permissionItemCode):
+        """
+        获得用户的权限范围设置
+        Args:
+            managerUserId (string): 用户主键
+            permissionItemCode (string[]): 权限范围编号
+        Returns:
+            returnValue (Pipermissionscope): 用户的权限范围
+        """
+
+    def GetUserPermissionScope(self, managerUserId, permissionItemCode):
+        """
+        获得用户的权限范围设置
+        Args:
+            managerUserId (string): 用户主键
+            permissionItemCode (string[]): 权限范围编号
+        Returns:
+            returnValue (Pipermissionscope): 用户的权限范围
+        """
+        permissionItemId = Pipermissionitem.objects.get(code=permissionItemCode).id
+        organizeIds = Pipermissionscope.objects.filter(Q(targetcategory='PIORGANIZE') & Q(deletemark=0) & Q(enabled=1) & Q(targetid__isnull=False) & Q(permissionid=permissionItemId) & (
+            (Q(resourcecategory='PIUSER') & Q(resourceid=managerUserId)) | (Q(resourcecategory='PIROLE') & Q(resourceid__in=Piuserrole.objects.filter(Q(userid=managerUserId) & Q(deletemark=0) & Q(enabled=1)).values_list('roleid', flat=True)))
+        )).values_list('targetid', flat=True)
+
+        returnValue = PermissionScope.PermissionScopeDic.get('No')
+        for permissionScope in PermissionScope.PermissionScopeDic:
+            if permissionScope in organizeIds:
+                returnValue = permissionScope
+        return returnValue
+
+
 
