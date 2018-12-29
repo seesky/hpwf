@@ -2,38 +2,40 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/12 8:27'
 
-def GetResourcePermissionItemIds(resourceCategory, resourceId):
-    pass
+class ResourcePermission(object):
 
-def GrantResourcePermission(resourceCategory, resourceId, grantPermissionItemIds):
-    pass
+    def GetResourcePermissionItemIds(self, resourceCategory, resourceId):
+        pass
 
-def RevokeResourcePermission(resourceCategory, resourceId, revokePermissionItemIds):
-    pass
+    def GrantResourcePermission(self, resourceCategory, resourceId, grantPermissionItemIds):
+        pass
 
-def GetPermissionScopeTargetIds(resourceCategory, resourceId, targetCategory, permissionItemCode):
-    pass
+    def RevokeResourcePermission(self, resourceCategory, resourceId, revokePermissionItemIds):
+        pass
 
-def GetPermissionScopeResourceIds(resourceCategory, targetId, targetResourceCategory, permissionItemCode):
-    pass
+    def GetPermissionScopeTargetIds(self, resourceCategory, resourceId, targetCategory, permissionItemCode):
+        pass
 
-def GrantPermissionScopeTargets(resourceCategory, resourceId, targetCategory, grantTargetIds, permissionItemId):
-    pass
+    def GetPermissionScopeResourceIds(self, resourceCategory, targetId, targetResourceCategory, permissionItemCode):
+        pass
 
-def GrantPermissionScopeTarget(resourceCategory, resourceIds, targetCategory, grantTargetId, permissionItemId):
-    pass
+    def GrantPermissionScopeTargets(self, resourceCategory, resourceId, targetCategory, grantTargetIds, permissionItemId):
+        pass
 
-def RevokePermissionScopeTargets(resourceCategory, resourceId, targetCategory, revokeTargetIds, permissionItemId):
-    pass
+    def GrantPermissionScopeTarget(self, resourceCategory, resourceIds, targetCategory, grantTargetId, permissionItemId):
+        pass
 
-def RevokePermissionScopeTarget(resourceCategory, resourceIds, targetCategory, revokeTargetId, permissionItemId):
-    pass
+    def RevokePermissionScopeTargets(self, resourceCategory, resourceId, targetCategory, revokeTargetIds, permissionItemId):
+        pass
 
-def ClearPermissionScopeTarget(resourceCategory, resourceId, targetCategory, permissionItemId):
-    pass
+    def RevokePermissionScopeTarget(self, resourceCategory, resourceIds, targetCategory, revokeTargetId, permissionItemId):
+        pass
 
-def GetResourceScopeIds(userId, targetCategory, permissionItemCode):
-    pass
+    def ClearPermissionScopeTarget(self, resourceCategory, resourceId, targetCategory, permissionItemId):
+        pass
 
-def GetTreeResourceScopeIds(userId, targetCategory, permissionItemCode, childrens):
-    pass
+    def GetResourceScopeIds(self, userId, targetCategory, permissionItemCode):
+        pass
+
+    def GetTreeResourceScopeIds(self, userId, targetCategory, permissionItemCode, childrens):
+        pass

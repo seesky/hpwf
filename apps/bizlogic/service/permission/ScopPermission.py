@@ -2,26 +2,28 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/12 8:48'
 
-def GetUserDTByPermissionScope(userId, permissionItemCode):
-    pass
+class ScopPermission(object):
 
-def GetUserIdsByPermissionScope(userId, permissionItemCode):
-    pass
+    def GetUserDTByPermissionScope(self, userId, permissionItemCode):
+        pass
 
-def GetRoleDTByPermissionScope(userId, permissionItemCode):
-    pass
+    def GetUserIdsByPermissionScope(self, userId, permissionItemCode):
+        pass
 
-def GetRoleIdsByPermissionScope(userId, permissionItemCode):
-    pass
+    def GetRoleDTByPermissionScope(self, userId, permissionItemCode):
+        pass
 
-def GetModuleDTByPermissionScope(userId, permissionItemCode):
-    pass
+    def GetRoleIdsByPermissionScope(self, userId, permissionItemCode):
+        pass
 
-def GetPermissionItemDTByPermissionScope(userId, permissionItemCode):
-    pass
+    def GetModuleDTByPermissionScope(self, userId, permissionItemCode):
+        pass
 
-def GetOrganizeDTByPermissionScope(userId, permissionItemCode):
-    pass
+    def GetPermissionItemDTByPermissionScope(self, userId, permissionItemCode):
+        pass
 
-def GetOrganizeIdsByPermissionScope(userId, permissionItemCode):
-    pass
+    def GetOrganizeDTByPermissionScope(self, userId, permissionItemCode):
+        pass
+
+    def GetOrganizeIdsByPermissionScope(self, userId, permissionItemCode):
+        pass

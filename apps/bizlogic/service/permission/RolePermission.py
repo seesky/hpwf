@@ -2,83 +2,85 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/12 8:36'
 
-def GetRolePermissionItemIds(roleId):
-    pass
+class RolePermission(object):
 
-def GetRoleIdsByPermissionItemId(permissionItemId):
-    pass
+    def GetRolePermissionItemIds(self, roleId):
+        pass
 
-def GrantRolePermissions(roleIds, grantPermissionItemIds):
-    pass
+    def GetRoleIdsByPermissionItemId(self, permissionItemId):
+        pass
 
-def GrantRolePermission(roleName, permissionItemCode):
-    pass
+    def GrantRolePermissions(self, roleIds, grantPermissionItemIds):
+        pass
 
-def GrantRolePermissionById(roleId, grantPermissionItemId):
-    pass
+    def GrantRolePermission(self, roleName, permissionItemCode):
+        pass
 
-def RevokeRolePermissions(roleIds, revokePermissionItemIds):
-    pass
+    def GrantRolePermissionById(self, roleId, grantPermissionItemId):
+        pass
 
-def RevokeRolePermission(roleName, permissionItemCode):
-    pass
+    def RevokeRolePermissions(self, roleIds, revokePermissionItemIds):
+        pass
 
-def RevokeRolePermissionById(roleId, revokePermissionItemId):
-    pass
+    def RevokeRolePermission(self, roleName, permissionItemCode):
+        pass
 
-def GetScopeUserIdsByRoleId(roleId, permissionItemCode):
-    pass
+    def RevokeRolePermissionById(self, roleId, revokePermissionItemId):
+        pass
 
-def GetScopeRoleIdsByRoleId(roleId, permissionItemCode):
-    pass
+    def GetScopeUserIdsByRoleId(self, roleId, permissionItemCode):
+        pass
 
-def GetScopeOrganizeIdsByRoleId(roleId, permissionItemCode):
-    pass
+    def GetScopeRoleIdsByRoleId(self, roleId, permissionItemCode):
+        pass
 
-def GrantRoleUserScope(roleId, permissionItemCode, grantUserIds):
-    pass
+    def GetScopeOrganizeIdsByRoleId(self, roleId, permissionItemCode):
+        pass
 
-def RevokeRoleUserScope(roleId, permissionItemId, revokeUserIds):
-    pass
+    def GrantRoleUserScope(self, roleId, permissionItemCode, grantUserIds):
+        pass
 
-def GrantRoleRoleScope(roleId, permissionItemCode, grantRoleIds):
-    pass
+    def RevokeRoleUserScope(self, roleId, permissionItemId, revokeUserIds):
+        pass
 
-def RevokeRoleRoleScope(roleId, permissionItemId, revokeRoleIds):
-    pass
+    def GrantRoleRoleScope(self, roleId, permissionItemCode, grantRoleIds):
+        pass
 
-def GrantRoleOrganizeScope(roleId, permissionItemCode, grantOrganizeIds):
-    pass
+    def RevokeRoleRoleScope(self, roleId, permissionItemId, revokeRoleIds):
+        pass
 
-def RevokeRoleOrganizeScope(roleId, permissionItemId, revokeOrganizeIds):
-    pass
+    def GrantRoleOrganizeScope(self, roleId, permissionItemCode, grantOrganizeIds):
+        pass
 
-def GetScopePermissionItemIdsByRoleId(roleId, permissionItemCode):
-    pass
+    def RevokeRoleOrganizeScope(self, roleId, permissionItemId, revokeOrganizeIds):
+        pass
 
-def GrantRolePermissionItemScope(roleId, permissionItemCode, grantPermissionItemIds):
-    pass
+    def GetScopePermissionItemIdsByRoleId(self, roleId, permissionItemCode):
+        pass
 
-def RevokeRolePermissionItemScope(roleId, permissionItemCode, revokePermissionItemIds):
-    pass
+    def GrantRolePermissionItemScope(self, roleId, permissionItemCode, grantPermissionItemIds):
+        pass
 
-def ClearRolePermissionScope(roleId, permissionItemCode):
-    pass
+    def RevokeRolePermissionItemScope(self, roleId, permissionItemCode, revokePermissionItemIds):
+        pass
 
-def ClearRolePermissionByRoleId(roleId):
-    pass
+    def ClearRolePermissionScope(self, roleId, permissionItemCode):
+        pass
 
-def GetScopeModuleIdsByRoleId(roleId, permissionItemCode):
-    pass
+    def ClearRolePermissionByRoleId(self, roleId):
+        pass
 
-def GrantRoleModuleScope(roleId, permissionItemCode, grantModuleIds):
-    pass
+    def GetScopeModuleIdsByRoleId(self, roleId, permissionItemCode):
+        pass
 
-def GrantRoleModuleScope(roleId, permissionItemCode, grantModuleId):
-    pass
+    def GrantRoleModuleScope(self, roleId, permissionItemCode, grantModuleIds):
+        pass
 
-def RevokeRoleModuleScope(roleId, permissionItemCode, revokeModuleIds):
-    pass
+    def GrantRoleModuleScope(self, roleId, permissionItemCode, grantModuleId):
+        pass
 
-def RevokeRoleModuleScope(roleId, permissionItemCode, revokeModuleId):
-    pass
+    def RevokeRoleModuleScope(self, roleId, permissionItemCode, revokeModuleIds):
+        pass
+
+    def RevokeRoleModuleScope(self, roleId, permissionItemCode, revokeModuleId):
+        pass
