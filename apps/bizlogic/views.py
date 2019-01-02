@@ -11,7 +11,7 @@ import uuid
 
 from django.http import HttpResponse
 
-from apps.bizlogic.service.permission.PermissionService import PermissionService
+from apps.bizlogic.service.permission.ScopPermission import ScopPermission
 
 
 
@@ -21,6 +21,6 @@ from apps.bizlogic.service.permission.PermissionService import PermissionService
 class PiuserTest(View):
     def get(self, request):
 
-        returnCode = PermissionService.GetPermissionScopeByUserId(self, '26F43BC9-AE6D-42D2-BAC9-F4237A949484', 'UserAdmin')
-        return HttpResponse(returnCode)
+        returnValue = ScopPermission.GetUserDTByPermissionScope(self, '333FCB67-A69B-4821-98CC-CD8CDBF7FC2C', 'OrganizeManagement.Permission')
+        return HttpResponse(returnValue)
 

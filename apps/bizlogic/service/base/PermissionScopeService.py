@@ -64,7 +64,7 @@ class PermissionScopeService(object):
         Returns:
         """
         permissionScope = PermissionScope.PermissionScopeDic.get('No')
-        if resourceIds:
+        if resourceIds.count() > 0:
             userEntity = Piuser.objects.get(userid=userId)
             for r in resourceIds:
                 if r == PermissionScope.PermissionScopeDic.get('All'):
@@ -80,6 +80,7 @@ class PermissionScopeService(object):
                     permissionScope = PermissionScope.PermissionScopeDic.get('UserWorkgroup')
                     continue
             return resourceIds,permissionScope
+        return resourceIds, permissionScope
 
 
     def GetOrganizeIdsSql(self, managerUserId, permissionItemCode):
