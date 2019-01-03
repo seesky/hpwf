@@ -21,6 +21,6 @@ from apps.bizlogic.service.permission.ScopPermission import ScopPermission
 class PiuserTest(View):
     def get(self, request):
 
-        returnValue = ScopPermission.GetUserDTByPermissionScope(self, '333FCB67-A69B-4821-98CC-CD8CDBF7FC2C', 'OrganizeManagement.Permission')
+        returnValue = ScopPermission.GetUserDTByPermissionScope(self, '37FFB38A-720C-43E6-AD78-1DB055444DEB', 'DAGL.DAZL')
         return HttpResponse(returnValue)
 

@@ -5,6 +5,10 @@ __date__ = '2018/12/20 14:41'
 from django.db.models import Q
 
 from apps.bizlogic.models import Pipermission
+from apps.bizlogic.service.base.UserRoleService import UserRoleService
+
+from apps.bizlogic.models import Pimodule
+from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
 
 class ModulePermission(object):
 
@@ -62,3 +66,25 @@ class ModulePermission(object):
         for item in permissionItemIds:
             returnValue = returnValue + ModulePermission.Delete(self, moduleId, item)
         returnValue
+
+    def GetDTByPermission(self, userId, permissionItemScopeCode):
+        #这里需要判断,是系统权限？
+        isRole = False
+        irRole = UserRoleService.UserInRole(self, userId, "UserAdmin")
+        #用户管理员
+        if isRole:
+            returnValue = Pimodule.objects.filter(Q(category='System') & Q(deletemark=0) & Q(enabled=1)).order_by('sortcode')
+            return returnValue
+
+        isRole = UserRoleService.UserInRole(self, userId, "Admin")
+        if isRole:
+            returnValue = Pimodule.objects.filter(Q(category='Application') & Q(deletemark=0) & Q(enabled=1)).order_by(
+                'sortcode')
+            return returnValue
+
+        moduleIds = PermissionScopeService.GetTreeResourceScopeIds(self, 'PIMODULE', permissionItemScopeCode, True)
+        returnValue = Pimodule.objects.filter(Q(id__in=moduleIds) & Q(deletemark=0) & Q(enabled=1))
+        return returnValue
+
+
+

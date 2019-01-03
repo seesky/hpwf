@@ -4,6 +4,8 @@ __date__ = '2018/12/12 8:48'
 
 from apps.bizlogic.service.base.UserRoleService import UserRoleService
 from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
+from apps.bizlogic.service.permission.ModulePermission import ModulePermission
+from apps.bizlogic.service.base.PermissionItemService import PermissionItemService
 
 from apps.bizlogic.models import Piuser
 from apps.bizlogic.models import Pipermissionitem
@@ -14,6 +16,7 @@ from apps.bizlogic.models import Pirole
 from apps.utilities.publiclibrary.SystemInfo import SystemInfo
 from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 from apps.utilities.publiclibrary.StringHelper import StringHelper
+from apps.utilities.message.PermissionScope import PermissionScope
 
 from django.db.models import Q
 
@@ -39,19 +42,78 @@ class ScopPermission(object):
         return returnValue
 
     def GetUserIdsByPermissionScope(self, userId, permissionItemCode):
-        pass
+        """
+          按某个权限范围获取特定用户可访问的用户主键数组
+          Args:
+              userId (string): 用户主键
+              permissionItemCode (string): 操作权限编号
+          Returns:
+              returnValue(Piuser[]): 用户列表
+        """
+        returnValue = ScopPermission.GetUserIds(self, userId, permissionItemCode)
+        return returnValue
 
-    def GetRoleDTByPermissionScope(self, userId, permissionItemCode):
-        pass
+    def GetRoleDTByPermissionScope(self, userInfo, permissionItemCode):
+        """
+          按某个权限范围获取特定用户可访问的取角色列表
+          Args:
+              userInfo (UserInfo): 用户信息
+              userId (string): 用户主键
+              permissionItemCode (string): 操作权限编号
+          Returns:
+              returnValue(Piuser[]): 用户列表
+        """
+        dataTable = None
+        if userInfo.IsAdministrator | (not permissionItemCode):
+            dataTable = Pirole.objects.get(Q(deletemark=0)).order_by('sortcode')
+        else:
+            dataTable = ScopPermission.GetRoleDT(self, userInfo.Id, permissionItemCode)
+        return dataTable
 
     def GetRoleIdsByPermissionScope(self, userId, permissionItemCode):
-        pass
+        """
+          按某个权限范围获取特定用户可访问的角色主键数组
+          Args:
+              userId (string): 用户主键
+              permissionItemCode (string): 操作权限编号
+          Returns:
+              returnValue(string[]): 主键数组
+        """
+        returnValue = ScopPermission.GetRoleIds(self, userId, permissionItemCode)
+        return returnValue
 
     def GetModuleDTByPermissionScope(self, userId, permissionItemCode):
-        pass
+        """
+          按某个权限范围获取特定用户可访问的模块列表
+          Args:
+              userId (string): 用户主键
+              permissionItemCode (string): 操作权限编号
+          Returns:
+              returnValue(string[]): 数据表
+        """
+        returnValue = ModulePermission.GetDTByPermission(self, userId, permissionItemCode)
+        return returnValue
 
     def GetPermissionItemDTByPermissionScope(self, userId, permissionItemCode):
-        pass
+        """
+          按某个权限范围获取特定用户可访问的操作权限列表(有授权权限的权限列表)
+          Args:
+              userId (string): 用户主键
+              permissionItemCode (string): 操作权限编号
+          Returns:
+              returnValue(Pipermissionitem): 数据表
+        """
+        permissionItemId = Pipermissionitem.objects.get(code=permissionItemCode).id
+        if not permissionItemId & permissionItemCode == 'Resource.ManagePermission':
+            permissionItemEntity = Pipermissionitem()
+            permissionItemEntity.code = 'Resource.ManagePermission'
+            permissionItemEntity.fullname = '资源管理范围权限（系统默认）'
+            permissionItemEntity.isscope = 1
+            permissionItemEntity.enabled = 1
+            permissionItemEntity.allowdelete = 0
+            permissionItemEntity.save()
+        dataTable = PermissionItemService.GetDTByUser(self, userId, permissionItemCode)
+        return dataTable
 
     def GetOrganizeDTByPermissionScope(self, userId, permissionItemCode):
         pass
@@ -146,7 +208,7 @@ class ScopPermission(object):
 
         q1 = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory=permissionItemId) & Q(enabled=1) & Q(deletemark=0)).values_list('targetid', flat=True)
         if defaultRoleId:
-            q2 = Pipermissionscope.objects.filter(Q(resourcecategory='PIROLE') & Q(targetcategory=targetCategory) & Q(permissionid=permissionItemId) & Q(deletemark=0) & Q(enabled=1) & Q(resourceid__in=Piuserrole.objects.filter(Q(userid=userId) & Q(enabled=1) & Q(deletemark=0)).values_list('roleid', flat=True))).values_list('roleid', flat=True)
+            q2 = Pipermissionscope.objects.filter(Q(resourcecategory='PIROLE') & Q(targetcategory=targetCategory) & Q(permissionid=permissionItemId) & Q(deletemark=0) & Q(enabled=1) & Q(resourceid__in=Piuserrole.objects.filter(Q(userid=userId) & Q(enabled=1) & Q(deletemark=0)).values_list('roleid', flat=True))).values_list('targetid', flat=True)
         else:
             q2 = Pipermissionscope.objects.filter(Q(resourcecategory='PIROLE') & Q(targetcategory=targetCategory) & Q(permissionid=permissionItemId) & Q(deletemark=0) & Q(enabled=1) & (Q(resourceid__in=Piuserrole.objects.filter(Q(userid=userId) & Q(enabled=1) & Q(deletemark=0)).values_list('roleid', flat=True)) | Q(resourceid=defaultRoleId))).values_list('targetid', flat=True)
 
@@ -197,3 +259,61 @@ class ScopPermission(object):
             q2 = Pirole.objects.filter(Q(enabled=1) & Q(deletemark=0) & Q(organizeid__in=organizeIds)).values_list('id', flat=True)
             return q1.union(q2)
         return q1
+
+    def GetUserIds(self, managerUserId, permissionItemCode):
+        """
+          按某个权限获取员工 主键数组
+          Args:
+              managerUserId (string): 管理用户主键
+              permissionItemCode (string): 权限编号
+              childrens
+          Returns:
+              returnValue(string[]): 主键列表
+        """
+        ids = ScopPermission.GetTreeResourceScopeIds(self, managerUserId, 'PIORGANIZE', permissionItemCode, True)
+
+        #是否为仅本人
+        if PermissionScope.PermissionScopeDic.get('User') in ids:
+            return [managerUserId]
+
+        dataTable = ScopPermission.GetUserIdsSql(self, managerUserId, permissionItemCode)
+
+        #这里应该考虑，当前用户的管理权限是，所在公司？所在部门？所以在工作组等情况
+        if ids & ids.count() > 0:
+            userEntity = Piuser.objects.get(id=managerUserId)
+            for i in range(0, ids.count()-1):
+                if ids[i] == PermissionScope.PermissionScopeDic.get('User'):
+                    ids[i] = userEntity.id
+                    break
+
+        #这里列出只是有效地，没被删除的角色主键
+        if ids & ids.count() > 0:
+            ids = Piuser.objects.filter(Q(id__in=ids) & Q(enabled=1) & Q(deletemark=0))
+
+        return ids
+
+    def GetRoleDT(self, userId, permissionItemCode):
+        """
+          按某个权限获取角色 数据表
+          Args:
+              userId (string): 管理用户主键
+              permissionItemCode (string): 权限编号
+          Returns:
+              returnValue(Pirole[]): 主键列表
+        """
+        returnValue = None
+        #这里需要判断,是系统权限？
+        isRole = False
+        isRole = UserRoleService.UserInRole(self, userId, 'UserAdmin') | UserRoleService.UserInRole(self, userId,
+                                                                                                    'Admin')
+        #用户管理员,这里需要判断,是业务权限？
+        if(isRole):
+            returnValue = Pirole.objects.filter(Q(deletemark=0) & Q(enabled=1))
+            return returnValue
+
+        returnValue = Pirole.objects.filter(Q(id__in=ScopPermission.GetRoleIdsSql(self, userId, permissionItemCode))).order_by('sortcode')
+        return returnValue
+
+
+
+

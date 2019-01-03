@@ -328,3 +328,23 @@ class PermissionItemService(object):
         """
         returnValue = Pipermission.objects.filter(Q(resourcecategory='PIMODULE') & Q(resourceid=moduleId) & Q(deletemark=0))
         return returnValue
+
+    def GetDTByUser(self, userId, permissionItemCode):
+        # 这里需要判断,是系统权限？
+        isRole = False
+        irRole = UserRoleService.UserInRole(self, userId, "UserAdmin")
+        # 用户管理员
+        if isRole:
+            returnValue = Pipermissionitem.objects.filter(Q(categorycode='System') & Q(deletemark=0) & Q(enabled=1)).order_by(
+                'sortcode')
+            return returnValue
+
+        isRole = UserRoleService.UserInRole(self, userId, "Admin")
+        if isRole:
+            returnValue = Pipermissionitem.objects.filter(Q(categorycode='Application') & Q(deletemark=0) & Q(enabled=1)).order_by(
+                'sortcode')
+            return returnValue
+
+        permissionItemIds = PermissionScopeService.GetTreeResourceScopeIds(self, 'PIPERMISSIONITEM', permissionItemCode, True)
+        returnValue = Pipermissionitem.objects.filter(Q(id__in=permissionItemIds) & Q(deletemark=0) & Q(enabled=1))
+        return returnValue
