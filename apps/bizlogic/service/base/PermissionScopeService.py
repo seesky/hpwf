@@ -6,6 +6,7 @@ from apps.bizlogic.models import Pipermissionitem
 from apps.bizlogic.models import Pipermissionscope
 from apps.bizlogic.models import Piuser
 from apps.bizlogic.models import Piuserrole
+from apps.bizlogic.models import Piorganize
 
 from apps.utilities.message.PermissionScope import PermissionScope
 from apps.utilities.publiclibrary.StringHelper import StringHelper
@@ -112,6 +113,35 @@ class PermissionScopeService(object):
             if permissionScope in organizeIds:
                 returnValue = permissionScope
         return returnValue
+
+    def GetOrganizeDT(self, managerUserId, permissionItemCode):
+        """
+        按某个权限获取组织机构数据表
+        Args:
+            managerUserId (string): 用户主键
+            permissionItemCode (string[]): 权限范围编号
+        Returns:
+            returnValue (Pipermissionscope): 用户的权限范围
+        """
+        ids = PermissionScopeService.GetTreeResourceScopeIds(self, managerUserId, 'PIORGANIZE', permissionItemCode, False)
+
+        if ids & ids.count() > 0:
+            return  Piorganize.objects.filter(Q(id__in=ids) & Q(enabled=1) & Q(deletemark=0))
+
+    def GetOrganizeIds(self, managerUserId, permissionItemCode):
+        """
+        按某个权限获取组织机构数据表
+        Args:
+            managerUserId (string): 用户主键
+            permissionItemCode (string[]): 权限范围编号
+        Returns:
+            returnValue (string[]): 主键数组
+        """
+        ids = PermissionScopeService.GetTreeResourceScopeIds(self, managerUserId, 'PIORGANIZE', permissionItemCode, False)
+        if ids & ids.count > 0:
+            ids = Piorganize.objects.filter(Q(id__in=ids) & Q(enabled=1) & Q(deletemark=0)).values_list('id', flat=True)
+        return ids
+
 
 
 

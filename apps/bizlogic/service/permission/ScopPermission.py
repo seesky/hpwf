@@ -12,6 +12,7 @@ from apps.bizlogic.models import Pipermissionitem
 from apps.bizlogic.models import Pipermissionscope
 from apps.bizlogic.models import Piuserrole
 from apps.bizlogic.models import Pirole
+from apps.bizlogic.models import Piorganize
 
 from apps.utilities.publiclibrary.SystemInfo import SystemInfo
 from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
@@ -115,11 +116,36 @@ class ScopPermission(object):
         dataTable = PermissionItemService.GetDTByUser(self, userId, permissionItemCode)
         return dataTable
 
-    def GetOrganizeDTByPermissionScope(self, userId, permissionItemCode):
-        pass
+    def GetOrganizeDTByPermissionScope(self, userInfo, userId, permissionItemCode):
+        """
+          按某个权限范围获取特定用户可访问的组织机构列表
+          Args:
+              userId (string): 用户主键
+              permissionItemCode (string): 操作权限编号
+          Returns:
+              returnValue(Pipermissionitem): 数据表
+        """
+        if not permissionItemCode:
+            dataTable = Piorganize.objects.all()
+            return dataTable
+        else:
+            if userId:
+                dataTable = PermissionScopeService.GetOrganizeDT(self, userId, permissionItemCode)
+            else:
+                dataTable = PermissionScopeService.GetOrganizeDT(self, userInfo.Id, permissionItemCode)
+        return dataTable
 
     def GetOrganizeIdsByPermissionScope(self, userId, permissionItemCode):
-        pass
+        """
+          按某个权限范围获取特定用户可访问的组织机构主键数组
+          Args:
+              userId (string): 用户主键
+              permissionItemCode (string): 操作权限编号
+          Returns:
+              returnValue(Pipermissionitem): 数据表
+        """
+        returnValue = PermissionScopeService.GetOrganizeIds(self, userId, permissionItemCode)
+        return returnValue
 
     def GetUserIdsSql(self, managerUserId, permissionItemCode):
         """
