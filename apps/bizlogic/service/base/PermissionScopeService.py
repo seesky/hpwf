@@ -12,6 +12,8 @@ from apps.utilities.message.PermissionScope import PermissionScope
 from apps.utilities.publiclibrary.StringHelper import StringHelper
 from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 
+from apps.bizlogic.service.permission.ScopPermission import ScopPermission
+
 from django.db.models import Q
 
 class PermissionScopeService(object):
@@ -141,6 +143,34 @@ class PermissionScopeService(object):
         if ids & ids.count > 0:
             ids = Piorganize.objects.filter(Q(id__in=ids) & Q(enabled=1) & Q(deletemark=0)).values_list('id', flat=True)
         return ids
+
+    def GetUserIds(self, managerUserId, permissionItemCode):
+        """
+        按某个权限获取员工 主键数组
+        Args:
+            managerUserId (string): 用户主键
+            permissionItemCode (string[]): 权限范围编号
+        Returns:
+            returnValue (string[]): 主键数组
+        """
+        ids = PermissionScopeService.GetTreeResourceScopeIds(self, managerUserId, 'PIORGANIZE', permissionItemCode, True)
+        if PermissionScope.PermissionScopeDic.get('User') in ids:
+            return [managerUserId]
+
+        dataTable = ScopPermission.GetUserIdsSql(self, managerUserId, permissionItemCode)
+
+        if ids & ids.count() > 0:
+            userEntity = Piuser.objects.get(id=managerUserId)
+            for i in range(ids.count()):
+                if ids[i] == PermissionScope.PermissionScopeDic.get('User'):
+                    ids[i] = userEntity.id
+                    break
+        if ids & ids.count():
+            ids = Piuser.objects.filter(Q(id__in=ids) & Q(enabled=1) & Q(deletemark=0)).values_list('id', flat=True)
+        return ids
+
+
+
 
 
 

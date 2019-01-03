@@ -14,11 +14,11 @@ from django.db import connection
 from django.core.paginator import Paginator
 from django.db.models import Q
 
-from utilities.publiclibrary.StringHelper import StringHelper
-from utilities.message.StatusCode import StatusCode
-from utilities.message.FrameworkMessage import FrameworkMessage
-from utilities.message.AuditStatus import AuditStatus
-from utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
+from apps.utilities.publiclibrary.StringHelper import StringHelper
+from apps.utilities.message.StatusCode import StatusCode
+from apps.utilities.message.FrameworkMessage import FrameworkMessage
+from apps.utilities.message.AuditStatus import AuditStatus
+from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 
 from apps.bizlogic.service.base.OrganizeService import OrganizeService
 from apps.bizlogic.service.permission.UserPermission import UserPermission

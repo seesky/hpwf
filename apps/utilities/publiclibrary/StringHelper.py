@@ -18,3 +18,17 @@ class StringHelper(object):
             return  returnValue
 
 
+    def RepeatString(self, targetString, repeatCount):
+        """
+        重复字符串
+        Args:
+            targetString (string): 目标字符串
+            repeatCount (int): 重复次数
+        Returns:
+            returnValue (string): 结果字符串
+        """
+        returnValue = ''
+        for i in range(repeatCount):
+            returnValue = returnValue + targetString
+        return returnValue
+
