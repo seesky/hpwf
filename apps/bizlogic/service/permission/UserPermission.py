@@ -7,9 +7,11 @@ from apps.bizlogic.models import Piuserrole
 from apps.bizlogic.models import Pipermission
 from apps.bizlogic.models import Pipermissionscope
 from apps.bizlogic.models import Pipermissionitem
+from apps.bizlogic.models import Pimodule
 
 from apps.bizlogic.service.base.SequenceService import SequenceService
 from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
+from apps.bizlogic.service.base.ModuleService import ModuleService
 
 from apps.utilities.message.PermissionScope import PermissionScope
 
@@ -157,28 +159,125 @@ class UserPermission(object):
         return returnValue
 
     def GrantUserUserScope(self, userId, permissionScopeItemCode, grantUserIds):
-        pass
+        """
+          授予用户某个权限域的用户授权范围
+          Args:
+              userId (string): 用户主键
+              permissionScopeItemCode (string): 操作权限编号
+              grantUserIds (string[]): 授予的用户主键数组
+          Returns:
+              returnValue(int): 影响的行数
+        """
+        returnValue = 0
+        for id in grantUserIds:
+            UserPermission.GrantUser(self, userId, permissionScopeItemCode, id)
+            returnValue = returnValue + 1
+        return returnValue
 
     def RevokeUserUserScope(self, userId, permissionScopeItemCode, revokeUserIds):
-        pass
+        """
+          撤消用户某个权限域的用户授权范围
+          Args:
+              userId (string): 用户主键
+              permissionScopeItemCode (string): 操作权限编号
+              revokeUserIds (string[]): 授予的用户主键数组
+          Returns:
+              returnValue(int): 影响的行数
+        """
+        returnValue = 0
+        for id in revokeUserIds:
+            UserPermission.RevokeUser(self, userId, permissionScopeItemCode, id)
+            returnValue = returnValue + 1
+        return returnValue
 
     def GetScopeRoleIdsByUserId(self, userId, permissionItemCode):
-        pass
+        """
+          获取指定用户在某个权限域下所有角色主键数组
+          指定用户对那些角色有什么权限（什么权限通过操作权限编号指定）
+          Args:
+              userId (string): 用户主键
+              permissionItemCode (string): 操作权限编号
+          Returns:
+              returnValue(string[]): 主键数组
+        """
+        returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIROLE') & Q(permissionid=Pipermissionitem.objects.get(code=permissionItemCode).id))
+        return returnValue
 
     def GrantUserRoleScope(self, userId, permissionScopeItemCode, grantRoleIds):
-        pass
+        """
+          授予用户某个权限域的角色授权范围
+          Args:
+              userId (string): 用户主键
+              permissionScopeItemCode (string): 操作权限编号
+              grantRoleIds (string[]): 授予的角色主键数组
+          Returns:
+              returnValue(int): 影响的行数
+        """
+        returnValue = 0
+        for id in grantRoleIds:
+            UserPermission.GrantRole(self, userId, permissionScopeItemCode, id)
+            returnValue = returnValue + 1
+        return returnValue
 
     def RevokeUserRoleScope(self, userId, permissionScopeItemCode, revokeRoleIds):
-        pass
+        """
+          撤消用户某个权限域的角色授权范围
+          Args:
+              userId (string): 用户主键
+              permissionScopeItemCode (string): 操作权限编号
+              revokeRoleIds (string[]): 授予的角色主键数组
+          Returns:
+              returnValue(int): 影响的行数
+        """
+        returnValue = 0
+        for id in revokeRoleIds:
+            UserPermission.RevokeRole(self, userId, permissionScopeItemCode, id)
+            returnValue = returnValue + 1
+        return returnValue
 
     def GetScopePermissionItemIdsByUserId(self, userId, permissionItemCode):
-        pass
+        """
+          获取指定用户在某个权限域下所有操作（功能）权限主键数组
+          Args:
+              userId (string): 用户主键
+              permissionItemCode (string): 操作权限编号
+          Returns:
+              returnValue(int): 操作权限主键数组
+        """
+        returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIPERMISSIONITEM') & Q(permissionid=Pipermissionitem.objects.get(code=permissionItemCode).id))
+        return returnValue
 
     def GrantUserPermissionItemScope(self, userId, permissionItemCode, grantPermissionItemIds):
-        pass
+        """
+          授予用户某个权限域的操作权限授权范围
+          Args:
+              userId (string): 用户主键
+              permissionItemCode (string): 操作权限编号
+              grantPermissionItemIds (stirng[]): 授予的操作权限主键数组
+          Returns:
+              returnValue(int): 影响的行数
+        """
+        returnValue = 0
+        for id in grantPermissionItemIds:
+            UserPermission.GrantPermissionItem(self, userId, permissionItemCode, id)
+            returnValue = returnValue + 1
+        return returnValue
 
     def RevokeUserPermissionItemScope(self, userId, permissionItemCode, revokePermissionItemIds):
-        pass
+        """
+          撤消指定用户某个权限域的操作权限授权范围
+          Args:
+              userId (string): 用户主键
+              permissionItemCode (string): 操作权限编号
+              revokePermissionItemIds (stirng[]): 授予的操作权限主键数组
+          Returns:
+              returnValue(int): 影响的行数
+        """
+        returnValue = 0
+        for id in revokePermissionItemIds:
+            UserPermission.RevokePermissionItem(self, userId, permissionItemCode, id)
+            returnValue = returnValue + 1
+        return returnValue
 
     def ClearUserPermissionByUserId(self, userId):
         """
@@ -191,7 +290,6 @@ class UserPermission(object):
         Returns:
             returnValue (True or False): 清除结果
         """
-
         try:
             #清除用户的角色归属
             user = Piuser.objects.get(id=userId)
@@ -207,31 +305,101 @@ class UserPermission(object):
 
 
     def ClearUserPermissionScope(self, userId, permissionItemCode):
-        pass
+        """
+          清除指定用户所有权限范围
+          Args:
+              userId (string): 用户主键
+              permissionItemCode (string): 操作权限编号
+          Returns:
+              returnValue(int): 受影响的行数
+        """
+        returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(permissionid=Pipermissionitem.objects.get(code=permissionItemCode).id))
+        return returnValue
 
-    def GetModuleIdsByUserId(self, userId):
-        pass
+    def GetModuleIdsByUserId(self, userInfo, userId):
+        """
+          获取用户有权限访问的模块
+          Args:
+              userInfo (UserInfo): 当前用户
+              userId (string): 用户主键
+          Returns:
+              returnValue(string[]): 模块主键数组
+        """
+        if userInfo.IsAdministrator:
+            returnValue = Pimodule.objects.filter(Q(deletemark=0) & Q(enabled=1)).values_list('id', flat=True)
+        else:
+            returnValue = ModuleService.GetIDsByUser(self, userId)
+        return returnValue
 
-    def GetModuleDT(self):
-        pass
+    def GetModuleDT(self, userInfo):
+        """
+          获得指定用户有权限访问的模块
+          Args:
+              userInfo (UserInfo): 当前用户
+          Returns:
+              returnValue(Pimodule[]): 模块数据表
+        """
+        return UserPermission.GetModuleDTByUserId(self, userInfo.Id)
 
-    def GetModuleDTByUserId(self, userId):
-        pass
+
+    def GetModuleDTByUserId(self, userInfo, userId):
+        """
+          获得指定用户有权限访问的模块
+          Args:
+              userId (string): 用户主键
+          Returns:
+              returnValue(Pimodule[]): 模块数据表
+        """
+        if userInfo.IsAdministrator:
+            returnValue = Pimodule.objects.filter(Q(deletemark=0) & Q(enabled=1)).order_by('sortcode').values_list('id', flat=True)
+        else:
+            returnValue = ModuleService.GetDTByUser(self, userId)
+        return returnValue
 
     def GetScopeModuleIdsByUserId(self, userId, permissionItemCode):
-        pass
+        """
+          获取指定用户在某个权限域下所有模块主键数组
+          Args:
+              userId (string): 用户主键
+              permissionItemCode (string): 操作权限编号
+          Returns:
+              returnValue(Pimodule[]): 模块主键数组
+        """
+        returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIMODULE') & Q(permissionid=Pipermissionitem.objects.filter(code=permissionItemCode).id)).values_list('id', flat=True)
+        return returnValue
 
     def GrantUserModuleScope(self, userId, permissionScopeItemCode, grantModuleIds):
-        pass
+        """
+          授予用户某个权限域的模块授权范围
+          Args:
+              userId (string): 用户主键
+              permissionScopeItemCode (string): 操作权限编号
+              grantModuleIds (string[]): 授予模块主键数组
+          Returns:
+              returnValue(Pimodule[]): 影响的行数
+        """
+        returnValue = 0
+        for id in grantModuleIds:
+            UserPermission.GrantModule(self, userId, permissionScopeItemCode, id)
+            returnValue = returnValue + 1
+        return returnValue
 
-    def GrantUserModuleScope(self, userId, permissionScopeItemCode, grantModuleId):
-        pass
-
-    def RevokeUserModuleScope(self, userId, permissionScopeItemCode, revokeModuleId):
-        pass
 
     def RevokeUserModuleScope(self, userId, permissionScopeItemCode, revokeModuleIds):
-        pass
+        """
+          撤消指定用户某个权限域的模块授权范围
+          Args:
+              userId (string): 用户主键
+              permissionScopeItemCode (string): 操作权限编号
+              revokeModuleIds (string[]): 授予模块主键数组
+          Returns:
+              returnValue(Pimodule[]): 影响的行数
+        """
+        returnValue = 0
+        for id in revokeModuleIds:
+            UserPermission.RevokeModule(self, userId, permissionScopeItemCode, id)
+            returnValue = returnValue + 1
+        return returnValue
 
     def Grant(self, id, userId, permissionItemId):
         """
@@ -320,4 +488,150 @@ class UserPermission(object):
         returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIORGANIZE') & Q(targetid=revokeOrganizeId) & Q(permissionid=Pipermissionitem.objects.get(code=permissionItemCode).id)).delete()
         return returnValue
 
+    def GrantUser(self, userId, permissionItemCode, grantUserId):
+        """
+          为了提高授权的运行速度
+          Args:
+              userId (string): 员工主键
+              permissionItemCode (string): 权限代码
+              grantUserId (string): 权限主键
+          Returns:
+              returnValue(string): 主键
+        """
+        returnValue = ''
+        try:
+            Pipermissionscope.objects.get(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIUSER') & Q(targetid=grantUserId) & Q(permissionid=permissionItemCode))
+            return returnValue
+        except Pipermissionscope.DoesNotExist as e:
+            resourcePermissionScopeEntity = Pipermissionscope()
+            resourcePermissionScopeEntity.permissionid = Pipermissionitem.objects.get(code=permissionItemCode).id
+            resourcePermissionScopeEntity.resourcecategory = 'PIUSER'
+            resourcePermissionScopeEntity.resourceid = userId
+            resourcePermissionScopeEntity.targetcategory = 'PIUSER'
+            resourcePermissionScopeEntity.targetid = grantUserId
+            resourcePermissionScopeEntity.enabled = 1
+            resourcePermissionScopeEntity.deletemark = 0
+            resourcePermissionScopeEntity.save()
+            returnValue = resourcePermissionScopeEntity.id
+            return returnValue
 
+    def RevokeUser(self, userId, permissionItemCode, revokeUserId):
+        """
+          用户撤销授权
+          Args:
+              userId (string): 员工主键
+              permissionItemCode (string): 权限代码
+              revokeUserId (string): 权限主键
+          Returns:
+              returnValue(string): 主键
+        """
+        returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIUSER') & Q(targetid=revokeUserId) & Q(permissionid=permissionItemCode)).delete()
+        return returnValue
+
+    def GrantRole(self, userId, permissionItemCode, grantRoleId):
+        """
+          为了提高授权的运行速度
+          Args:
+              userId (string): 员工主键
+              permissionItemCode (string): 权限代码
+              grantRoleId (string): 权限主键
+          Returns:
+              returnValue(string): 主键
+        """
+        returnValue = ''
+        resourcePermissionScopeEntity = Pipermissionscope()
+        resourcePermissionScopeEntity.permissionid = Pipermissionitem.objects.get(code=permissionItemCode)
+        resourcePermissionScopeEntity.resourcecategory = 'PIUSER'
+        resourcePermissionScopeEntity.resourceid = userId
+        resourcePermissionScopeEntity.targetcategory = 'PIROLE'
+        resourcePermissionScopeEntity.targetid = grantRoleId
+        resourcePermissionScopeEntity.enabled = 1
+        resourcePermissionScopeEntity.deletemark = 0
+        resourcePermissionScopeEntity.save()
+        returnValue = resourcePermissionScopeEntity.id
+        return returnValue
+
+    def RevokeRole(self, userId, permissionItemCode, revokeRoleId):
+        """
+          为了提高授权的运行速度
+          Args:
+              userId (string): 员工主键
+              permissionItemCode (string): 权限代码
+              revokeRoleId (string): 权限主键
+          Returns:
+              returnValue(string): 主键
+        """
+        returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIROLE') & Q(targetid=revokeRoleId) & Q(permissionid=Pipermissionitem.objects.get(code=permissionItemCode).id)).delete()
+        return returnValue
+
+    def GrantPermissionItem(self, userId, permissionItemCode, grantPermissionId):
+        """
+          为了提高授权的运行速度
+          Args:
+              userId (string): 员工主键
+              permissionItemCode (string): 权限代码
+              grantPermissionId (string): 权限主键
+          Returns:
+              returnValue(string): 主键
+        """
+        returnValue = ''
+        resourcePermissionScopeEntity = Pipermissionscope()
+        resourcePermissionScopeEntity.permissionid = Pipermissionitem.objects.get(code=permissionItemCode)
+        resourcePermissionScopeEntity.resourcecategory = 'PIUSER'
+        resourcePermissionScopeEntity.resourceid = userId
+        resourcePermissionScopeEntity.targetcategory = 'PIPERMISSIONITEM'
+        resourcePermissionScopeEntity.targetid = grantPermissionId
+        resourcePermissionScopeEntity.enabled = 1
+        resourcePermissionScopeEntity.deletemark = 0
+        resourcePermissionScopeEntity.save()
+        returnValue = resourcePermissionScopeEntity.id
+        return returnValue
+
+    def RevokePermissionItem(self, userId, permissionItemCode, revokePermissionId):
+        """
+          为了提高授权的运行速度
+          Args:
+              userId (string): 员工主键
+              permissionItemCode (string): 权限代码
+              revokePermissionId (string): 权限主键
+          Returns:
+              returnValue(string): 主键
+        """
+        returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIPERMISSIONITEM') & Q(targetid=revokePermissionId) & Q(permissionid=Pipermissionitem.objects.get(code=permissionItemCode).id))
+        return returnValue
+
+    def GrantModule(self, userId, permissionItemCode, grantModuleId):
+        """
+          为了提高授权的运行速度
+          Args:
+              userId (string): 员工主键
+              permissionItemCode (string): 权限代码
+              grantModuleId (string): 权限主键
+          Returns:
+              returnValue(string): 主键
+        """
+        #TODO:这个地方的permissionid可能值不对，需要确认一下
+        resourcePermissionScopeEntity = Pipermissionscope()
+        resourcePermissionScopeEntity.permissionid = Pipermissionitem.objects.get(code=permissionItemCode)
+        resourcePermissionScopeEntity.resourcecategory = 'PIUSER'
+        resourcePermissionScopeEntity.resourceid = userId
+        resourcePermissionScopeEntity.targetcategory = 'PIMODULE'
+        resourcePermissionScopeEntity.targetid = grantModuleId
+        resourcePermissionScopeEntity.enabled = 1
+        resourcePermissionScopeEntity.deletemark = 0
+        resourcePermissionScopeEntity.save()
+        return resourcePermissionScopeEntity.id
+
+    def RevokeModule(self, userId, permissionItemCode, revokeModuleId):
+        """
+          为了提高授权的运行速度
+          Args:
+              userId (string): 员工主键
+              permissionItemCode (string): 权限代码
+              revokeModuleId (string): 权限主键
+          Returns:
+              returnValue(string): 主键
+        """
+        returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIMODULE') & Q(targetid=revokeModuleId) & Q(
+            (Pipermissionitem.objects.get(code=permissionItemCode).id))).delete()
+        return returnValue
