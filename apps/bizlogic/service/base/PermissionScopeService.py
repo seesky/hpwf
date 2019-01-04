@@ -7,12 +7,13 @@ from apps.bizlogic.models import Pipermissionscope
 from apps.bizlogic.models import Piuser
 from apps.bizlogic.models import Piuserrole
 from apps.bizlogic.models import Piorganize
+from apps.bizlogic.models import Pirole
 
 from apps.utilities.message.PermissionScope import PermissionScope
 from apps.utilities.publiclibrary.StringHelper import StringHelper
 from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 
-from apps.bizlogic.service.permission.ScopPermission import ScopPermission
+#from apps.bizlogic.service.permission.ScopPermission import ScopPermission
 
 from django.db.models import Q
 
@@ -157,7 +158,7 @@ class PermissionScopeService(object):
         if PermissionScope.PermissionScopeDic.get('User') in ids:
             return [managerUserId]
 
-        dataTable = ScopPermission.GetUserIdsSql(self, managerUserId, permissionItemCode)
+        dataTable = PermissionScopeService.GetUserIdsSql(self, managerUserId, permissionItemCode)
 
         if ids & ids.count() > 0:
             userEntity = Piuser.objects.get(id=managerUserId)
@@ -168,6 +169,57 @@ class PermissionScopeService(object):
         if ids & ids.count():
             ids = Piuser.objects.filter(Q(id__in=ids) & Q(enabled=1) & Q(deletemark=0)).values_list('id', flat=True)
         return ids
+
+    def GetUserIdsSql(self, managerUserId, permissionItemCode):
+        """
+          按某个权限获取员工
+          Args:
+              managerUserId (string): 管理用户主键
+              permissionItemCode (string): 权限编号
+          Returns:
+              returnValue(Piuser[]): 用户列表
+        """
+        permissionItemId = Pipermissionitem.objects.get(code=permissionItemCode).id
+
+        #直接管理的用户
+        sqlQuery = Pipermissionscope.objects.filter(Q(targetcategory='PIUSER') & Q(resourceid=managerUserId) & Q(resourcecategory='PIUSER') & Q(permissionid=permissionItemCode) & Q(targetid__isnull=False)).values_list('targetid', flat=True)
+        #被管理部门的列表
+        organizeIds = PermissionScopeService.GetOrganizeIds(self, managerUserId,permissionItemCode)
+        if organizeIds.count() > 0:
+            sqlQuery2 = Piuser.objects.filter(Q(deletemark=0) & (Q(companyid__in=organizeIds) | Q(departmentid__in=organizeIds) | Q(workgroupid__in=organizeIds)) ).values_list('id', flat=True)
+            sqlQuery = sqlQuery.union(sqlQuery2)
+
+        #被管理部门的列表
+        roleIds = PermissionScopeService.GetRoleIds(self, managerUserId, permissionItemCode)
+        if roleIds.count() > 0:
+            sqlQuery3 = Piuserrole.objects.filter(Q(enabled=1) & Q(deletemark=0) & Q(roleid__in=roleIds)).values_list('userid', flat=True)
+            sqlQuery = sqlQuery.union(sqlQuery3)
+
+        return sqlQuery
+
+    def GetOrganizeIds(self, managerUserId, permissionItemCode):
+        """
+          按某个权限获取组织机构 主键数组
+          Args:
+              managerUserId (string): 管理用户主键
+              permissionItemCode (string): 权限编号
+          Returns:
+              returnValue(Piuser[]): 用户列表
+        """
+        #这里应该考虑，当前用户的管理权限是，所在公司？所在部门？所以在工作组等情况
+        ids = ScopPermission.GetTreeResourceScopeIds(self, managerUserId, 'PIORGANIZE', permissionItemCode, False)
+
+        #这里列出只是有效地，没被删除的组织机构主键
+        if ids:
+            ids = Pirole.objects.filter(Q(id__in=ids) & Q(enabled=1) & Q(deletemark=0)).values_list('id', flat=True)
+        return ids
+
+    def GetRoleIds(self, managerUserId, permissionItemCode):
+        #这是一个QuerySet
+        roleIds = ScopPermission.GetRoleIdsSql(self, managerUserId, permissionItemCode)
+        if roleIds.count() > 0:
+            return Pirole.objects.filter(Q(id__in=roleIds) & Q(enabled=1) & Q(deletemark=0)).values_list('id', flat=True)
+        return roleIds
 
 
 

@@ -3,13 +3,14 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9" />
-    <link href="~/Content/Images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-    <title>滨州市儿童福利院办公自动化系统->用户登录</title>
-    <link rel="stylesheet" href="~/Content/Styles/framework-login-30.css" />
-    <script type="text/javascript" src="~/Content/Scripts/jquery-1.8.3.min.js"></script>
-    <script type="text/javascript" src="~/Content/Scripts/rdiframework-core.js"></script>
-    <script type="text/javascript" src="~/Content/Scripts/cloud.js"></script>
-    <script type="text/javascript" src="~/Content/Scripts/jQuery.cookie.js"></script>
+    <link href="/Content/Images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <title>Usable Framework->用户登录</title>
+    <link rel="stylesheet" href="/Content/Styles/framework-login-30.css" />
+    <script type="text/javascript" src="/Content/Scripts/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/hpwf-core.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/cloud.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/jQuery.cookie.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/csrf.js"></script>
     <script type="text/javascript" language="javascript">
         $(function () {
             $('.loginbox').css({ 'position': 'absolute', 'left': ($(window).width() - 692) / 2 });
@@ -63,7 +64,7 @@
                             //Password: escape($.md5(password))
                             Password: escape(password)
                         };
-                        getAjax('/Login/CheckLogin', postData, function (rs) {
+                        getAjax('/admin/checklogin/', postData, function (rs) {
                             if (parseInt(rs) == -1) {
                                 $("#txtAccount").focus();
                                 formMessage('登录账户不存在', 'error');

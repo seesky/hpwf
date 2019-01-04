@@ -11,7 +11,8 @@ from django.db.transaction import TransactionManagementError
 
 from apps.bizlogic.models import Pipermissionitem
 from apps.bizlogic.models import Pipermission
-from apps.bizlogic.service.base.UserRoleService import UserRoleService
+from apps.bizlogic.models import Pirole
+#from apps.bizlogic.service.base.UserRoleService import UserRoleService
 from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
 from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
@@ -151,11 +152,11 @@ class PermissionItemService(object):
         permissionItemId = Pipermissionitem.objects.get(Q(deletemark=0) & Q(code='Resource.ManagePermission')).id
         #这里需要判断,是系统权限？
         isRole = False
-        isRole = UserRoleService.UserInRole(self, userId, 'UserAdmin')
+        isRole = PermissionItemService.UserInRole(self, userId, 'UserAdmin')
         if(isRole):
             returnValue = Pipermissionitem.objects.filter(Q(categorycode='System') & Q(deletemark=0) & Q(enabled=1)).order_by('sortcode')
             return returnValue
-        isRole = UserRoleService.UserInRole(self, userId, 'Admin')
+        isRole = PermissionItemService.UserInRole(self, userId, 'Admin')
         if(isRole):
             returnValue = Pipermissionitem.objects.filter(
                 Q(categorycode='Application') & Q(deletemark=0) & Q(enabled=1)).order_by('sortcode')
@@ -332,14 +333,14 @@ class PermissionItemService(object):
     def GetDTByUser(self, userId, permissionItemCode):
         # 这里需要判断,是系统权限？
         isRole = False
-        irRole = UserRoleService.UserInRole(self, userId, "UserAdmin")
+        irRole = PermissionItemService.UserInRole(self, userId, "UserAdmin")
         # 用户管理员
         if isRole:
             returnValue = Pipermissionitem.objects.filter(Q(categorycode='System') & Q(deletemark=0) & Q(enabled=1)).order_by(
                 'sortcode')
             return returnValue
 
-        isRole = UserRoleService.UserInRole(self, userId, "Admin")
+        isRole = PermissionItemService.UserInRole(self, userId, "Admin")
         if isRole:
             returnValue = Pipermissionitem.objects.filter(Q(categorycode='Application') & Q(deletemark=0) & Q(enabled=1)).order_by(
                 'sortcode')
@@ -348,3 +349,24 @@ class PermissionItemService(object):
         permissionItemIds = PermissionScopeService.GetTreeResourceScopeIds(self, 'PIPERMISSIONITEM', permissionItemCode, True)
         returnValue = Pipermissionitem.objects.filter(Q(id__in=permissionItemIds) & Q(deletemark=0) & Q(enabled=1))
         return returnValue
+
+    def UserInRole(self, userId, roleCode):
+        """
+        用户是否在某个角色里的判断
+        Args:
+            userId (string): 用户ID
+            roleCode (string): 角色编号
+        Returns:
+            returnValue (Pirole[]): 角色列表
+        """
+        returnValue = False
+        if not roleCode:
+            return False
+        roleId = Pirole.objects.get(Q(deletemark=0) & Q(code=roleCode)).id
+        if not roleId:
+            return False
+        roleIds = UserRoleService.GetAllRoleIds(self, userId)
+        if roleId in roleIds:
+            return True
+        else:
+            return False

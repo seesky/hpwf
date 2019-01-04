@@ -17,7 +17,9 @@ Including another URLconf
 from django.urls import path
 from apps.bizlogic.views import PiuserTest
 from django.conf.urls import url, include
+app_name = '[hadmin]'
 
 urlpatterns = [
     url(r'^piusertest/$', PiuserTest.as_view(), name='piusertest'),
+    url(r'^admin/', include(('hadmin.urls', 'hadmin'), namespace='hadmin'))
 ]

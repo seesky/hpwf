@@ -5,9 +5,12 @@ __date__ = '2018/12/20 14:41'
 from django.db.models import Q
 
 from apps.bizlogic.models import Pipermission
-from apps.bizlogic.service.base.UserRoleService import UserRoleService
+#from apps.bizlogic.service.base.UserRoleService import UserRoleService
 
 from apps.bizlogic.models import Pimodule
+from apps.bizlogic.models import Piuser
+from apps.bizlogic.models import Piuserrole
+from apps.bizlogic.models import Pirole
 from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
 
 class ModulePermission(object):
@@ -70,13 +73,13 @@ class ModulePermission(object):
     def GetDTByPermission(self, userId, permissionItemScopeCode):
         #这里需要判断,是系统权限？
         isRole = False
-        irRole = UserRoleService.UserInRole(self, userId, "UserAdmin")
+        irRole = PermissionScopeService.UserInRole(self, userId, "UserAdmin")
         #用户管理员
         if isRole:
             returnValue = Pimodule.objects.filter(Q(category='System') & Q(deletemark=0) & Q(enabled=1)).order_by('sortcode')
             return returnValue
 
-        isRole = UserRoleService.UserInRole(self, userId, "Admin")
+        isRole = PermissionScopeService.UserInRole(self, userId, "Admin")
         if isRole:
             returnValue = Pimodule.objects.filter(Q(category='Application') & Q(deletemark=0) & Q(enabled=1)).order_by(
                 'sortcode')
@@ -85,6 +88,41 @@ class ModulePermission(object):
         moduleIds = PermissionScopeService.GetTreeResourceScopeIds(self, 'PIMODULE', permissionItemScopeCode, True)
         returnValue = Pimodule.objects.filter(Q(id__in=moduleIds) & Q(deletemark=0) & Q(enabled=1))
         return returnValue
+
+    def UserInRole(self, userId, roleCode):
+        """
+        用户是否在某个角色里的判断
+        Args:
+            userId (string): 用户ID
+            roleCode (string): 角色编号
+        Returns:
+            returnValue (Pirole[]): 角色列表
+        """
+        returnValue = False
+        if not roleCode:
+            return False
+        roleId = Pirole.objects.get(Q(deletemark=0) & Q(code=roleCode)).id
+        if not roleId:
+            return False
+        roleIds = ModulePermission.GetAllRoleIds(self, userId)
+        if roleId in roleIds:
+            return True
+        else:
+            return False
+
+    def GetAllRoleIds(self, userId):
+        if not userId:
+            return []
+        else:
+            # sqlQuery = 'select roleid from piuser where (id=\'' + userId + '\') AND '
+            # sqlQuery = sqlQuery + '(deletemark=0) AND '
+            # sqlQuery = sqlQuery + ' (enabled=1) union select roleid from piuserrole where (userid=\'' + userId + '\') AND '
+            # sqlQuery = sqlQuery + '(roleid in (select id from pirole where (deletemark = 0 ))) AND (deletemark=0)'
+
+            list1 = Piuser.objects.filter(Q(id=userId) & Q(deletemark=0) & Q(enabled=1)).values_list('roleid', flat=True)
+            list2 = Piuserrole.objects.filter(Q(userid=userId) & Q(roleid__in=Pirole.objects.filter(deletemark=0).values('id')) & Q(deletemark=0)).values_list('roleid', flat=True)
+            returnValue = list1.union(list2)
+            return returnValue
 
 
 
