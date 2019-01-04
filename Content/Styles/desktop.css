@@ -1,0 +1,110 @@
+.data-left {
+	width: 20%;
+	height: 155px;
+	margin-left: 9px;
+	margin-bottom: 9px;
+	margin-top: 9px;
+	margin-right: 0px;
+	float: left;
+}
+
+.data-right {
+	float: right;
+	width: 75%;
+	height: 155px;
+	margin-top: 9px;
+	margin-bottom: 9px;
+	margin-right: 9px;
+	margin-left: 0px;
+}
+
+.data-card {
+	border: 1px solid #FFFEE6;
+	width: 100%;
+	height: 156px;
+    background: #FFFEE6;
+    color: #8F5700;
+}
+
+.data-card-num {
+	font-size: 50px;
+	font-weight: bold;
+	color: #fe8107
+}
+
+
+.data-grid {
+	width: 100%;
+	table-layout: fixed;
+	color: #393939
+}
+
+.data-grid-td1{
+	border-bottom: 1px dashed #9abeee;
+	text-align: left;
+	height: 25px;
+	font-weight: normal;
+	padding-left:3px;
+	font-weight: normal;
+}
+
+.data-grid-td2{
+	border-bottom: 1px dashed #9abeee;
+	text-align: left;
+	height: 25px;
+	font-weight: normal;
+}
+
+.data-grid-td3{
+	border-bottom: 1px dashed #9abeee;
+	text-align: left;
+	height: 25px;
+	font-weight: normal;
+	padding-left:3px;
+	padding-right: 6px
+}
+
+.data-grid-td4{
+	border-bottom: 1px dashed #9abeee;
+	text-align: left;
+	height: 25px;
+	font-weight: normal;
+	padding-left:3px;
+}
+
+.data-grid-td5{
+	text-align: left;
+	height: 29px;
+	font-weight: normal;
+}
+
+
+.data-grid tr td {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.data-grid-tr-over{
+  background: #c5e2fe;
+  filter: none;
+  cursor: pointer;
+  cursor:hand
+}
+
+.data-grid2 {
+	width: auto;
+	table-layout: fixed;
+	color: #393939
+}
+
+.data-grid2 tr td {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.panel-header, .panel-body
+{
+   box-sizing:border-box; 
+}

@@ -1,0 +1,133 @@
+.Loginbody {
+	background: #34495e;
+}
+.logo {
+	margin: auto;
+	margin-top:3%;
+	width: 983px;
+	height: 100px;
+	overflow:hidden;
+}
+.content {
+	margin: auto;
+	width: 983px;
+	height: 332px;
+	background: url(../images/loginbj.png) top center no-repeat #fff;
+	border-radius: 5px;
+	box-shadow: 0 10px 20px rgba(0,0,0,.6);
+}
+.Loginform {
+	margin-top: 71px;
+	float: right;
+	width: 367px;
+	height: 200px;
+}
+.form-message {
+	height:30px;
+	width:60%;
+	margin-left:auto;
+	margin-right:auto;
+}
+.form-error-text {
+	padding-left:35px;
+	border:1px solid #ee86a4;
+	color: #9d2a16;
+	font-family: Microsoft Yahei;
+	height: 26px;
+	line-height: 26px;
+	background:#f8cad7 url('../images/validatebox_warning.png') center left no-repeat;
+	background-position: 10px 5.5px;
+	border-radius: 4px;
+}
+.form-warning-text {
+	padding-left:35px;
+	border:1px solid #f8e144;
+	color: #000;
+	font-family: Microsoft Yahei;
+	height: 26px;
+	line-height: 26px;
+	background:#fdf7ce url('../images/Icon16/bullet_error.png') center left no-repeat;
+	background-position: 10px 5.5px;
+	border-radius: 4px;
+}
+.form-succeed-text {
+	padding-left:35px;
+	border-radius:3px;
+	color: #fff;
+	font-family: Microsoft Yahei;
+	border: 1px solid #5e8800;
+	height: 26px;
+	line-height: 26px;
+	background:#62b600 url('../images/loading1.gif') center left no-repeat;
+	background-position: 10px 5.5px;
+}
+.form-account {
+	margin-top: 16px;
+	margin-left: 16px;
+	font-family: Microsoft Yahei;
+	font-size: 12pt;
+	color: #999999;
+}
+.form-password {
+	margin-top: 38px;
+	margin-left: 16px;
+	font-family: Microsoft Yahei;
+	font-size: 12pt;
+	color: #999999;
+}
+#txtaccount {
+	border: none;
+	padding: 0px;
+	height: 32px;
+	line-height: 32px;
+	width: 260px;
+	font-family: Î¢ÈíÑÅºÚ,ËÎÌå,Arial,Helvetica,Verdana,sans-serif;
+	font-size: 11pt;
+	color: #999999;
+	background-color: #F0EEF1;
+	padding-left: 5px;
+}
+#txtpassword {
+	border: none;
+	padding: 0px;
+	height: 32px;
+	line-height: 32px;
+	width: 260px;
+	font-family: Î¢ÈíÑÅºÚ,ËÎÌå,Arial,Helvetica,Verdana,sans-serif;
+	font-size: 11pt;
+	color: #999999;
+	background-color: #F0EEF1;
+	padding-left: 5px;
+}
+.form-bottom {
+	margin-top: 38px;
+	margin-left: 16px;
+	height:39px;
+	line-height:39px;
+}
+.btlogin {
+	height:40px;
+	width:100px;
+	float:right;
+	margin-right:12px;
+	cursor:pointer;
+}
+.copyright {
+text-align: center;
+color: #fff;
+width: 900px;
+height: 25px;
+font-family: Microsoft Yahei;
+line-height: 10px;
+margin: auto;
+}
+.qqsign {
+	margin-left: 20px;
+	border: medium none;
+	width: 63px;
+	height: 24px;
+	border-style: none;
+	background: none;
+	background-image: url("../Images/Connect.png" );
+	cursor: pointer;
+}

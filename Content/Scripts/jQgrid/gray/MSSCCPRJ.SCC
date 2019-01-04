@@ -1,0 +1,6 @@
+﻿SCC = This is a Source Code Control file.
+
+[NbSPA.Admin.csproj]
+SCC_Aux_Path = 192.168.0.145:8877:VSS
+SCC_Project_Name = $/NbSPA/src/NbSPA.Admin
+

@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+<meta name="robots" content="noindex, nofollow" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>MultiUpload Demo</title>
+<link href="multiupload.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../jquery/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="swfupload/swfupload.js"></script>
+<script type="text/javascript" src="multiupload.js"></script>
+<script type="text/javascript">
+$(window).load(pageInit);
+function pageInit()
+{
+	var uploadurl='../upload.php',ext='鎵€鏈夋枃浠?(*.*)',size='2 MB',count=5,useget=0,params={}//榛樿鍊?
+
+	uploadurl=getQuery('uploadurl')||uploadurl;ext=getQuery('ext')||ext;size=getQuery('size')||size;count=getQuery('count')||count;useget=getQuery('useget')||useget;
+	var tmpParams=getQuery('params');
+	if(tmpParams)
+	{
+		try{eval("tmpParams=" + tmpParams);}catch(ex){};
+		params=$.extend({},params,tmpParams);
+	}
+	ext=ext.match(/([^\(]+?)\s*\(\s*([^\)]+?)\s*\)/i);
+	setTimeout(fixHeight,10);
+	swfu = new SWFUpload({
+		// Flash缁勪欢
+		flash_url : "swfupload/swfupload.swf",
+		prevent_swf_caching : false,//鏄惁缂撳瓨SWF鏂囦欢
+		
+		// 鏈嶅姟鍣ㄧ
+		upload_url: uploadurl,
+		file_post_name : "filedata",
+		post_params: params,//闅忔枃浠朵笂浼犱竴鍚屽悜涓婁紶鎺ユ敹绋嬪簭鎻愪氦鐨凱ost鏁版嵁
+		use_query_string : useget=='1'?true:false,//鏄惁鐢℅ET鏂瑰紡鍙戦€佸弬鏁?
+
+		// 鏂囦欢璁剧疆
+		file_types : ext[2],//鏂囦欢鏍煎紡闄愬埗
+		file_types_description : ext[1],//鏂囦欢鏍煎紡鎻忚堪
+		file_size_limit : size,	// 鏂囦欢澶у皬闄愬埗
+		file_upload_limit : count,//涓婁紶鏂囦欢鎬绘暟
+		file_queue_limit:0,//涓婁紶闃熷垪鎬绘暟
+		custom_settings : {
+			test : "aaa"
+		},
+			
+		// 浜嬩欢澶勭悊
+		file_queued_handler : fileQueued,//娣诲姞鎴愬姛
+		file_queue_error_handler : fileQueueError,//娣诲姞澶辫触
+		upload_start_handler : uploadStart,//涓婁紶寮€濮?
+		upload_progress_handler : uploadProgress,//涓婁紶杩涘害
+		upload_error_handler : uploadError,//涓婁紶澶辫触
+		upload_success_handler : uploadSuccess,//涓婁紶鎴愬姛
+		upload_complete_handler : uploadComplete,//涓婁紶缁撴潫
+
+		// 鎸夐挳璁剧疆
+		button_placeholder_id : "divAddFiles",
+		button_width: 69,
+		button_height: 17,
+		button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,
+		button_cursor: SWFUpload.CURSOR.HAND,
+		button_image_url : "img/add.gif",
+		button_text: '<span class="theFont">娣诲姞鏂囦欢</span>',
+		button_text_style: ".theFont { font-size: 12px; }",
+		button_text_left_padding: 20,
+		button_text_top_padding: 0,
+		
+		// 璋冭瘯璁剧疆
+		debug: false
+	});
+}
+function fixHeight(){$('#listArea').css('height',(document.body.clientHeight-56)+'px');}
+function getQuery(item){var svalue = location.search.match(new RegExp('[\?\&]' + item + '=([^\&]*)(\&?)','i'));return svalue?decodeURIComponent(svalue[1]):'';} 
+
+//----------------璺ㄥ煙鏀寔浠ｇ爜寮€濮?闈炶法鍩熺幆澧冭鍒犻櫎杩欐浠ｇ爜)----------------
+var JSON = JSON || {};
+JSON.stringify = JSON.stringify || function (obj) {
+	var t = typeof (obj);
+	if (t != "object" || obj === null) {
+		if (t == "string")obj = '"'+obj+'"';
+		return String(obj);
+	}
+	else {
+		var n, v, json = [], arr = (obj && obj.constructor == Array);
+		for (n in obj) {
+			v = obj[n]; t = typeof(v);
+			if (t == "string") v = '"'+v+'"';
+			else if (t == "object" && v !== null) v = JSON.stringify(v);
+			json.push((arr ? "" : '"' + n + '":') + String(v));
+		}
+		return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
+	}
+};
+var callback= callback || function(v){
+	v=JSON.stringify(v);
+	window.name=escape(v);
+	window.location='http://'+location.search.match(/[\?&]parenthost=(.*)(&|$)/i)[1]+'/xheditorproxy.html';//杩欎釜鏂囦欢鏈€濂芥槸涓€涓?瀛楄妭鏂囦欢锛屽鏋滄棤姝ゆ枃浠朵篃浼氭甯稿伐浣?
+}
+//----------------璺ㄥ煙鏀寔浠ｇ爜缁撴潫----------------
+</script>
+</head>
+<body>
+	<div id="upload">
+		<div id="buttonArea">
+			<div id="controlBtns" style="display:none;"><a href="javascript:void(0);" id="btnClear" onclick="removeFile();" class="btn" style="display:none;"><span><img src="img/clear.gif" /> 鍒犻櫎鏂囦欢</span></a> <a href="javascript:void(0);" id="btnStart" onclick="startUploadFiles();" class="btn"><span><img src="img/start.gif" /> 寮€濮嬩笂浼?/span></a></div>
+			<a href="javascript:void(0);" id="addFiles" class="btn"><span><div id="divAddFiles">娣诲姞鏂囦欢</div></span></a>
+		</div>
+		<div id="listArea">
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+				<thead id="listTitle"><tr><td width="53%">鏂囦欢鍚?/td><td width="25%">澶у皬</td><td width="22%">鐘舵€?/td></tr></thead>
+				<tbody id="listBody">
+				</tbody>
+			</table>
+		</div>
+		<div id="progressArea">
+			<div id="progressBar"><span>0%</span><div id="progress" style="width:1px;"></div></div>
+		</div>
+	</div>
+</body>
+</html>

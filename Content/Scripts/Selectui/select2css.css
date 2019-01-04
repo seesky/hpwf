@@ -1,0 +1,36 @@
+
+#uboxstyle .select_box{width:100px;height:24px;}
+
+#macstyle .select_box{width:91px;height:24px;}
+
+#tm2008style .select_box{width:102px;height:24px;}
+
+#uboxstyle div.tag_select{display:block;color:#4D7995;width:80px;height:24px;background:transparent url("ubox-select.gif") no-repeat 0 0;padding:0 10px;line-height:24px;}
+#uboxstyle div.tag_select_hover{display:block;color:#4D7995;width:80px;height:24px;background:transparent url("ubox-select.gif") no-repeat 0 -24px;padding:0 10px;line-height:24px;}
+#uboxstyle div.tag_select_open{display:block;color:#4D7995;width:80px;height:24px;background:transparent url("ubox-select.gif") no-repeat 0 -48px;padding:0 10px;line-height:24px;}
+
+#uboxstyle ul.tag_options{position:absolute;padding:0;margin:0;list-style:none;background:transparent url("ubox-select.gif") no-repeat right bottom;width:100px;padding:0 0 5px;margin:0;}
+#uboxstyle ul.tag_options li{background:transparent url("ubox-select.gif") repeat-y -100px 0;display:block;width:80px;padding:0 10px;height:24px;text-decoration:none;line-height:24px;color:#79A2BD;}
+
+#uboxstyle ul.tag_options li.open_hover{background:transparent url("ubox-select.gif") no-repeat 0 -72px;color:#fff}
+#uboxstyle ul.tag_options li.open_selected{background:transparent url("ubox-select.gif") no-repeat 0 -96px;color:#fff}
+
+#macstyle div.tag_select{display:block;color:#000;width:71px;height:24px;background:transparent url("mac-select.gif") no-repeat 0 -24px;padding:0 10px;line-height:24px;}
+#macstyle div.tag_select_hover{display:block;color:#000;width:71px;height:24px;background:transparent url("mac-select.gif") no-repeat 0 0;padding:0 10px;line-height:24px;}
+#macstyle div.tag_select_open{display:block;color:#000;width:71px;height:24px;background:transparent url("mac-select.gif") no-repeat 0 -48px;padding:0 10px;line-height:24px;}
+
+#macstyle ul.tag_options{position:absolute;margin:-4px 0 0;list-style:none;background:transparent url("mac-select.gif") no-repeat left bottom;width:100px;padding:0 0 5px;margin:0;width:71px;}
+#macstyle ul.tag_options li{background:transparent url("mac-select.gif") repeat-y -91px 0;display:block;width:61px;padding:0 0 0 10px;height:24px;text-decoration:none;line-height:24px;color:#000;}
+
+#macstyle ul.tag_options li.open_hover{background:transparent url("mac-select.gif") no-repeat -162px 0;color:#000}
+#macstyle ul.tag_options li.open_selected{background:transparent url("mac-select.gif") no-repeat -162px -24px;color:#fff}
+
+#tm2008style div.tag_select{display:block;color:#000;width:82px;height:22px;background:transparent url("tm2008-select.gif") no-repeat 0 0;padding:0 10px;line-height:22px;}
+#tm2008style div.tag_select_hover{display:block;color:#000;width:82px;height:22px;background:transparent url("tm2008-select.gif") no-repeat 0 -22px;padding:0 10px;line-height:22px;}
+#tm2008style div.tag_select_open{display:block;color:#000;width:82px;height:22px;background:transparent url("tm2008-select.gif") no-repeat 0 -44px;padding:0 10px;line-height:22px;}
+
+#tm2008style ul.tag_options{position:absolute;margin:0;list-style:none;background:transparent url("tm2008-select.gif") no-repeat left bottom;width:100px;padding:0 0 1px;margin:0;width:80px;}
+#tm2008style ul.tag_options li{background:transparent url("tm2008-select.gif") repeat-y -102px 0;display:block;width:61px;padding:0 10px;height:22px;text-decoration:none;line-height:22px;color:#000;}
+
+#tm2008style ul.tag_options li.open_hover{background:transparent url("tm2008-select.gif") no-repeat 0 -88px;color:#000}
+#tm2008style ul.tag_options li.open_selected{background:transparent url("tm2008-select.gif") no-repeat 0 -66px;color:#19555F}
