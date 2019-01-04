@@ -1,0 +1,28 @@
+﻿<div id='FormContent' class='easyui-layout'data-options='fit:true'>
+    <div data-options="region:'north',iconCls:'icon16_ok'" style="height:44px;">
+        <div class="hint-info">
+            <div class="hint-tip icon16_tip"></div>
+            <div>温馨提示：选中复选框即可授予相应资源管理权限，取消选中则回收相应资源管理权限。</div>
+        </div>
+    </div>
+    <div data-options="region:'center',iconCls:'icon16_user'" title='当前资源：'>
+         <div id="staffTab" class="easyui-tabs" fit="true" style="height: 395px; overflow: hidden;" >
+             <div title="用户" style="padding: 2px;">
+                 <table id="tableUser"></table>
+             </div>
+             <div title="角色"  style="padding: 2px">
+                <table id="tableRole"></table>
+             </div>
+             <div title="组织机构"  style="padding: 2px">
+               <table id="tableOrganize"></table>
+             </div>
+             <div title="模块（菜单）"  style="padding: 2px">
+                <table id="tableModule"></table>
+             </div>
+             <div title="可分配的操作（功能）权限"  style="padding: 2px">
+               <table id="tablePermissionItem"></table>
+             </div>
+         </div>    
+    </div>
+  <input type="hidden" name="txtResourceId" id="txt_ResourceId"/>
+</div>

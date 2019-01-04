@@ -1,0 +1,13 @@
+﻿@{
+    ViewBag.Title = "数据库连接管理";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<div id="toolbar">
+    @Html.Raw(@ViewBag.ToolButton)  
+</div>
+
+
+<table id="dbLinkGrid"></table>
+
+<script type="text/javascript" src="~/Areas/FrameworkModules/Biz/DBLinkAdmin.js?v=30"></script>

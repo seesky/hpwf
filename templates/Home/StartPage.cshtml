@@ -1,0 +1,278 @@
+﻿@{
+    ViewBag.Title = "StartPage";
+}
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>滨州市儿童福利院办公自动化系统 Desktop</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="SeeSky" content="SeeSky">
+        <meta name="Keywords" content="QQ:360457160">
+        <meta name="Description" content="mail:360457160@qq.com">
+        <link rel="stylesheet" type="text/css" href="~/Content/Styles/desktop.css">
+        <link rel="stylesheet" type="text/css" href="~/Content/Styles/portal.css">
+        <link rel="stylesheet" type="text/css" href="~/Content/Styles/icon.css">
+        <script type="text/javascript" src="~/Content/Scripts/jquery-1.8.3.min.js"></script>
+        <script type="text/javascript" src="~/Content/Scripts/jQuery.cookie.js"></script>
+        <script type="text/javascript" src="~/Content/Scripts/jQuery.Ajax.js"></script>
+        <script type="text/javascript" src="~/Content/Scripts/rdiframework-core.js?v=30" ></script>
+        <script type="text/javascript">
+            $(function () {
+                //从cookie中读取有没有css的默认样式
+                var themeCss = 'metro';
+                if ($.cookie('theme')) {
+                    themeCss = $.cookie('theme');
+                }
+                themeCss = '/Content/Scripts/easyui/themes/' + themeCss + '/easyui.css';
+                loadCss(themeCss);
+                bindUserInfo();
+                bindAreaData();
+                $('#exitSystem').click(function () {
+                    exitSystem();
+                });
+                $('#editPwd').click(function () {
+                    parent.editMyPass();
+                });
+                $('#btnViewTodoList').click(function () {
+                    parent.addTab("待办任务", "/WorkFlow/ToDoTask/Index", "icon-box_world");
+                });
+                $('#btnViewBeDownList').click(function () {
+                    parent.addTab("已完成任务", "/WorkFlow/BeDoneTask/Index", "icon-package_green");
+                });
+            });
+
+            //动态加载css文件的函数  
+            function loadCss(url) {
+                var link = document.createElement("link");
+                link.rel = "stylesheet";
+                link.type = "text/css";
+                link.href = url;
+                document.getElementsByTagName("head")[0].appendChild(link);
+            }
+
+            //绑定用户信息
+            function bindUserInfo() {
+                $.ajaxjson('/FrameworkModules/UserAdmin/GetCurrentUserEntity', '', function (data) {
+                    if (data) {
+                        $('#realName').html('姓名：' + data.RealName);
+                        $('#departmentName').html('所在部门：' + data.DepartmentName);
+                        $('#mobile').html('联系电话：' + data.Mobile);
+                    }
+                });
+
+                $.ajaxjson('/FrameworkModules/UserAdmin/GetCurrentUserLogOnEntity', '', function (data) {
+                    if (data) {
+                        $('#logOnCount').html('登录次数：' + data.LogOnCount);
+                        $('#previousVisit').html('上次登录：' + data.PreviousVisit);
+                        $('#lastVisit').html('本次登录：' + data.LastVisit);
+                    }
+                });
+
+            }
+
+            //退出系统
+            function exitSystem() {
+                $.messager.confirm('系统提示', '您确定要退出本次登录吗?', function (r) {
+                    if (r) {
+                         window.setTimeout(function () {
+					            getAjax("/Login/OutLogin", "", function (data) {
+					                top.location.href = '../Login/Index';
+					            })
+					        }, 200);
+                    }
+                });
+            }
+
+            function bindAreaData() {
+                var parm = 'page=1&rows=5&sort=TASKSTARTTIME&order=desc';
+                $.ajaxjson('/WorkFlow/WorkFlowCommonBiz/GetMyClaimedTaskList', parm, function (data) {
+                    if (data && data.rows) {
+                        $("#idToDoCount").html(data.total);
+                        var todoHtml = "";
+                        $.each(data.rows, function (i) {
+                            todoHtml += "<tr><td class='data-grid-td2'>" + data.rows[i].FLOWINSCAPTION + "</td><td class='data-grid-td2'>" + data.rows[i].POPERATEDDES + "</td><td class='data-grid-td2'>" + data.rows[i].TASKSTARTTIME + "</td></tr>";
+                        });
+                        $("#todoContent").html(todoHtml);
+                    }
+                });
+
+                parm = 'page=1&rows=5&sort=TASKENDTIME&order=desc';
+                $.ajaxjson('/WorkFlow/WorkFlowCommonBiz/GetMyCompletedTaskList', parm, function (data) {
+                    if (data && data.rows) {
+                        var todoHtml = "";
+                        $.each(data.rows, function (i) {
+                            todoHtml += "<tr><td class='data-grid-td2'>&nbsp;" + (parseInt(i) + 1) + "</td><td class='data-grid-td2'>" + data.rows[i].FLOWINSCAPTION + "</td><td class='data-grid-td2'>" + data.rows[i].TASKINSCAPTION + "</td><td class='data-grid-td2'>" + data.rows[i].POPERATEDDES + "</td><td class='data-grid-td2'>" + data.rows[i].FLOWSTARTTIME + "</td></tr>";
+                        });
+                        $("#beDoneContent").html(todoHtml);
+                    }
+                });
+            }
+        </script>
+   </head>
+    <body>
+        <div id="desktop" style="margin:10px auto 0 20px">
+            <div style="width:100%;">
+			
+                <!-- 我的资料 -->
+                <div title="我的资料" data-options="iconCls:'icon-vcard',collapsible:true" style="height:205px;">
+                    <div class="data-left">
+                        <img style="margin-top:15px" src="~/Content/Images/person-128.png">
+                    </div>
+				   
+                    <div class="data-right">
+                        <table class="data-grid2" style="height:150px;margin-top:12px;margin-left: 23px" border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td id="realName" class="data-grid-td5" style="width: 200px">
+                                    姓名：SeeSky
+                                </td>
+                                <td id="departmentName" class="data-grid-td5">
+                                    所在部门：山东弘尚电子科技有限公司研发部
+                                </td>
+                            </tr>
+                            <tr>
+                                <td id="mobile" class="data-grid-td5">
+                                    手机：18954319225
+                                </td>
+                                <td id="logOnCount" class="data-grid-td5">
+                                    登录次数：5
+                                </td>
+                            </tr>
+                            <tr>
+                                <td id="previousVisit" class="data-grid-td5">
+                                    上次登录：2016-05-01
+                                </td>
+                                <td id="lastVisit" class="data-grid-td5">
+                                    本次登录：2016-05-01
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <a href="javascript:void(0);" data-options="iconCls:'icon-user_edit'" disabled='True'  class="easyui-linkbutton" style="margin-right: 20px" title="修改资料" id="editUser">修改资料</a>
+                                    <a href="javascript:void(0);" data-options="iconCls:'icon-key_go'" class="easyui-linkbutton" style="margin-right: 20px" title="修改密码" id="editPwd">修改密码</a>
+                                    <a href="javascript:void(0);" data-options="iconCls:'sign-out'"  class="easyui-linkbutton" title="退出系统" id="exitSystem">退出系统</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- 我的资料 -->
+			    
+                <!-- 待办任务 -->
+                <div title="待办任务" data-options="iconCls:'icon-box_world',collapsible:true" style="height:205px;">
+                    <div class="data-left">
+                        <div class="data-card">
+                            <div style="margin: 5px;">
+                                您有：
+                            </div>
+                            <div style="text-align: center;">
+                                <span id="idToDoCount" class="data-card-num">12</span>
+                                <span>个</span>
+                            </div>
+                            <div style="margin: 10px;text-align: center;">
+                                未处理的待办
+                            </div>
+                            <div style="text-align: center;">
+                                <a id="btnViewTodoList" class="easyui-linkbutton" title="查看更多">查看更多&gt;&gt;</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="data-right">
+                        <table class="data-grid" border="0" cellpadding="0" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th class="data-grid-td1" style="width:180px">业务名称</th>
+                                    <th class="data-grid-td1" style="width:100px">提交人</th>
+                                    <th class="data-grid-td1" style="width:120px">到达时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="todoContent">                     
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- 待办任务 -->
+				
+            </div>
+			
+            
+            <div style="width:100%;">
+			
+                <!--
+                <div title="系统公告" data-options="iconCls:'icon-bell',collapsible:true" style="height:205px;padding: 9px">
+                    <table class="data-grid"  border="0" cellpadding="0" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="data-grid-td1" style="width:23px"></th>
+                                <th class="data-grid-td1">标题</th>
+                                <th class="data-grid-td1" style="width:69px"><a href="http://blog.rdiframework.net/" target="_blank">查看更多&gt;&gt;</a></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="data-grid-td2">
+                                    1
+                                </td>
+                                <td class="data-grid-td3">
+                                    <a href='http://blog.rdiframework.net/123.html' target="_blank">RDIFramework.NET — 基于.NET的快速信息化系统开发框架 — 系列目录</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="data-grid-td2">
+                                    2
+                                </td>
+                                <td class="data-grid-td3">
+                                    <a href='http://blog.rdiframework.net/699.html' target="_blank">RDIFramework.NET ━ .NET快速信息化系统开发框架 V3.0 版本震撼发布</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="data-grid-td2">
+                                    3
+                                </td>
+                                <td class="data-grid-td3">
+                                    <a href='http://blog.rdiframework.net/90.html' target="_blank">RDIFramework.NET ━ .NET快速信息化系统开发框架 ━ 工作流程组件介绍</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="data-grid-td2">
+                                    4
+                                </td>
+                                <td class="data-grid-td3">
+                                   <a href='http://yonghu86.taobao.com/' target="_blank">购买  RDIFramework.NET（.NET快速信息化系统开发框架）</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                -->
+                <!-- 系统公告 -->
+				
+                <!-- 已完成任务 -->
+                <div title="已完成任务" data-options="iconCls:'icon-package_green',collapsible:true" style="height:205px;">
+					 <table class="data-grid"  border="0" cellpadding="0" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th class="data-grid-td1" style="width:23px"></th>
+                                <th class="data-grid-td1" style="width:200px">业务名称</th>
+                                <th class="data-grid-td1" style="width:100px">任务名称</th>
+                                <th class="data-grid-td1" style="width:80px">提交人</th>
+                                <th class="data-grid-td1" style="width:100px"><a id="btnViewBeDownList" href="javascript:void(0);">查看更多&gt;&gt;</a></th>
+                            </tr>
+                        </thead>
+					     <tbody id="beDoneContent"/>
+                    </table>
+                </div>
+                <!-- 已完成任务 -->
+            </div>
+        </div>
+    </body>
+        <script type="text/javascript" src="~/Content/Scripts/easyui/jquery.easyui.min.js"></script>
+        <script type="text/javascript" src="~/Content/Scripts/jquery.portal.js"></script>	
+        <script type="text/javascript" src="~/Content/Scripts/desktop.js"></script> 
+<script type="text/javascript" src="/Content/Scripts/rdiframework-index.js?v=30"></script>
+<script type="text/javascript" src="/Content/Scripts/qqmsg/jQuery.qqmsg.js"></script>
+<script type="text/javascript" src="/Content/Scripts/showloading/jquery.showLoading.min.js"></script>
+<script type="text/javascript" src="/Content/Scripts/easyui/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/Content/Scripts/easyui/jquery.validate.messages_zh.js"></script>   
+</html>
+

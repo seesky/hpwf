@@ -1,0 +1,15 @@
+﻿@{
+    ViewBag.Title = "系统参数配置管理";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+    <div id="toolbar">
+        <div style="float: left;padding-top:2px;">
+            @Html.Raw(@ViewBag.ToolButton)
+        </div>
+    </div>
+
+   <table id="list"></table> 
+   <div id="divPrint"></div>  
+   <script type="text/javascript" src="~/Areas/FrameworkModules/Biz/ParameterAdmin.js?v=3.0"></script>
+   <script type="text/javascript" src="~/Content/Scripts/Business/exportutil.js"></script>

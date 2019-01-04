@@ -1,0 +1,29 @@
+﻿<head>
+    <style type="text/css">
+        .auto-style1 {
+            width: 30px;
+        }
+    </style>
+</head>
+<form id="uiform">
+    <table class="grid">
+        <tr>
+            <td align="right">连接名称：</td>
+            <td colspan = 3><input data-options="required:true,validType:'length[2,40]'" style="width:500px;"  type="text" class="txt03 easyui-validatebox" name="LinkName" id="LinkName" /></td>
+        </tr>
+        <tr>
+            <td align="right">连接类型：</td>
+            <td class="auto-style1"><input data-options="required:true,validType:'length[2,18]'" style="width:270px;" type="text" class="txt03 easyui-validatebox" name="LinkType" id="LinkType" /></td>
+            <td align="right">有效：</td>
+            <td><input type="checkbox" class="txt03" name="Enabled" id="Enabled" /></td>
+        </tr>
+        <tr>
+            <td align="right">连接字符串：</td>
+            <td colspan = 3><textarea data-options="required:true" style="width:500px;height:70px;" class="txt03 easyui-validatebox" name="LinkData" id="LinkData" ></textarea></td>
+        </tr>
+        <tr>
+            <td align="right">描述：</td>
+            <td colspan = 3><textarea style="width:500px;height:50px;" class="txt03" name="Description" id="Description" ></textarea></td>
+        </tr>
+   </table>
+</form>

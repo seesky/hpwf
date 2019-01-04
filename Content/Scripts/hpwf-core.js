@@ -1,18 +1,4 @@
-﻿/**
-* rdiframework-core.js
-* Copyright © RDIFramework.NET V3.0
-
-* RDIFramework.NET，基于.NET的快速信息化系统开发、整合框架，给用户和开发者最佳的.Net框架部署方案。
-* 框架官网：http://www.rdiframework.net/
-* 框架博客：http://blog.rdiframework.net/
-* 交流QQ：406590790 
-* 邮件交流：406590790@qq.com
-* 其他博客：
-*   http://www.cnblogs.com/huyong 
-*   http://blog.csdn.net/chinahuyong
-*/
-
-//页面公共方法
+﻿//页面公共方法
 var pageMethod = {
     //绑定页面常用下拉框
     bindCategory: function (categoryControl, categoryCode) {

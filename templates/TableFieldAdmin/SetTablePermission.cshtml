@@ -1,0 +1,17 @@
+﻿
+<div id="rlayout" fit="true" style="height: 440px;">
+    <div region="north" style="height: 30px; overflow: hidden;padding-left: 40px; line-height:20px; background: url('~/Content/Images/table.png') no-repeat left center;" border="false">
+          <span style="color: #4B4B4B">  在左边的列表选择数据表后，点击向右的箭头即可选择待设权限控制数据表或者双击选中的数据表。</span>
+    </div>
+    <div id="rWest" region="west" style="width: 300px" split="false" >
+        <table id="allDataTables" title="待选数据表" border="false"></table>
+    </div>
+    <div id="rCenter" region="center" border="false" style="padding-left: 5px;padding-top: 160px;">
+        <a id="aSelectTable" style="float:left" href="javascript:;" plain="true" class="easyui-linkbutton" icon=" icon-arrow_right" title="选择用户"></a>
+        <br>
+        <a id="aDeleteTable" style="float:left" href="javascript:;" plain="true" class="easyui-linkbutton" icon=" icon-arrow_left" title="删除用户"></a>
+    </div>
+    <div id="rEast" style="width: 300px;" region="east" split="false" >
+        <table id="selectDataTables"  border="false" title="已选数据表"></table>
+    </div>
+</div>

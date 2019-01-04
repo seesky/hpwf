@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "数据字典管理";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<div id="layout">
+    <div region="west"  split="true" style="width:200px;" border="true">
+        <div class="toolbar">
+            <a id="a_addCategory" style="float:left" href="javascript:;" plain="true" class="easyui-linkbutton" icon="icon16_add" title="添加字典类别">添加</a>
+            <a id="a_editCategory" style="float:left" href="javascript:;" plain="true" class="easyui-linkbutton" icon="icon16_edit_button" title="修改字典类别">修改</a>
+            <a id="a_delCategory" style="float:left" href="javascript:;" plain="true" class="easyui-linkbutton" icon="icon16_delete" title="删除字典类别">删除</a>
+        </div>                
+        <table id = "dataDicType"></table>
+    </div>
+    <div region="center" border="false" style="overflow: hidden;">
+        <div id="toolbar">
+             @Html.Raw(@ViewBag.ToolButton) 
+        </div>
+            <table id="dicGrid"></table>
+    </div>
+</div>
+<script type="text/javascript" src="~/Areas/FrameworkModules/Biz/DataItemAdmin.js?v=30"></script> 

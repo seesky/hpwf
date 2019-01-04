@@ -1,0 +1,18 @@
+﻿
+<div id="rlayout" fit="true" style="height: 380px;">
+    <div region="north" style="height: 50px; overflow: hidden;padding-left: 40px; line-height:20px; background: url('/Content/Images/Members.png') no-repeat left center;" border="false">
+        <b>用户名：<label id="uname"></label></b><br/>
+          <span style="color: #4B4B4B">  在左边的列表选择角色后，点击向右的箭头即可为用户设置角色或者双击选中的角色。</span>
+    </div>
+    <div id="rWest" region="west" style="width: 270px" split="false" >
+        <table id="allRoles" title="待选角色列表" border="false"></table>
+    </div>
+    <div id="rCenter" region="center" border="false" style="padding-left: 5px;padding-top: 160px;">
+        <a id="aSelectRole" style="float:left" href="javascript:;" plain="true" class="easyui-linkbutton" icon=" icon16_arrow_right" title="选择角色"></a>
+        <br>
+        <a id="aDeleteRole" style="float:left" href="javascript:;" plain="true" class="easyui-linkbutton" icon=" icon16_arrow_left" title="删除角色"></a>
+    </div>
+    <div id="rEast" style="width: 270px;" region="east" split="false" >
+        <table id="selectedRoles"  border="false" title="选中的角色"></table>
+    </div>
+</div>

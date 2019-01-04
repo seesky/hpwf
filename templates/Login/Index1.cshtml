@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9" />
+    <link href="~/Content/Images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <title>登录页面</title>
+    <link href="~/Content/Styles/framework-core.css" rel="stylesheet" />
+    <link href="~/Content/Styles/framework-login-extend.css" rel="stylesheet" />
+    <script src="~/Content/Scripts/jquery-1.8.3.min.js"></script>
+    <script src="~/Content/Scripts/rdiframework-core.js"></script>
+    <script src="~/Content/Scripts/jQuery.md5.js"></script>
+    <link href="~/Content/Styles/framework-login.css" rel="stylesheet" />
+    <script src="~/Content/Scripts/jquery.cookie.js"></script>
+    <script>
+        /*
+        检查浏览器是否支持
+        */
+        var isIE = !!window.ActiveXObject;
+        var isIE6 = isIE && !window.XMLHttpRequest;
+        if (isIE6) {
+            window.location.href = "../Error/Browser";
+        }
+        //回车键
+        document.onkeydown = function (e) {
+            if (!e) e = window.event; //火狐中是 window.event
+            if ((e.keyCode || e.which) == 13) {
+                var btlogin = document.getElementById("btlogin");
+                btlogin.focus();
+                btlogin.click();
+            }
+        };
+        $(function () {
+            $("#btlogin").click(function () {
+                var txtaccount = $("#txtaccount").val();
+                var txtpassword = $("#txtpassword").val();
+                if (txtaccount == "") {
+                    $("#txtaccount").focus();
+                    formMessage('登录账户不能为空', 'warning');
+                    return false;
+                } else if (txtpassword == "") {
+                    $("#txtpassword").focus();
+                    formMessage('登录密码不能为空', 'warning');
+                    return false;
+                } else {
+                    formMessage('正在登录...', 'succeed');
+                    window.setTimeout(function () {
+                        var postData = {
+                            Account: escape(txtaccount),
+                            //Password: escape($.md5(txtpassword))
+                            Password: escape(txtpassword)
+                        };
+                        getAjax('/Login/CheckLogin', postData, function (rs) {
+                            if (parseInt(rs) == -1) {
+                                $("#txtaccount").focus();
+                                formMessage('登录账户不存在', 'error');
+                            } else if (parseInt(rs) == 2) {
+                                $("#txtaccount").focus();
+                                formMessage('登录账户被系统锁定', 'error');
+                            } else if (parseInt(rs) == 4) {
+                                $("#txtaccount").focus();
+                                $("#txtpassword").val("");
+                                formMessage('登录密码错误', 'error');
+                            } else if (parseInt(rs) == 3) {
+                                formMessage('登录验证成功,正在跳转首页', 'succeed');
+                                setInterval(Load, 1000);
+                            } else {
+                                alert(rs);
+                            }
+                        });
+                    }, 500);
+                }
+            });
+        });
+        
+    //登录加载
+    function Load() {
+        var Index = $.cookie('UItheme');
+        if (Index) {
+            window.location.href = '@Url.Content("~/Home/")' + Index;
+        } else {
+            window.location.href = '@Url.Content("~/Home/TreeIndex")';
+        }
+        return false;
+    }
+    //提示信息
+    function formMessage(msg, type) {
+        $('.form-message').html('');
+        $('.form-message').append('<div class="form-' + type + '-text">' + msg + '</div>');
+    }
+    </script>
+</head>
+<body class="Loginbody">
+    <div class="logo">
+        <img src="~/Content/Images/loginlogo.png" />
+    </div>
+    <div class="content">
+        <div class="Loginform">
+            <div class="form-message">
+            </div>
+            <div class="form-account">
+                账户
+                <input id="txtaccount" type="text" />
+            </div>
+            <div class="form-password">
+                密码
+                <input id="txtpassword" type="password" />
+            </div>
+            <div class="form-bottom">
+              测试用户名与密码：Administrator
+              <div id="btlogin" class="btlogin"></div>
+            </div>
+        </div>
+    </div>
+    <div style="text-align: center; margin: 20px; font-family: Microsoft Yahei; color: #fff; margin: auto; width: 983px; padding-top: 30px;">
+        <p>适用浏览器：IE8以上、360、FireFox、Chrome、Safari、Opera、傲游、搜狗、世界之窗. </p>
+    </div>
+    <div class="copyright">
+         <br />
+        RDIFramework.NET V2.9：http://www.cnblogs.com/huyong
+    </div>
+    <div class="main-im">
+        <div id="open_im" class="open-im">&nbsp;</div>
+        <div class="im_main" id="im_main">
+            <div id="close_im" class="close-im"><a href="javascript:void(0);" title="点击关闭">&nbsp;</a></div>
+            <a href="http://wpa.qq.com/msgrd?v=3&uin=800075827&site=qq&menu=yes" class="im-qq qq-a" title="在线QQ客服">
+                <div class="qq-container"></div>
+                <div class="qq-hover-c">
+                    <img class="img-qq" src="~/Content/Images/qq.png">
+                </div>
+                <span>QQ在线咨询</span> </a>
+            <div class="im-tel">
+               <div>咨询热线</div>
+                <div class="tel-num">15108937790</div>
+                <div>咨询QQ</div>
+                <div class="tel-num">406590790</div>
+            </div>
+            <div class="im-footer" style="position: relative">
+                <div class="weixing-container">
+                    <div class="weixing-show">
+                        <div class="weixing-txt">
+                            微信扫一扫<br />
+                            关注开发框架<br />
+                            获取更多消息
+                        </div>
+                        <img class="weixing-ma" src="~/Content/Images/weixing-ma.png">
+                        <div class="weixing-sanjiao"></div>
+                        <div class="weixing-sanjiao-big"></div>
+                    </div>
+                </div>
+                <div class="go-top"><a href="javascript:;" title="返回顶部"></a></div>
+                <div style="clear: both"></div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        //在线客户
+        $(function () {
+            $('#close_im').bind('click', function () {
+                $('#main-im').css("height", "0");
+                $('#im_main').hide();
+                $('#open_im').show();
+            });
+            $('#open_im').bind('click', function (e) {
+                $('#main-im').css("height", "272");
+                $('#im_main').show();
+                $(this).hide();
+            });
+            $('.go-top').bind('click', function () {
+                $(window).scrollTop(0);
+            });
+            $(".weixing-container").bind('mouseenter', function () {
+                $('.weixing-show').show();
+            });
+            $(".weixing-container").bind('mouseleave', function () {
+                $('.weixing-show').hide();
+            });
+            $("#open_im").trigger("click");
+            $('.weixing-show').hide();
+        })
+    </script>
+</body>
+</html>

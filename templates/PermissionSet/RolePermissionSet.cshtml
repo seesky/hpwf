@@ -1,0 +1,24 @@
+﻿ <div id='FormContent' class='easyui-layout'data-options='fit:true'>
+    <div data-options="region:'north',iconCls:'icon16_ok'" style="height:44px;">
+        <div class="hint-info">
+            <div class="hint-tip icon16_tip"></div>
+            <div>温馨提示：选中复选框即可授予相应权限，取消选中则回收相应权限。</div>
+        </div>
+    </div>
+    <div data-options="region:'center',iconCls:'icon16_user'" title='当前角色：'>
+       <table  style="width:540px;height:435px;">
+         <tr>
+            <td> 
+                <div id="pnl1" class="easyui-panel" data-options="iconCls:'icon16_tab'" title="模块（菜单）访问权限" style="width:300px;height:400px;padding-left:5px;padding-right:5px;padding-top:1px;position:relative;">
+                   <p id="tableModule"></p>
+                </div>
+            </td>
+            <td>
+               <div id="pnl2" class="easyui-panel" data-options="iconCls:'icon16_lightning'" title="拥有的操作权限" style="width:300px;height:400px;padding-left:5px;padding-right:5px;padding-top:1px;position:relative;">
+                     <table id="tablePermissionItem"></table>
+                </div>
+            </td>           
+         </tr>
+       </table>     
+    </div>
+</div>

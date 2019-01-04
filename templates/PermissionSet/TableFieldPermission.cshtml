@@ -1,0 +1,61 @@
+﻿ <script type="text/javascript">
+     var permissionSet = function (id, value, columnType, resourceCategory, resourceId, tableName, columnName) {
+         //alert(id + '|' + value + '|' + columnType + '|' + resourceCategory + '|' + resourceId + '|' + tableName+ '|' + columnName);
+         var param = 'operType=' + columnType + '&operValue=' + value + '&operId=' + id + '&tableName=' + tableName + '&fieldName=' + columnName + "&resourceCategory=" + resourceCategory + "&resourceId=" + resourceId;
+         $.ajax({
+             type: "POST",
+             url: '/FrameworkModules/PermissionSet/GrantOrRevokeFieldPermission',
+             data: param,
+             dataType: "json",
+             success: function (d) {
+                 if (d.Success) {
+                     $('#tableFiledList').datagrid('reload');
+                     //alert(d.Message);
+                 } else {
+                     MessageOrRedirect(d);
+                 }
+             }
+         });
+     };
+
+     var permissionTableSet = function (resourceCategory, resourceId, tableName, operValue) {
+         var param = 'resourceCategory=' + resourceCategory + '&resourceId=' + resourceId + '&tableName=' + tableName + '&operValue=' + operValue;
+         $.ajax({
+             type: "POST",
+             url: '/FrameworkModules/PermissionSet/GrantOrRevokeTablePermission',
+             data: param,
+             dataType: "json",
+             success: function (d) {
+                 if (d.Success) {
+                     $('#tableList').datagrid('reload');
+                 } else {
+                     MessageOrRedirect(d);
+                 }
+             }
+         });
+     };
+ </script>
+ <div id='FormContent' class='easyui-layout'data-options='fit:true'>
+    <div data-options="region:'north',iconCls:'icon16_ok'" style="height:44px;">
+        <div class="hint-info">
+            <div class="hint-tip icon16_tip"></div>
+            <div>温馨提示：选中复选框即可授予相应权限，取消选中则回收相应权限。</div>
+        </div>
+    </div>
+    <div data-options="region:'center',iconCls:'icon16_asterisk_orange'" title='当前资源：'>
+       <table>
+         <tr>
+            <td> 
+                <div id="pnl1" class="easyui-panel" data-options="iconCls:'icon16_table_multiple'"  title="数据表" style="width:180px;height:430px;">
+                   <p id="tableList"></p>
+                </div>
+            </td>
+            <td>
+               <div id="pnl2" class="easyui-panel" data-options="iconCls:'icon16_table_column'" title="表字段明细" style="width:500px;height:430px;">
+                     <table id="tableFiledList"></table>
+                </div>
+            </td>           
+         </tr>
+       </table>     
+    </div>
+</div>

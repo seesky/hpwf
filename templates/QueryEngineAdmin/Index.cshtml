@@ -1,0 +1,20 @@
+﻿@{
+    ViewBag.Title = "查询引擎管理";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<div id="layout">
+        <div region="west" iconCls="icon16_tree_new" split="true" title="查询引擎树" style="width:260px;padding: 5px" collapsible="false">
+        <ul id="queryEngineTree"></ul>
+    </div>
+    <div region="center" title="查询引擎列表" iconCls="icon16_layout" style="padding: 2px; overflow: hidden">
+        <div id="toolbar">
+            @Html.Raw(@ViewBag.ToolButton)  
+        </div>
+            <table id="queryEngineGrid"></table>
+    </div>
+</div>
+ 
+<script type="text/javascript" src="~/Content/Scripts/Linqjs/linq.min.js"></script>
+<script type="text/javascript" src="~/Content/Scripts/Linqjs/linq.jquery.js"></script>
+<script type="text/javascript" src="~/Areas/FrameworkModules/Biz/QueryEngine.js?v=30"></script>

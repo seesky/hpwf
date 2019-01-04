@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>选择用户</title>   
+    <link href="~/Content/Scripts/easyui/themes/@ViewBag.Skin/easyui.css" rel="stylesheet" type="text/css" />  
+    <link type="text/css" rel="stylesheet" href="~/Content/Styles/common.css"/> 
+    <link type="text/css" rel="stylesheet" href="~/Content/Styles/iconNew16.css"/>    
+    <script type="text/javascript" src="~/Content/Scripts/jquery-1.8.3.min.js"></script>   
+    <script type="text/javascript" src="~/Content/Scripts/easyui/jquery.easyui.min.js"></script> 
+    <script type="text/javascript" src="~/Content/Scripts/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="~/Content/Scripts/jQuery.Ajax.js"></script>
+    <script type="text/javascript" src="~/Content/Scripts/easyui/rdiframework-easyui-extend.js?v=30" ></script>
+    <script type="text/javascript" src="~/Content/Scripts/rdiframework-core.js?v=30" ></script> 
+    <script type="text/javascript">
+        $(function () {
+            GetList("");
+            $(".ScrollBar").height($(window).height() - 51);
+            //失去焦点时，提示的处理
+            $("#keyword").click(function () {
+                if ($(this).hasClass('searchTips')) {
+                    $(this).removeClass('searchTips'); $(this).val('');
+                }
+            }).blur(function () {
+                if ($(this).val() == '') {
+                    $(this).addClass('searchTips'); $(this).val('请输入关键字...');
+                }
+            }).bind("keyup", function (e) {
+                if ($(this).hasClass('searchTips')) {
+                    $(this).removeClass('searchTips'); $(this).val('');
+                }
+                GetList($(this).val());
+            });
+        });
+        
+        //加载用户列表
+        function GetList(keyword) {
+            var itemtree = {
+                onClick: function (item) {
+                    var Data = {
+                        id: item.id,
+                        text: item.text
+                    };
+                    top.CallbackSetUser(Data);
+                },
+                url: "@Url.Content("~/Utility/OptionUserJson")?keyword=" + escape(keyword)                
+            };
+            $("#ItemsTree").tree(itemtree);
+            //Loading(false);
+        }
+    </script>
+</head>
+<body>
+    <div class="search_bar" style="height: 35px; line-height: 35px; padding-left: 5px; padding-right: 10px;">
+        <input id="keyword" type="text" class="keyword searchTips" style="width: 100%" value="请输入关键字..." />
+    </div>
+    <div class="ScrollBar topline" id="ItemsTree" style="padding: 5px;">
+    </div>    
+</body>
+</html>

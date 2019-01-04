@@ -7,16 +7,6 @@
 //4、Number 数字 扩展，也是toXXX的用法
 //5、Function 函数对象 扩展 也是toXXX的用法
 
-/*
-* RDIFramework.NET，基于.NET的快速信息化系统开发、整合框架，给用户和开发者最佳的.Net框架部署方案。
-* 框架官网：http://www.rdiframework.net/
-* 框架博客：http://blog.rdiframework.net/
-* 交流QQ：406590790 
-* 邮件交流：406590790@qq.com
-* 其他博客：
-* http://www.cnblogs.com/huyong 
-* http://blog.csdn.net/chinahuyong
-*/
 /*********************Base*********************/
 
 (function () {

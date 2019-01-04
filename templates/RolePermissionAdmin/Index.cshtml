@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "角色权限管理";
+    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
+}
+
+<div id="toolbar">
+    @Html.Raw(@ViewBag.ToolButton)
+</div>
+
+<table id="list"></table>   
+
+<script type="text/javascript" src="~/Areas/FrameworkModules/Biz/RolePermissionAdmin.js?v=2.9"></script>
+<script type="text/javascript" src="~/Areas/FrameworkModules/Biz/SetRolePermissionScope.js?v=2.9"></script>
+<script type="text/javascript" src="~/Content/Scripts/Business/Search.js"></script> 
