@@ -62,7 +62,8 @@
                         var postData = {
                             Account: escape(account),
                             //Password: escape($.md5(password))
-                            Password: escape(password)
+                            Password: escape(password),
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
                         };
                         getAjax('/admin/checklogin/', postData, function (rs) {
                             if (parseInt(rs) == -1) {

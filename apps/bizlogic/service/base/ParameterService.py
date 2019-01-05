@@ -7,12 +7,13 @@ from apps.bizlogic.models import Ciparameter
 from django.db.models import Q
 from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 from django.core.paginator import Paginator
+import os
 
 class ParameterService(object):
 
-    config = ConfigObj('../../utilities/config/Config.ini', encoding='UTF8')
 
-    def GetServiceConfig(self, key):
+
+    def GetServiceConfig(key):
         """
         获取服务器上的配置信息
         Args:
@@ -20,9 +21,11 @@ class ParameterService(object):
         Returns:
             returnValue (string): 配置内容
         """
-        return self.config['appSettings'][key]
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        config = ConfigObj(BASE_DIR + r'\..\..\utilities\config\Config.ini', encoding='UTF8')
+        return config['appSettings'][key]
 
-    def GetParameter(self, categoryKey, parameterId, parameterCode):
+    def GetParameter(categoryKey, parameterId, parameterCode):
         """
         获取参数值
         Args:
