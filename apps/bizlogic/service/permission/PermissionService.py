@@ -45,7 +45,7 @@ class PermissionService(object):
     def IsAuthorizedByUserId(self, userId, permissionItemCode, permissionItemName=None):
         returnValue = False
         user = Piuser.objects.get(id=userId)
-        returnValue = PermissionService.IsAdministrator(self, user)
+        returnValue = PermissionService.IsAdministrator(user)
 
         if not returnValue:
             returnValue = PermissionService.CheckPermissionByUser(self, userId, permissionItemCode, permissionItemName)
@@ -72,7 +72,7 @@ class PermissionService(object):
             role = Pipermission.objects.filter(Q(resourcecategory='PIROLE') & Q(enabled=1) & Q(resourceid=roleId) & Q(permissionid=permissionItemId))
             return role.count() > 0
 
-    def IsAdministrator(self, entity):
+    def IsAdministrator(entity):
         """
         当前用户是否超级管理员
         Args:
@@ -94,7 +94,7 @@ class PermissionService(object):
         #用户的默认角色是超级管理员
         roleEntity = None
         if userEntity.roleid:
-            roleIds = UserRoleService.GetRoleIds(self, userEntity.id)
+            roleIds = UserRoleService.GetRoleIds(userEntity.id)
             for tmpid in roleIds:
                 if tmpid == DefaultRole.Administrators:
                     return True
@@ -113,7 +113,7 @@ class PermissionService(object):
         """
         returnValue = False
         userEntity = Piuser.objects.get(id=userId)
-        return PermissionService.IsAdministrator(self, userEntity)
+        return PermissionService.IsAdministrator(userEntity)
 
     def GetPermissionDTByUserId(self, userId):
         """

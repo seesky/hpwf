@@ -48,7 +48,7 @@ class LogOnService(object):
     def LogOnByUserName(self, userName, returnStatusCode, returnStatusMessage):
         pass
 
-    def UserLogOn(self, userName, password, openId, createOpenId):
+    def UserLogOn(userName, password, openId, createOpenId):
         """
         用户登录
         Args:
@@ -63,7 +63,7 @@ class LogOnService(object):
         returnCode = ''
         returnMessage = ''
         returnUserInfo = None
-        returnStatusCode,returnUserInfo = LogOnService.LogOn(self, userName, password, openId, createOpenId)
+        returnStatusCode,returnUserInfo = LogOnService.LogOn(userName, password, openId, createOpenId)
         return returnStatusCode,returnUserInfo
 
     def GetEntity(self, id):
@@ -277,7 +277,7 @@ class LogOnService(object):
         returnValue = DbCommonLibaray.executeQuery(self, sqlQuery)
         return returnValue
 
-    def LogOn(self, userName, password, openId=None, createNewOpenId=False, ipAddress=None, macAddress=None, checkUserPassword=True):
+    def LogOn(userName, password, openId=None, createNewOpenId=False, ipAddress=None, macAddress=None, checkUserPassword=True):
         ReturnStatusCode = ''
         userInfo = UserInfo()
         realName = ''
@@ -350,15 +350,15 @@ class LogOnService(object):
         #08. 是否检查用户IP地址，是否进行访问限制？管理员不检查IP. && !this.IsAdministrator(userEntity.Id.ToString()
         if SystemInfo.EnableCheckIPAddress and userLogOnEntity.checkipAddress == 1 and (userEntity.username != 'Administrator' or userEntity.code == 'Administrator'):
             if ipAddress:
-                if ParameterService.Exists(self, userEntity.id, 'IPAddress'):
-                    if not CheckIPAddress.CheckIPAddress(self, ipAddress, userEntity.id):
+                if ParameterService.Exists(userEntity.id, 'IPAddress'):
+                    if not CheckIPAddress.CheckIPAddress(ipAddress, userEntity.id):
                         ReturnStatusCode = StatusCode.statusCodeDic['ErrorIPAddress']
                         return ReturnStatusCode,userInfo
 
             #没有设置MAC地址时不检查
             if macAddress:
-                if ParameterService.Exists(self,userEntity.id, 'MacAddress'):
-                    if not CheckIPAddress.CheckIPAddress(self, macAddress, userEntity.id):
+                if ParameterService.Exists(userEntity.id, 'MacAddress'):
+                    if not CheckIPAddress.CheckIPAddress(macAddress, userEntity.id):
                         ReturnStatusCode = StatusCode.statusCodeDic['ErrorMacAddress']
                         return ReturnStatusCode,userInfo
 
@@ -376,7 +376,7 @@ class LogOnService(object):
 
         #04. 系统是否采用了密码加密策略？
         if checkUserPassword and SystemInfo.EnableEncryptServerPassword:
-            password = SecretHelper.AESEncrypt(self, password).decode()
+            password = SecretHelper.AESEncrypt(password).decode()
 
         #11. 密码是否正确(null 与空看成是相等的)
         if userLogOnEntity.userpassword and password:
@@ -432,12 +432,12 @@ class LogOnService(object):
         #13. 登录、重新登录、扮演时的在线状态进行更新
         #userLogOnManager.ChangeOnLine(userEntity.Id);
 
-        userInfo = LogOnService.ConvertToUserInfo(self, userInfo, userEntity, userLogOnEntity)
+        userInfo = LogOnService.ConvertToUserInfo(userInfo, userEntity, userLogOnEntity)
         userInfo.IPAddress = ipAddress
         userInfo.MACAddress = macAddress
         userInfo.Password = password
         #这里是判断用户是否为系统管理员的
-        userInfo.IsAdministrator = PermissionService.IsAdministrator(self, userEntity)
+        userInfo.IsAdministrator = PermissionService.IsAdministrator(userEntity)
         '''
         // 数据找到了，就可以退出循环了
                 /*
@@ -460,9 +460,9 @@ class LogOnService(object):
             if not userInfo.OpenId:
                 createNewOpenId = True
             if createNewOpenId:
-                userInfo.OpenId = self.UpdateVisitDate(self, userEntity.id, createNewOpenId)
+                userInfo.OpenId = LogOnService.UpdateVisitDate(userEntity.id, createNewOpenId)
             else:
-                LogOnService.UpdateVisitDate(self, userEntity.id, createNewOpenId)
+                LogOnService.UpdateVisitDate(userEntity.id, createNewOpenId)
         return ReturnStatusCode,userInfo
 
     def CheckOnLineLimit(self):
@@ -479,7 +479,7 @@ class LogOnService(object):
             returnValue = True
         return returnValue
 
-    def ConvertToUserInfo(self, userInfo, userEntity, userLogOnEntity):
+    def ConvertToUserInfo(userInfo, userEntity, userLogOnEntity):
         """
         Args:
         Returns:
@@ -513,7 +513,7 @@ class LogOnService(object):
                 pass
         return userInfo
 
-    def UpdateVisitDate(self, userId, createOpenId = False):
+    def UpdateVisitDate(userId, createOpenId = False):
         """
         更新访问当前访问状态
         Args:

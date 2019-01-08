@@ -1,9 +1,7 @@
-﻿@{
-    ViewBag.Title = "用户管理";
-    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
-}
+﻿{% extends "Shared/_LayoutIndex.html" %}
+{% block content %}
 <script type="text/javascript">
-    var curUserinfo = { "id": '@Html.Raw(@ViewBag.CurrentUserId)' };
+    var curUserinfo = { "id": {{ CurrentUserId }} };
 </script>
 
 <div id="layout">
@@ -13,7 +11,9 @@
     <div region="center" title="用户列表" iconCls="icon16_list" style="padding: 2px; overflow: hidden">
         <div id="toolbar">
             <div style="float: left;padding-top:1px;">
-                @Html.Raw(@ViewBag.ToolButton) 
+                {% autoescape off %}
+                {{ ToolButton }}
+                {% endautoescape %}
                 <div class='datagrid-btn-separator'></div>
                 <div style="float: right; padding-bottom:1px;">
                         搜索值：<input type="text" name="SearchValue" id="txtSearchValue" class="txt03" style="width: 150px;"/>
@@ -24,6 +24,7 @@
         <table id="userlist" toolbar="#toolbar"></table>
     </div>     
 </div>
-<script type="text/javascript" src="~/Content/Scripts/Business/exportutil.js"></script>
-<script type="text/javascript" src="~/Content/Scripts/Business/Search.js"> </script>
-<script type="text/javascript" src="~/Areas/FrameworkModules/Biz/UserAdmin.js"></script>
+<script type="text/javascript" src="/Content/Scripts/Business/exportutil.js"></script>
+<script type="text/javascript" src="/Content/Scripts/Business/Search.js"> </script>
+<script type="text/javascript" src="/Content/Area/FrameworkModules/Biz/UserAdmin.js"></script>
+{% endblock %}

@@ -3,28 +3,28 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
-    <link href="~/Content/Styles/common.css" rel="stylesheet" type="text/css" />    
-   @* <link href="~/Content/Styles/sexybuttons.css" rel="stylesheet" type="text/css" />
-    <link href="~/Content/Scripts/showloading/showLoading.css" rel="stylesheet" type="text/css" />   *@ 
-    <link href="~/Content/Scripts/easyui/themes/@ViewBag.Skin/easyui.css" rel="stylesheet" type="text/css" />  
-    <link href="~/Content/Styles/iconNew16.css" rel="stylesheet" type="text/css" /> 
-    <script type="text/javascript" src="~/Content/Scripts/jquery-1.8.3.min.js" ></script>
-    <script type="text/javascript" src="~/Content/Scripts/jQuery.cookie.js"></script>
-    <script type="text/javascript" src="~/Content/Scripts/jQuery.Ajax.js"></script> 
-    <script type="text/javascript" src="~/Content/Scripts/easyui/jquery.easyui.min.js"></script>
-    <script type="text/javascript" src="~/Content/Scripts/easyui/locale/easyui-lang-zh_CN.js"></script>    
-    <script type="text/javascript" src="~/Content/Scripts/easyui/easyloader.js"></script>
-    <script type="text/javascript" src="~/Content/Scripts/layer/layer.js"></script>
-    <script type="text/javascript" src="~/Content/Scripts/jsCommon.js?v=30" ></script>
-    <script type="text/javascript" src="~/Content/Scripts/rdiframework-core.js?v=30" ></script>
-    <script type="text/javascript" src="~/Content/Scripts/json2.js"></script>    
-    <script type="text/javascript" src="~/Content/Scripts/jQuery.TableRowUI.js"></script>    
-    <script type="text/javascript" src="~/Content/Scripts/easyui/rdiframework-easyui-extend.js?v=30" ></script>
-
+    <title>{{ Title }}</title>
+    <link href="/Content/Styles/common.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/Styles/sexybuttons.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/Scripts/showloading/showLoading.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/Scripts/easyui/themes/{{ Skin }}/easyui.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/Styles/iconNew16.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/Content/Scripts/jquery-1.8.3.min.js" ></script>
+    <script type="text/javascript" src="/Content/Scripts/jQuery.cookie.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/jQuery.Ajax.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/easyui/easyloader.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/layer/layer.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/jsCommon.js?v=30" ></script>
+    <script type="text/javascript" src="/Content/Scripts/hpwf-core.js?v=30" ></script>
+    <script type="text/javascript" src="/Content/Scripts/json2.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/jQuery.TableRowUI.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/easyui/rdiframework-easyui-extend.js?v=30" ></script>
+    <script type="text/javascript" src="/Content/Scripts/csrf.js"></script>
 
     <script type="text/javascript" src="/Content/Scripts/layer/layer.js"></script>
-    <script type="text/javascript" src="/Content/Scripts/rdiframework-index.js?v=30"></script>
+    <script type="text/javascript" src="/Content/Scripts/hpwf-index.js?v=30"></script>
     <script type="text/javascript" src="/Content/Scripts/qqmsg/jQuery.qqmsg.js"></script>
     <script type="text/javascript" src="/Content/Scripts/showloading/jquery.showLoading.min.js"></script>
     <script type="text/javascript" src="/Content/Scripts/easyui/jquery.validate.min.js"></script>
@@ -39,7 +39,7 @@
 </head>
 <body style="height:100%;width:100%;border:none; overflow:hidden;" oncontextmenu="return false" ondragstart="return false" oncopy="document.selection.empty()" onbeforecopy="return false">
     <div>
-        @RenderBody()
+        {% block content %}{% endblock %}
     </div>
 
     <script type="text/javascript">

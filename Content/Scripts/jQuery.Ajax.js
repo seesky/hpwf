@@ -4,6 +4,7 @@
         url: url,
         data: dataMap,
         dataType: "json",
+        headers:{"X_CSRFToken":$.cookie('csrftoken')},
         beforeSend: function () { top.$.hLoading.show(); },
         complete: function () { top.$.hLoading.hide(); },
         success: fnSuccess

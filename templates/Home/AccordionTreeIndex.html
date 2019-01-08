@@ -4,27 +4,29 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9" />
         <title>滨州市儿童福利院办公自动化系统</title>
-        <link href="~/Content/Images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
-        <link href="~/Content/Scripts/showloading/showLoading.css" rel="stylesheet" type="text/css" />
-        <link href="~/Content/Styles/common.css" rel="stylesheet" type="text/css" /> 
-        <link href="~/Content/Scripts/easyui/themes/@ViewBag.Skin/easyui.css" rel="stylesheet" type="text/css" />        
-        <link href="~/Content/Styles/iconNew16.css" rel="stylesheet" type="text/css" />
-        <script type="text/javascript" src="~/Content/Scripts/jquery-1.8.3.min.js"></script>   
-        <script type="text/javascript" src="~/Content/Scripts/easyui/jquery.easyui.min.js"></script> 
-        <script type="text/javascript" src="~/Content/Scripts/easyui/locale/easyui-lang-zh_CN.js"></script>
-        <script type="text/javascript" src="~/Content/Scripts/jQuery.Ajax.js"></script>
-        <script type="text/javascript" src="~/Content/Scripts/easyui/rdiframework-easyui-extend.js?v=30" ></script>
-        <script type="text/javascript" src="~/Content/Scripts/rdiframework-core.js?v=30" ></script>
-        <script type="text/javascript" src="~/Content/Scripts/jsCommon.js?v=30" ></script>        
+        <link href="/Content/Images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+        <link href="/Content/Scripts/showloading/showLoading.css" rel="stylesheet" type="text/css" />
+        <link href="/Content/Styles/common.css" rel="stylesheet" type="text/css" /> 
+        <link href="/Content/Scripts/easyui/themes/{{ Skin }}/easyui.css" rel="stylesheet" type="text/css" />
+        <link href="/Content/Styles/iconNew16.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="/Content/Scripts/jquery-1.8.3.min.js"></script>   
+        <script type="text/javascript" src="/Content/Scripts/easyui/jquery.easyui.min.js"></script> 
+        <script type="text/javascript" src="/Content/Scripts/easyui/locale/easyui-lang-zh_CN.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/jQuery.Ajax.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/easyui/rdiframework-easyui-extend.js?v=30" ></script>
+        <script type="text/javascript" src="/Content/Scripts/hpwf-core.js?v=30" ></script>
+        <script type="text/javascript" src="/Content/Scripts/jsCommon.js?v=30" ></script>
+        <script type="text/javascript" src="/Content/Scripts/jQuery.cookie.js" ></script>
+        <script type="text/javascript" src="/Content/Scripts/csrf.js"></script>
     </head>
 <body class="easyui-layout" style="overflow-y: hidden;" fit="true" scroll="no" oncontextmenu="return false" ondragstart="return false" oncopy="document.selection.empty()" onbeforecopy="return false">
     <div id="loading" style="position: fixed;top: -50%;left: -50%;width: 200%;height: 200%;background: #fff;z-index: 100;overflow: hidden;">
-        <img src="~/Content/Images/ajax-loader.gif" style="position: absolute;top: 0;left: 0;right: 0;bottom: 0;margin: auto;" />
+        <img src="/Content/Images/ajax-loader.gif" style="position: absolute;top: 0;left: 0;right: 0;bottom: 0;margin: auto;" />
     </div>
 
     <noscript>
         <div style=" position:absolute; z-index:100000; height:2046px;top:0px;left:0px; width:100%; background:white; text-align:center;">
-            <img src="~/Content/Images/noscript.gif" alt='抱歉，请开启脚本支持！' />
+            <img src="/Content/Images/noscript.gif" alt='抱歉，请开启脚本支持！' />
         </div>
     </noscript>
 
@@ -37,7 +39,7 @@
         <div id="toolbar" class="panel-header panel-header-noborder top-toolbar">
             <div id="infobar">
                 <span class="icon16_administrator" style="padding-left: 25px; background-position: left center;">
-                    欢迎 <b id="curname">@ViewBag.Account</b>
+                    欢迎 <b id="curname">{{ Account }}</b>
                 </span>
             </div>
             <div id="buttonbar">
@@ -54,7 +56,7 @@
         </div>
     </div>
     <div region="south" split="true" style="height: 30px;">
-        <div class="footer">Copyright &copy; RDIFramework.NET V3.0, All Rights Reserved</div>
+        <div class="footer">Copyright &copy; hpwf V1.0, All Rights Reserved</div>
     </div>
 
     <div id="mainPanle" region="center" style="background: #eee; overflow-y:hidden" border="false">
@@ -81,10 +83,10 @@
     <!--载进度条start-->
     <div id="loading_background" class="loading_background" style="display: none;"></div>
     <div id="loading" onclick="Loading(false);">
-        <img src="~/Content/Images/loading.gif" style="vertical-align: middle;" />&nbsp;<span>正在拼了命为您加载…</span>&nbsp;
+        <img src="/Content/Images/loading.gif" style="vertical-align: middle;" />&nbsp;<span>正在拼了命为您加载…</span>&nbsp;
     </div>
     <div id="loadingGird">
-        <img src="~/Content/Images/loading.gif" style="vertical-align: middle;" />&nbsp;正在拼了命为您加载…&nbsp;
+        <img src="/Content/Images/loading.gif" style="vertical-align: middle;" />&nbsp;正在拼了命为您加载…&nbsp;
     </div>
     <script type="text/javascript">
         $(function () {
@@ -92,8 +94,8 @@
                 $.messager.confirm('系统提示', '您确定要退出本次登录吗?', function (r) {
                     if (r) {
                         window.setTimeout(function () {
-                            getAjax("/Login/OutLogin", "", function (data) {
-                                window.location.href = '../Login/Index';
+                            getAjax("/login/outlogin", "", function (data) {
+                                window.location.href = '../admin/index';
                             })
                         }, 200);
                     }
@@ -105,22 +107,26 @@
             });
         });
     </script>
-    <script type="text/javascript" src="~/Content/Scripts/layer/layer.js"></script>
-    <script type="text/javascript" src="~/Content/Scripts/rdiframework-index.js?v=30"></script>
-    <script type="text/javascript" src="~/Content/Scripts/qqmsg/jQuery.qqmsg.js"></script>
-    <script type="text/javascript" src="~/Content/Scripts/showloading/jquery.showLoading.min.js"></script>
-    <script type="text/javascript" src="~/Content/Scripts/easyui/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="~/Content/Scripts/easyui/jquery.validate.messages_zh.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/layer/layer.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/hpwf-index.js?v=30"></script>
+    <script type="text/javascript" src="/Content/Scripts/qqmsg/jQuery.qqmsg.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/showloading/jquery.showLoading.min.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/easyui/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/Content/Scripts/easyui/jquery.validate.messages_zh.js"></script>
 
     <script type="text/javascript">
         /**初始化**/
         $(document).ready(function () {
-            var errorUrl = '/Error/Error404';
-            addTab("我的桌面", '@Url.Content("~/Home/StartPage")', "icon16_home_page");
+            var errorUrl = '/error/error404';
+            addTab("我的桌面", '/admin/startpage', "icon16_home_page");
             loadMenu();
         });
+
         function loadMenu() {
-            $.ajaxjson('/Home/LoadTreeMenu', "", function (data) {
+            var postData = {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            };
+            $.ajaxjson('/admin/loadtreemenu/', postData, function (data) {
                 var treeJson = data;
                 $.each(treeJson, function (i, n) {
                     var cssIcon = 'icon icon-application_osx'; //没有设置图标，则取一个默认图标

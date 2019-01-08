@@ -10,7 +10,8 @@ from apps.utilities.publiclibrary.NetHelper import NetHelper
 from apps.utilities.publiclibrary.SystemInfo import SystemInfo
 from apps.utilities.publiclibrary.UserInfo import UserInfo
 from apps.hadmin.MvcAppUtilties.CommonUtils import CommonUtils
-
+from apps.bizlogic.service.base.LogOnService import LogOnService
+from apps.utilities.message.StatusCode import StatusCode
 
 
 def index(request):
@@ -39,18 +40,7 @@ def checklogin(request):
                     imanageuser.DepartmentId = '系统'
                     imanageuser.IPAddress = IPAddress
                     imanageuser.IsAdministrator = True
-                    # request.session['Account'] = Account
-                    # request.session['Password'] = Password
-                    # OnLineCount = cache.get('OnLineCount', [])
-                    # if OnLineCount:
-                    #     online_ips = cache.get_many(OnLineCount).keys()
-                    # if Account in OnLineCount:
-                    #     cache.set("OnLineCount", OnLineCount)
-                    # else:
-                    #     OnLineCount.append(Account)
-                    #     cache.set("OnLineCount", OnLineCount)
-
-
+                    #TODO:需要做在线人数统计
 
                     Msg = '3'
                     response = HttpResponse(Msg)
@@ -60,5 +50,23 @@ def checklogin(request):
                 else:
                     Msg = '4'
                     return HttpResponse(Msg)
+            else:
+
+
+                returnStatusCode = ''
+
+                returnStatusCode,userInfo = LogOnService.UserLogOn(Account, Password, '', False)
+
+                if returnStatusCode == StatusCode.statusCodeDic.get('OK'):
+                    Msg = '3'
+                    response = HttpResponse(Msg)
+                    CommonUtils.AddCurrent(userInfo, response, request)
+                    response.set_cookie('UIStyle', CommonUtils.UIStyle(response, request))
+                    return response
+                else:
+                    Msg = '4'
+
         except Exception as e:
             print(e)
+
+        return HttpResponse(Msg)

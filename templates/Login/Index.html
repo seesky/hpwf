@@ -78,7 +78,7 @@
                                 formMessage('登录密码错误', 'error');
                             } else if (parseInt(rs) == 3) {
                                 formMessage('登录验证成功,正在跳转首页', 'succeed');
-                                setInterval(Load, 1000);
+                                Load()
                             } else {
                                 alert(rs);
                             }
@@ -94,11 +94,11 @@
        
         if (Index && Index == 'Tree') {
             //window.location.href = '@Url.Content("~/Home/")' + Index;
-            window.location.href = '@Url.Content("~/Home/TreeIndex")';
+            window.location.href = '@Url.Content("/admin/treeindex/")';
         } else if (Index == 'AccordionTree') {
-            window.location.href = '@Url.Content("~/Home/AccordionTreeIndex")';
+            window.location.href = '/admin/accordiontreeindex/';
         } else {
-            window.location.href = '@Url.Content("~/Home/TreeIndex")';
+            window.location.href = '@Url.Content("/admin/treeindex/")';
         }
         return false;
     }

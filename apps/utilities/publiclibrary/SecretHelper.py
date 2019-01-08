@@ -8,7 +8,7 @@ import os
 
 class SecretHelper(object):
 
-    def AESEncrypt(self, toEncrypt):
+    def AESEncrypt(toEncrypt):
         """
         256位AES加密
         Args:
@@ -27,7 +27,7 @@ class SecretHelper(object):
         result = base64.b64encode(encrypted)  # base64 encode
         return result
 
-    def AESDecrypt(self, toDecrypt):
+    def AESDecrypt(toDecrypt):
         """
         256位AES解密
         Args:
@@ -41,6 +41,14 @@ class SecretHelper(object):
         key = '12345678901234567890123456789012'
         unpad = lambda s: s[0:-ord(s[-1])]
         cipher = AES.new(key)
+        # missing_padding = 4 - len(toDecrypt) % 4
+        # # toDecrypt.lstrip('b\'')
+        # # toDecrypt.rstrip('\'')
+        # if toDecrypt:
+        #     toDecrypt = toDecrypt + (r'=' * missing_padding)
         result2 = base64.b64decode(toDecrypt)
-        decrypted = unpad(cipher.decrypt(result2))
+        #result2 = base64.urlsafe_b64decode(toDecrypt)
+        result2 = cipher.decrypt(result2)
+        result2 = str(result2, encoding='utf-8')
+        decrypted = unpad(result2)
         return decrypted

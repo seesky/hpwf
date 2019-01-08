@@ -1,28 +1,28 @@
-﻿@{
-    ViewBag.Title = "StartPage";
-}
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html>
     <head>
-        <title>滨州市儿童福利院办公自动化系统 Desktop</title>
+        <title>HPWF Desktop</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="SeeSky" content="SeeSky">
         <meta name="Keywords" content="QQ:360457160">
         <meta name="Description" content="mail:360457160@qq.com">
-        <link rel="stylesheet" type="text/css" href="~/Content/Styles/desktop.css">
-        <link rel="stylesheet" type="text/css" href="~/Content/Styles/portal.css">
-        <link rel="stylesheet" type="text/css" href="~/Content/Styles/icon.css">
-        <script type="text/javascript" src="~/Content/Scripts/jquery-1.8.3.min.js"></script>
-        <script type="text/javascript" src="~/Content/Scripts/jQuery.cookie.js"></script>
-        <script type="text/javascript" src="~/Content/Scripts/jQuery.Ajax.js"></script>
-        <script type="text/javascript" src="~/Content/Scripts/rdiframework-core.js?v=30" ></script>
+        <link rel="stylesheet" type="text/css" href="/Content/Styles/desktop.css">
+        <link rel="stylesheet" type="text/css" href="/Content/Styles/portal.css">
+        <link rel="stylesheet" type="text/css" href="/Content/Styles/icon.css">
+        <script type="text/javascript" src="/Content/Scripts/jquery-1.8.3.min.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/jQuery.cookie.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/jQuery.Ajax.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/hpwf-core.js?v=30" ></script>
+        <script type="text/javascript" src="/Content/Scripts/csrf.js"></script>
         <script type="text/javascript">
             $(function () {
                 //从cookie中读取有没有css的默认样式
                 var themeCss = 'metro';
                 if ($.cookie('theme')) {
                     themeCss = $.cookie('theme');
+                    ipos = themeCss.indexOf(":");
+                    themeCss = themeCss.substring(0, ipos)
                 }
                 themeCss = '/Content/Scripts/easyui/themes/' + themeCss + '/easyui.css';
                 loadCss(themeCss);
@@ -117,7 +117,7 @@
                 <!-- 我的资料 -->
                 <div title="我的资料" data-options="iconCls:'icon-vcard',collapsible:true" style="height:205px;">
                     <div class="data-left">
-                        <img style="margin-top:15px" src="~/Content/Images/person-128.png">
+                        <img style="margin-top:15px" src="/Content/Images/person-128.png">
                     </div>
 				   
                     <div class="data-right">
@@ -127,7 +127,7 @@
                                     姓名：SeeSky
                                 </td>
                                 <td id="departmentName" class="data-grid-td5">
-                                    所在部门：山东弘尚电子科技有限公司研发部
+                                    所在部门：
                                 </td>
                             </tr>
                             <tr>
@@ -266,10 +266,10 @@
             </div>
         </div>
     </body>
-        <script type="text/javascript" src="~/Content/Scripts/easyui/jquery.easyui.min.js"></script>
-        <script type="text/javascript" src="~/Content/Scripts/jquery.portal.js"></script>	
-        <script type="text/javascript" src="~/Content/Scripts/desktop.js"></script> 
-<script type="text/javascript" src="/Content/Scripts/rdiframework-index.js?v=30"></script>
+        <script type="text/javascript" src="/Content/Scripts/easyui/jquery.easyui.min.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/jquery.portal.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/desktop.js"></script>
+<script type="text/javascript" src="/Content/Scripts/hpwf-index.js?v=30"></script>
 <script type="text/javascript" src="/Content/Scripts/qqmsg/jQuery.qqmsg.js"></script>
 <script type="text/javascript" src="/Content/Scripts/showloading/jquery.showLoading.min.js"></script>
 <script type="text/javascript" src="/Content/Scripts/easyui/jquery.validate.min.js"></script>
