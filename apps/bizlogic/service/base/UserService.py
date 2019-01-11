@@ -19,9 +19,13 @@ from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
 from apps.utilities.message.AuditStatus import AuditStatus
 from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
+from apps.utilities.publiclibrary.SystemInfo import SystemInfo
+from apps.utilities.message.PermissionScope import PermissionScope
 
 from apps.bizlogic.service.base.OrganizeService import OrganizeService
 from apps.bizlogic.service.permission.UserPermission import UserPermission
+from apps.bizlogic.service.base.PermissionItemService import PermissionItemService
+from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
 
 class UserSerivce(object):
     """
@@ -540,6 +544,76 @@ class UserSerivce(object):
         returnValue = DbCommonLibaray.executeQuery(self, sqlQuery)
         return returnValue
 
+    def GetSearchConditional(self, userInfo, permissionScopeCode, search, roleIds, enabled, auditStates, departmentId):
+        search = StringHelper.GetSearchString(self, search)
+        whereConditional = 'piuser.deletemark=0 and piuser.isvisible=1 '
+        if not enabled == None:
+            if enabled == True:
+                whereConditional = whereConditional + " and ( piuser.enabled = 1 )"
+            else:
+                whereConditional = whereConditional + " and ( piuser.enabled = 0 )"
+        if search:
+            whereConditional = whereConditional + " AND (" + 'piuser' + "." + 'username' + " LIKE '" + search + "'" \
+                            + " OR " + 'piuser' + "." + 'code' + " LIKE '" + search + "'" \
+                            + " OR " + 'piuser' + "." + 'realname' + " LIKE '" + search + "'" \
+                            + " OR " + 'piuser' + "." + 'quickquery' + " LIKE '" + search + "'" \
+                            + " OR " + 'piuser' + "." + 'departmentname' + " LIKE '" + search + "'" \
+                            + " OR " + 'piuser' + "." + 'description' + " LIKE '" + search + "')"
+        if departmentId:
+            organizeIds = OrganizeService.GetChildrensById(self, departmentId)
+            if organizeIds and len(organizeIds) > 0:
+                whereConditional =  whereConditional + " AND (" + 'piuser' + "." + 'companyid' + " IN (" + StringHelper.ArrayToList(self, organizeIds,"'") + ")" \
+                     + " OR " + 'piuser' + "." + 'companyid' + " IN (" + StringHelper.ArrayToList(self, organizeIds, "'") + ")"   \
+                     + " OR " + 'piuser' + "." + 'departmentid' + " IN (" + StringHelper.ArrayToList(self, organizeIds, "'") + ")"    \
+                     + " OR " + 'piuser' + "." + 'subdepartmentid' + " IN (" + StringHelper.ArrayToList(self, organizeIds, "'") + ")" \
+                     + " OR " + 'piuser' + "." + 'workgroupid' + " IN (" + StringHelper.ArrayToList(self, organizeIds, "'") + "))"
+                whereConditional = whereConditional + " OR " + 'piuser' + "." + 'id' + " IN (" \
+                            + " SELECT " + 'userid' \
+                            + "   FROM " + 'piuserorganize' \
+                            + "  WHERE (" + 'piuserorganize' + "." + 'deletemark' + " = 0 ) " \
+                            + "       AND ("  \
+                            + 'piuserorganize' + "." + 'companyid' + " = '" + departmentId + "' OR " \
+                            + 'piuserorganize' + "." + 'subcompanyid' + " = '" + departmentId + "' OR " \
+                            + 'piuserorganize' + "." + 'departmentid' + " = '" + departmentId + "' OR " \
+                            + 'piuserorganize' + "." + 'subdepartmentid' + " = '" + departmentId + "' OR " \
+                            + 'piuserorganize' + "." + 'workgroupid' + " = '" + departmentId + "')) ";
+        if auditStates:
+            whereConditional = whereConditional + " AND (" + 'piuser' + "." + 'auditstatus' + " = '" + auditStates + "')"
+
+        if roleIds and len(roleIds) > 0:
+            roles = StringHelper.ArrayToList(self, roleIds, "'")
+            whereConditional = whereConditional + " AND (" + 'piuser' + "." + 'id' + " IN (" + "SELECT " + 'userid' + " FROM " + 'piuserrole' + " WHERE " + 'roleid' + " IN (" + roles + ")" + "))"
+
+        if (not userInfo.IsAdministrator) and SystemInfo.EnableUserAuthorizationScope:
+            permissionScopeItemId = PermissionItemService.GetId(self, permissionScopeCode)
+            if permissionScopeItemId:
+                #从小到大的顺序进行显示，防止错误发生
+                organizeIds = PermissionScopeService.GetOrganizeIds(self, userInfo.Id, permissionScopeCode)
+                #没有任何数据权限
+                if PermissionScope.PermissionScopeDic.get('No') in organizeIds:
+                    whereConditional = whereConditional + " AND (" + 'piuser' + "." + 'id' + " = NULL ) "
+                #按详细设定的数据
+                if PermissionScope.PermissionScopeDic.get('Detail') in organizeIds:
+                    userIds = PermissionScopeService.GetUserIds(self, userInfo.Id, permissionScopeCode)
+                    whereConditional = whereConditional + " AND (" + 'piuser' + "." + 'id' + " IN (" + StringHelper.ObjectsToList(userIds) + ")) "
+                #自己的数据，仅本人
+                if PermissionScope.PermissionScopeDic.get('User') in organizeIds:
+                    whereConditional = whereConditional + " AND (" + 'piuser' + "." + 'id' + " = '" + userInfo.Id + "') "
+                #用户所在工作组数据
+                if PermissionScope.PermissionScopeDic.get('UserWorkgroup') in organizeIds:
+                    whereConditional = whereConditional + " AND (" + 'piuser' + "." + 'workgroupid' + " = '" + userInfo.WorkgroupId + "') "
+                #用户所在部门数据
+                if PermissionScope.PermissionScopeDic.get('UserDepartment') in organizeIds:
+                    whereConditional = whereConditional + " AND (" + 'piuser' + "." + 'departmentid' + " = '" + userInfo.DepartmentId + "') "
+                #用户所在公司数据
+                if PermissionScope.PermissionScopeDic.get('UserCompany') in organizeIds:
+                    whereConditional = whereConditional + " AND (" + 'piuser' + "." + 'companyid' + " = '" + userInfo.CompanyId + "') "
+                #全部数据，这里就不用设置过滤条件了
+                if PermissionScope.PermissionScopeDic.get('All') in organizeIds:
+                    pass
+        return whereConditional
+
+
     def GetUserIdsInRole(self, roleId):
         """
         获取员工的角色主键数组
@@ -552,3 +626,13 @@ class UserSerivce(object):
         q2 = Piuserrole.objects.filter(Q(roleid=roleId) & Q(userid__in=Piuser.objects.filter(deletemark=0).values_list('id')) & Q(deletemark=0)).values_list('userid', flat=True)
         returnValue = q1.union(q2)
         return returnValue
+
+    def SearchByPage(self, userInfo, permissionScopeCode, search, roleIds, enabled, auditStates, departmentId, pageIndex = 0, pageSize = 20, order = None):
+        whereConditional = UserSerivce.GetSearchConditional(self, userInfo, permissionScopeCode, search, roleIds, enabled, auditStates, departmentId)
+        #countSqlQuery = ' SELECT * FROM ' + Piuser._meta.db_table + ' WHERE '
+        countSqlQuery = 'SELECT * FROM (SELECT PIUSER.*, PIUSERLOGON.FIRSTVISIT, PIUSERLOGON.PREVIOUSVISIT, PIUSERLOGON.LASTVISIT, PIUSERLOGON.IPADDRESS, PIUSERLOGON.MACADDRESS, PIUSERLOGON.LOGONCOUNT, PIUSERLOGON.USERONLINE, PIUSERLOGON.CHECKIPADDRESS, PIUSERLOGON.MULTIUSERLOGIN FROM PIUSER LEFT OUTER JOIN PIUSERLOGON ON PIUSER.ID = PIUSERLOGON.ID WHERE PIUSER.DELETEMARK = 0  AND PIUSER.ISVISIBLE = 1 AND (PIUSER.ENABLED = 1) ORDER BY PIUSER.SORTCODE) PIUSER WHERE '
+        countSqlQuery = countSqlQuery + ' ' + whereConditional
+        userList = DbCommonLibaray.executeQuery(self, countSqlQuery)
+        pageValue = Paginator(userList, pageSize)
+        page = pageValue.page(pageIndex)
+        return pageValue.count, page

@@ -370,3 +370,10 @@ class PermissionItemService(object):
             return True
         else:
             return False
+
+    def GetId(self, permissionScopeCode):
+        try:
+            id = Pipermissionitem.objects.get(code = permissionScopeCode).id
+            return id
+        except Pipermissionitem.DoesNotExist as e:
+            return None

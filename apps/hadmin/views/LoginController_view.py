@@ -14,10 +14,10 @@ from apps.bizlogic.service.base.LogOnService import LogOnService
 from apps.utilities.message.StatusCode import StatusCode
 
 
-def index(request):
+def Index(request):
     return render(request, 'Login/Index.html')
 
-def checklogin(request):
+def CheckLogin(request):
     if request.method == 'GET':
         return render(request, 'Login/Index.html')
     else:

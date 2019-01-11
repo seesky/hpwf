@@ -6,13 +6,16 @@ from apps.bizlogic.models import Piuser
 from apps.bizlogic.models import Piuserorganize
 from apps.bizlogic.models import Piorganize
 from apps.bizlogic.service.base.UserService import UserSerivce
+from apps.bizlogic.service.base.UserRoleService import UserRoleService
 from apps.bizlogic.service.base.OrganizeService import OrganizeService
+from apps.bizlogic.service.base.RoleService import RoleService
 from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 from django.db.utils import DatabaseError
 from django.db.transaction import TransactionManagementError
 from django.db.models import Q
 from utilities.message.StatusCode import StatusCode
 from utilities.message.FrameworkMessage import FrameworkMessage
+
 
 
 class UserOrganizeService(object):
@@ -33,9 +36,31 @@ class UserOrganizeService(object):
             dataTable = UserSerivce.GetDepartmentUsers(self, departmentId, containChildren)
         return dataTable
 
-    def GetUserPageDTByDepartment(self, permissionScopeCode, searchValue, enabled, auditStates, roleIds, showRole, userAllInformation, recordCount, pageIndex=0, pageSize=100, sort=None, departmentId=None):
+    def GetUserPageDTByDepartment(self, userInfo, permissionScopeCode, searchValue,  enabled, auditStates, roleIds, showRole, userAllInformation, pageIndex=0, pageSize=100, sort=None, departmentId=None):
         #TODO:还需要完善此方法
-        pass
+        if not departmentId:
+            departmentId = ''
+
+        myrecordCount = 0
+        myrecordCount, dt = UserSerivce.SearchByPage(self, userInfo, permissionScopeCode, searchValue, roleIds, enabled, auditStates, departmentId, pageIndex, pageSize)
+
+        if showRole:
+            #这里是获取角色列表
+            dataTableRole = RoleService.GetDT(None)
+            #友善的显示属于多个角色的功能
+            roleName = ''
+            for user in dt:
+                roleName = ''
+                roleIds = UserRoleService.GetRoleIds(user['ID'])
+                if roleIds:
+                    for i in roleIds:
+                        roleName = roleName + dataTableRole.filter(id = i)[0].realname + ", "
+                if roleName:
+                    roleName = roleName.strip(", ")
+                    user['ROLENAME'] = roleName
+        return myrecordCount,dt
+
+
 
     def GetUserOrganizeDT(self, userId):
         """

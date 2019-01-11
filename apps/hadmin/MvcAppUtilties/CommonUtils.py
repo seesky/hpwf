@@ -8,6 +8,7 @@ import json
 from apps.utilities.publiclibrary.SecretHelper import SecretHelper
 import zlib
 from apps.utilities.publiclibrary.UserInfo import UserInfo
+from django.db.models import Q
 
 class CommonUtils(object):
 
@@ -80,3 +81,23 @@ class CommonUtils(object):
                                    salt=ParameterService.GetServiceConfig('LoginUserKey'))
         return tmpTheme
 
+    def CheckTreeParentId(dataTable, fieldId, fieldParentId):
+        """
+        查找 ParentId 字段的值是否在 Id字段 里
+        Args:
+            dataTable (): 数据表
+            fieldId (string): 主键字段
+            fieldParentId (string): 父节点字段
+        Returns:
+        """
+        if not dataTable:
+            return;
+
+        for row in dataTable:
+            value = row.parentid
+            if value:
+                if len(dataTable.filter(Q(id=row.parentid))) == 0:
+                    row.parentid = '#'
+            else:
+                row.parentid = "#"
+        return dataTable

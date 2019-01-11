@@ -21,5 +21,5 @@ app_name = '[hadmin]'
 
 urlpatterns = [
     url(r'^piusertest/$', PiuserTest.as_view(), name='piusertest'),
-    url(r'^admin/', include(('hadmin.urls', 'hadmin'), namespace='hadmin'))
+    url(r'^Admin/', include(('hadmin.urls', 'hadmin'), namespace='hadmin'))
 ]

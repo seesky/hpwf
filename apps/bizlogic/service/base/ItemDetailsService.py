@@ -2,6 +2,10 @@
 __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/12 8:01'
 
+from apps.bizlogic.models import Ciitemdetails
+from apps.bizlogic.models import Ciitems
+from django.db.models import Q
+
 class ItemDetailsService(object):
 
     def Add(self, entity, statusMessage):
@@ -35,4 +39,12 @@ class ItemDetailsService(object):
         pass
 
     def GetDTByCode(self, code):
-        pass
+        """
+        绑定下列列表
+        Args:
+            code (string): Code
+        Returns:
+            returnValue (Item): 数据表
+        """
+        returnValue = Ciitemdetails.objects.filter(Q(itemid__in = Ciitems.objects.filter(code=code)) & Q(deletemark=0) & Q(enabled=1)).order_by('sortcode')
+        return returnValue

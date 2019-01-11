@@ -37,7 +37,7 @@ var organizeTree = {
     init: function() {
         $('#organizeTree').tree({
             lines: true,
-            url: '/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson?isTree=1',
+            url: '/Admin/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/1/',
             animate: true,
             onLoadSuccess:function(node,data) {
                 $('body').data('depData', data);
@@ -62,7 +62,7 @@ var organizeTree = {
 var mygrid = {
     databind: function (size) {
         $('#staffGird').datagrid({
-            url: "/FrameworkModules/StaffAdmin/GetStaffByOrganizeId",
+            url: "/Admin/FrameworkModules/StaffAdmin/GetStaffByOrganizeId/",
             title: "员工（职员）列表",
             loadMsg: "正在加载员工（职员）数据，请稍等...",
             width: size.width,
@@ -88,30 +88,30 @@ var mygrid = {
 			},
             columns: [[
                     { field: 'ck', checkbox: true, rowspan: 2 },
-                    { title: '主键', field: 'ID', hidden: true, rowspan: 2 },
-                    { title: '编号', field: 'CODE', width: 100, rowspan: 2 },
-                    { title: '姓名', field: 'REALNAME', width: 100, rowspan: 2 },
+                    { title: '主键', field: 'id', hidden: true, rowspan: 2 },
+                    { title: '编号', field: 'code', width: 100, rowspan: 2 },
+                    { title: '姓名', field: 'realname', width: 100, rowspan: 2 },
                     {
-                        title: '性别', field: 'GENDER', width: 50, rowspan: 2, formatter: function (v, d, i) {
-                            if (d.GENDER === '男') {
-                                return '<img src="../../Content/Styles/icon/user_b.png" alt="男" title="男" />';
+                        title: '性别', field: 'gender', width: 50, rowspan: 2, formatter: function (v, d, i) {
+                            if (d.gender === '男') {
+                                return '<img src="/Content/Styles/icon/user_b.png" alt="男" title="男" />';
                             }
-                            else if (d.GENDER === '女') {
-                                return '<img src="../../Content/Styles/icon/user_green.png" alt="女" title="女" />';
+                            else if (d.gender === '女') {
+                                return '<img src="/Content/Styles/icon/user_green.png" alt="女" title="女" />';
                             } else {
-                                return '<img src="../../Content/Styles/icon/question_button.png" alt="性别未知" title="未设置性别" />';
+                                return '<img src="/Content/Styles/icon/question_button.png" alt="性别未知" title="未设置性别" />';
                             }
                         }
                     },
 					{ title: '联系方式', colspan: 4 },
-					{ title: '有效', field: 'ENABLED', width: 50, align: 'center', formatter: statusFormatter, rowspan: 2 },
-                    { title: '描述', field: 'DESCRIPTION', width: 260, rowspan: 2 },
-                    { title: 'UserId', field: 'USERID', hidden: true, rowspan: 2 }
+					{ title: '有效', field: 'enabled', width: 50, align: 'center', formatter: statusFormatter, rowspan: 2 },
+                    { title: '描述', field: 'description', width: 260, rowspan: 2 },
+                    { title: 'UserId', field: 'userid', hidden: true, rowspan: 2 }
 					], [
-                    { title: '出生日期', field: 'BIRTHDAY', align: "center", width: 90, rowspan: 1 },
-                    { title: '手机号码', field: 'MOBILE', width: 120, rowspan: 1 },
-                    { title: '办公电话', field: 'OFFICEPHONE', width: 120, rowspan: 1 },
-                    { title: '邮箱地址', field: 'EMAIL', width: 150, rowspan: 1 }
+                    { title: '出生日期', field: 'birthday', align: "center", width: 90, rowspan: 1 },
+                    { title: '手机号码', field: 'mobile', width: 120, rowspan: 1 },
+                    { title: '办公电话', field: 'officephone', width: 120, rowspan: 1 },
+                    { title: '邮箱地址', field: 'email', width: 150, rowspan: 1 }
 
                 ]],
             onLoadSuccess: function (data) {
@@ -138,7 +138,7 @@ function statusFormatter(value) {
 }
 
 var imgcheckbox = function (cellvalue, options, rowObject) {
-    return cellvalue ? '<img src="../../Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="../../Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
+    return cellvalue ? '<img src="/Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="/Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
 };
 
 var StaffAdminMethod = {

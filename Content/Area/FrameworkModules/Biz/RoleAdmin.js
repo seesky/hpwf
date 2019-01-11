@@ -25,7 +25,7 @@ $(function () {
     var mygrid = {
         bindGrid: function (size) {
             navgrid = $('#list').datagrid({
-                url: '/FrameworkModules/RoleAdmin/GridPageListJson',            
+                url: '/Admin/FrameworkModules/RoleAdmin/GridPageListJson/',
                 toolbar: '#toolbar',
                 width: size.width,
                 height: size.height,
@@ -77,12 +77,12 @@ $(function () {
     }
 
     var imgcheckbox = function (cellvalue, options, rowObject) {
-        return cellvalue ? '<img src="../../Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="../../Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
+        return cellvalue ? '<img src="/Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="/Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
     };
 
     var BindCategory = function () {
         $('#role_Category').combobox({   
-        url: '/FrameworkModules/RoleAdmin/GetRoleCategory?categoryCode=RoleCategory',
+        url: '/Admin/FrameworkModules/RoleAdmin/GetRoleCategory/?categoryCode=RoleCategory',
         method: 'get',
         valueField: 'ITEMVALUE',
         textField: 'ITEMNAME',

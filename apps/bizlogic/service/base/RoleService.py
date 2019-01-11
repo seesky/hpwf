@@ -17,6 +17,7 @@ from apps.bizlogic.models import Piuserrole
 from apps.bizlogic.service.base.UserService import UserSerivce
 from apps.bizlogic.service.base.UserRoleService import UserRoleService
 
+
 class RoleService(object):
     """
     新增实体
@@ -77,8 +78,9 @@ class RoleService(object):
         """
         returnValue = []
         try:
-            for role in Pirole.objects.all():
-                returnValue.append(role)
+            # for role in Pirole.objects.all():
+            #     returnValue.append(role)
+            returnValue = Pirole.objects.filter(deletemark=0)
             return returnValue
         except DatabaseError as e:
             return returnValue
@@ -102,7 +104,7 @@ class RoleService(object):
         except TransactionManagementError as e:
             return returnValue
 
-    def GetDtByPage(self, recordCount, pageSize=20, whereConditional="", order=""):
+    def GetDtByPage(self, pageSize=20, whereConditional="", order=""):
         """
         取得角色列表
         Args:
@@ -126,8 +128,7 @@ class RoleService(object):
                 whereConditional = 'SELECT * FROM ' + Pirole._meta.db_table + ' WHERE ' + whereConditional + ' AND deletemark = 0 ORDER BY ' + order
         staffList = DbCommonLibaray.executeQuery(self, whereConditional)
         returnValue = Paginator(staffList, pageSize)
-        recordCount = returnValue.count
-        return recordCount,returnValue
+        return returnValue
 
     def GetEntity(self, id):
         """

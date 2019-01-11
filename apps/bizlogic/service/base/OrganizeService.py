@@ -117,7 +117,8 @@ class OrganizeService(object):
         """
         try:
             returnValue = []
-            for piorganize in Piorganize.objects.filter(parentid=organizeId):
+            returnValue.append(organizeId)
+            for piorganize in Piorganize.objects.filter(Q(parentid=organizeId) & Q(deletemark=0)):
                 returnValue.append(piorganize.id)
             return returnValue
         except Piorganize.DoesNotExist:
@@ -132,8 +133,11 @@ class OrganizeService(object):
         """
         returnValue = []
         try:
-            for organize in Piorganize.objects.all():
-                returnValue.append(organize)
+            # for organize in Piorganize.objects.all():
+            #     returnValue.append(organize)
+            # return returnValue
+
+            returnValue = Piorganize.objects.filter(deletemark=0).order_by('sortcode')
             return returnValue
         except DatabaseError as e:
             return returnValue

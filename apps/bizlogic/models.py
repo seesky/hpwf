@@ -458,6 +458,24 @@ class Piorganize(models.Model):
     modifieduserid = models.CharField(db_column='MODIFIEDUSERID', max_length=50, blank=True, null=True)  # Field name made lowercase.
     modifiedby = models.CharField(db_column='MODIFIEDBY', max_length=50, blank=True, null=True)  # Field name made lowercase.
 
+    def toJSON(self):
+        fields = []
+        for field in self._meta.fields:
+            fields.append(field.name)
+
+        d = {}
+        import datetime
+        for attr in fields:
+            if isinstance(getattr(self, attr), datetime.datetime):
+                d[attr] = getattr(self, attr).strftime('%Y-%m-%d %H:%M:%S')
+            elif isinstance(getattr(self, attr), datetime.date):
+                d[attr] = getattr(self, attr).strftime('%Y-%m-%d')
+            else:
+                d[attr] = getattr(self, attr)
+
+        import json
+        return json.dumps(d)
+
     class Meta:
         managed = True
         db_table = 'piorganize'
@@ -585,6 +603,21 @@ class Pirole(models.Model):
     modifieduserid = models.CharField(db_column='MODIFIEDUSERID', max_length=50, blank=True, null=True)  # Field name made lowercase.
     modifiedby = models.CharField(db_column='MODIFIEDBY', max_length=50, blank=True, null=True)  # Field name made lowercase.
 
+    def toJSON(self):
+        fields = []
+        for field in self._meta.fields:
+            fields.append(field.name)
+
+        d = {}
+        import datetime
+        for attr in fields:
+            if isinstance(getattr(self, attr), datetime.datetime):
+                d[attr] = getattr(self, attr).strftime('%Y-%m-%d %H:%M:%S')
+            elif isinstance(getattr(self, attr), datetime.date):
+                d[attr] = getattr(self, attr).strftime('%Y-%m-%d')
+            else:
+                d[attr] = getattr(self, attr)
+
     class Meta:
         managed = True
         db_table = 'pirole'
@@ -645,6 +678,24 @@ class Pistaff(models.Model):
     modifiedon = models.DateTimeField(db_column='MODIFIEDON')  # Field name made lowercase.
     modifieduserid = models.CharField(db_column='MODIFIEDUSERID', max_length=50, blank=True, null=True)  # Field name made lowercase.
     modifiedby = models.CharField(db_column='MODIFIEDBY', max_length=50, blank=True, null=True)  # Field name made lowercase.
+
+    def toJSON(self):
+        fields = []
+        for field in self._meta.fields:
+            fields.append(field.name)
+
+        d = {}
+        import datetime
+        for attr in fields:
+            if isinstance(getattr(self, attr), datetime.datetime):
+                d[attr] = getattr(self, attr).strftime('%Y-%m-%d %H:%M:%S')
+            elif isinstance(getattr(self, attr), datetime.date):
+                d[attr] = getattr(self, attr).strftime('%Y-%m-%d')
+            else:
+                d[attr] = getattr(self, attr)
+
+        import json
+        return json.dumps(d)
 
     class Meta:
         managed = True

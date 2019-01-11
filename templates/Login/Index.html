@@ -65,7 +65,7 @@
                             Password: escape(password),
                             csrfmiddlewaretoken: '{{ csrf_token }}'
                         };
-                        getAjax('/admin/checklogin/', postData, function (rs) {
+                        getAjax('/Admin/CheckLogin/', postData, function (rs) {
                             if (parseInt(rs) == -1) {
                                 $("#txtAccount").focus();
                                 formMessage('登录账户不存在', 'error');
@@ -78,7 +78,8 @@
                                 formMessage('登录密码错误', 'error');
                             } else if (parseInt(rs) == 3) {
                                 formMessage('登录验证成功,正在跳转首页', 'succeed');
-                                Load()
+                                setInterval(Load, 1000);
+                                //Load()
                             } else {
                                 alert(rs);
                             }
@@ -94,11 +95,11 @@
        
         if (Index && Index == 'Tree') {
             //window.location.href = '@Url.Content("~/Home/")' + Index;
-            window.location.href = '@Url.Content("/admin/treeindex/")';
+            window.location.href = '@Url.Content("/Admin/Treeindex/")';
         } else if (Index == 'AccordionTree') {
-            window.location.href = '/admin/accordiontreeindex/';
+            window.location.href = '/Admin/AccordionTreeIndex/';
         } else {
-            window.location.href = '@Url.Content("/admin/treeindex/")';
+            window.location.href = '@Url.Content("/Admin/TreeIndex/")';
         }
         return false;
     }

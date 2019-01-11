@@ -126,7 +126,7 @@ class ScopPermission(object):
               returnValue(Pipermissionitem): 数据表
         """
         if not permissionItemCode:
-            dataTable = Piorganize.objects.all()
+            dataTable = Piorganize.objects.all(Q(deletemark=0))
             return dataTable
         else:
             if userId:

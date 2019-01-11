@@ -6,8 +6,12 @@ from apps.hadmin.MvcAppUtilties.LoginAuthorize import LoginAuthorize
 from apps.hadmin.MvcAppUtilties.CommonUtils import CommonUtils
 from apps.hadmin.MvcAppUtilties.PublicController import PublicController
 from apps.hadmin.MvcAppUtilties.AjaxOnly import AjaxOnly
+from apps.hadmin.MvcAppUtilties.JsonHelper import DateEncoder
 from django.http.response import HttpResponse
+from django.http import JsonResponse
 from django.template import loader ,Context
+from apps.bizlogic.service.base.UserOrganizeSerivce import UserOrganizeService
+import json
 
 
 def GenerateSplitTool():
@@ -36,7 +40,7 @@ def BuildToolBarButton(response, request):
     return sb
 
 @LoginAuthorize
-def index(request):
+def Index(request):
     """
     起始页
     Args:
@@ -53,8 +57,45 @@ def index(request):
 
 @AjaxOnly
 @LoginAuthorize
-def getuserpagedtbydepartmentid(request):
+def GetUserPageDTByDepartmentId(request):
 
-    
+    organizeId = None
+    try:
+        organizeId = request.POST['organizeId']
+    except:
+        organizeId = None
 
-    pass
+    try:
+        searchValue = request.POST['searchValue']
+    except:
+        searchValue = ''
+
+    try:
+        page = request.POST['page']
+    except:
+        page = 1
+
+    try:
+        rows = request.POST['rows']
+    except:
+        rwos = 20
+
+    searchValue = searchValue if searchValue else ''
+
+    response = HttpResponse()
+    jsons = "[]"
+    returnValue = ''
+
+    if organizeId:
+        recordCount = 0
+        recordCount,dtUser = UserOrganizeService.GetUserPageDTByDepartment(None, CommonUtils.Current(response, request), 'Resource.ManagePermission', searchValue, None, '', None,  True, True, page, rows, 'sortcode', organizeId)
+        userTmp = ''
+        for user in dtUser:
+            userTmp = userTmp + ', ' + json.dumps(user, cls=DateEncoder)
+        userTmp = userTmp.strip(',')
+        returnValue = '{"total": '+ str(recordCount) +', "rows":['+ userTmp +']}'
+        response.content = returnValue
+    else:
+        response.content = jsons
+
+    return response

@@ -29,7 +29,7 @@ var organizeTree = {
     init: function () {
         $('#organizeTree').tree({
             lines: true,
-            url: '/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson?isTree=1',
+            url: '/Admin/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/1/',
             animate: true,
             onLoadSuccess: function (node, data) {
                 $('body').data('depData', data);
@@ -59,7 +59,7 @@ var navgrid;
 var mygrid = {
     bindGrid: function (size) {
         navgrid = $('#userlist').datagrid({
-            url: "/FrameworkModules/UserAdmin/GetUserPageDTByDepartmentId",
+            url: "/Admin/FrameworkModules/UserAdmin/GetUserPageDTByDepartmentId/",
             //title: "系统用户列表",
             loadMsg: "正在加载用户数据，请稍等...",
             //iconCls: 'icon icon-list',
@@ -91,20 +91,20 @@ var mygrid = {
                 columns: [[
                     { title: '有效', field: 'ENABLED', width: 35, rowspan: 2, formatter: function (v, d, i) {
                             if (d.USERNAME != 'Administrator') { //超级管理员不应该设置其是否有效
-                                return '<img style="cursor:pointer" title="设置用户的可用性（启用或禁用）" onclick="javascript:SetUserEnabled(' + "'" + d.ID + "'" + ',' + v + ')" src="../../Content/Styles/icon/bullet_' + (v ? "tick.png" : "minus.png") + '" />';
+                                return '<img style="cursor:pointer" title="设置用户的可用性（启用或禁用）" onclick="javascript:SetUserEnabled(' + "'" + d.ID + "'" + ',' + v + ')" src="/Content/Styles/icon/bullet_' + (v ? "tick.png" : "minus.png") + '" />';
                             }
                         }
                     },
-                    { title: '离职', field: 'ISDIMISSION', align: "center", width: 35,rowspan: 2, formatter: ImageCheckBox },
+                    { title: '离职', field: 'ISDIMISSION', align: "center", width: 35,rowspan: 2, formatter: lizhicheckbox },
                     {
                         title: '性别', field: 'GENDER', width: 35, rowspan: 2, formatter: function (v, d, i) {
                             if (d.GENDER === '男'){
-                                return '<img src="../../Content/Styles/icon/user_b.png" alt="男" title="男" />';
+                                return '<img src="/Content/Styles/icon/user_b.png" alt="男" title="男" />';
                             }
                             else if (d.GENDER === '女') {
-                                return '<img src="../../Content/Styles/icon/user_green.png" alt="女" title="女" />';
+                                return '<img src="/Content/Styles/icon/user_green.png" alt="女" title="女" />';
                             } else {
-                                return '<img src="../../Content/Styles/icon/question_button.png" alt="性别未知" title="未设置性别" />';
+                                return '<img src="/Content/Styles/icon/question_button.png" alt="性别未知" title="未设置性别" />';
                             }
                         }
                     },
@@ -164,7 +164,11 @@ function refreshCellsStyle(tr) {
 }
 
 var imgcheckbox = function (cellvalue, options, rowObject) {
-    return cellvalue ? '<img src="../../Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="../../Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
+    return cellvalue ? '<img src="/Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="/Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
+};
+
+var lizhicheckbox = function (cellvalue, options, rowObject) {
+    return cellvalue ? '<img src="/Content/Styles/icon/checkbox_yes.png" alt="离职" title="离职" />' : '<img src="/Content/Styles/icon/checkbox_no.png" alt="未离职" title="未离职" />';
 };
 
 var date2str = function (cellvalue, options, rowObject) {

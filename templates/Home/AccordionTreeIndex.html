@@ -95,7 +95,7 @@
                     if (r) {
                         window.setTimeout(function () {
                             getAjax("/login/outlogin", "", function (data) {
-                                window.location.href = '../admin/index';
+                                window.location.href = '../Admin/Index';
                             })
                         }, 200);
                     }
@@ -118,7 +118,7 @@
         /**初始化**/
         $(document).ready(function () {
             var errorUrl = '/error/error404';
-            addTab("我的桌面", '/admin/startpage', "icon16_home_page");
+            addTab("我的桌面", '/Admin/StartPage', "icon16_home_page");
             loadMenu();
         });
 
@@ -126,7 +126,7 @@
             var postData = {
                 csrfmiddlewaretoken: '{{ csrf_token }}'
             };
-            $.ajaxjson('/admin/loadtreemenu/', postData, function (data) {
+            $.ajaxjson('/Admin/LoadTreeMenu/', postData, function (data) {
                 var treeJson = data;
                 $.each(treeJson, function (i, n) {
                     var cssIcon = 'icon icon-application_osx'; //没有设置图标，则取一个默认图标

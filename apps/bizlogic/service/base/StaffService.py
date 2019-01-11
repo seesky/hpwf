@@ -166,14 +166,14 @@ class StaffService(object):
         if containChildren:
             organizeIds = OrganizeService.GetChildrensById(self, organizeId)
             staffIds = []
-            for staff in Pistafforganize.objects.filter(Q(organizeid__in=organizeIds)):
+            for staff in Pistafforganize.objects.filter(Q(organizeid__in=organizeIds) & Q(deletemark=0)):
                 staffIds.append(staff.staffid)
 
-            returnValue = Pistaff.objects.filter(id__in=staffIds).order_by('sortcode')
+            returnValue = Pistaff.objects.filter(Q(id__in=staffIds) & Q(deletemark=0)).order_by('sortcode')
             return returnValue
         else:
             starffIds = []
-            for staff in Pistafforganize.objects.filter(Q(organizeid=organizeId)):
+            for staff in Pistafforganize.objects.filter(Q(organizeid=organizeId) & Q(deletemark=0)):
                 starffIds.append(staff.staffid)
             returnValue = Pistaff.objects.filter(Q(id__in=starffIds) & Q(deletemark=0)).order_by('sortcode')
             return returnValue

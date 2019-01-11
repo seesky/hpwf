@@ -22,7 +22,7 @@ def index(request):
     return render(request, 'Login/Index.html')
 
 @LoginAuthorize
-def accordiontreeindex(request):
+def AccordiontreeIndex(request):
     """
     手风琴+树形目录(2级+)
     Args:
@@ -36,7 +36,7 @@ def accordiontreeindex(request):
     return response
 
 @LoginAuthorize
-def loadtreemenu(request):
+def LoadTreeMenu(request):
     """
     加载无限树菜单
     Args:
@@ -82,7 +82,7 @@ def loadtreemenu(request):
     return response
 
 @LoginAuthorize
-def startpage(request):
+def StartPage(request):
     """
     起始页
     Args:
