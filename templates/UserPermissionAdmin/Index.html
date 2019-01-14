@@ -1,0 +1,15 @@
+﻿{% extends "Shared/_LayoutIndex.html" %}
+{% block content %}
+
+<div id="toolbar">
+        {% autoescape off %}
+        {{ ToolButton }}
+        {% endautoescape %}
+</div>
+
+<table id="list"></table>   
+<script type="text/javascript" src="/Content/Area/FrameworkModules/Biz/UserPermissionAdmin.js?v=2.9"></script>
+<script type="text/javascript" src="/Content/Area/FrameworkModules/Biz/SetUserPermissionScope.js?v=2.9"></script>
+<script type="text/javascript" src="/Content/Scripts/Business/Search.js"></script>
+
+{% endblock %}

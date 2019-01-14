@@ -147,7 +147,7 @@ class SystemInfo(object):
     # 是否启用表格数据权限
     # 启用分级管理范围权限设置，启用逐级授权
 
-    EnableUserAuthorizationScope = False
+    EnableUserAuthorizationScope = True
 
     # 启用按用户权限
 

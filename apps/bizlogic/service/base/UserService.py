@@ -162,6 +162,9 @@ class UserSerivce(object):
         if searchValue:
             whereConditional = whereConditional + "  AND (" + searchValue + ')'
 
+        if order:
+            whereConditional = whereConditional + " ORDER BY " + order
+
         countSqlQuery = countSqlQuery + ' ' + whereConditional
         userList = DbCommonLibaray.executeQuery(self, countSqlQuery)
         returnValue = Paginator(userList, pageSize)

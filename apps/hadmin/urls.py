@@ -11,6 +11,7 @@ import apps.hadmin.views.FramworkModules.RoleAdminController_view as RoleAdmin
 import apps.hadmin.views.FramworkModules.PostAdminController_view as PostAdmin
 import apps.hadmin.views.FramworkModules.ModuleAdminController_view as ModuleAdmin
 import apps.hadmin.views.FramworkModules.PermissionItemAdminController_views as PermissionItem
+import apps.hadmin.views.FramworkModules.UserPermissionAdminController_views as UserPermission
 
 urlpatterns = [
     url(r'^Index/', LoginController.Index),
@@ -20,6 +21,7 @@ urlpatterns = [
     url(r'^StartPage/', HomeController.StartPage),
     url(r'^FrameworkModules/UserAdmin/Index/', UserAdminController.Index),
     url(r'^FrameworkModules/UserAdmin/GetUserPageDTByDepartmentId/', UserAdminController.GetUserPageDTByDepartmentId),
+    url(r'^FrameworkModules/UserAdmin/GetUserListByPage/', UserAdminController.GetUserListByPage),
     url(r'^FrameworkModules/OrganizeAdmin/Index/', OrganizeAdmin.Index),
     url(r'^FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/', OrganizeAdmin.GetOrganizeTreeJson),
     url(r'^FrameworkModules/StaffAdmin/Index/', StaffAdmin.Index),
@@ -35,4 +37,5 @@ urlpatterns = [
     url(r'^FrameworkModules/PermissionItemAdmin/Index/', PermissionItem.Index),
     url(r'^FrameworkModules/PermissionItemAdmin/GetPermissionItemTreeJson/', PermissionItem.GetPermissionItemTreeJson),
     url(r'^FrameworkModules/PermissionItemAdmin/GetPermissionItemByIds/', PermissionItem.GetPermissionItemByIds),
+    url(r'^FrameworkModules/UserPermissionAdmin/Index/', UserPermission.Index),
 ]

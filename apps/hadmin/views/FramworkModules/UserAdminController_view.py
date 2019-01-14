@@ -11,7 +11,9 @@ from django.http.response import HttpResponse
 from django.http import JsonResponse
 from django.template import loader ,Context
 from apps.bizlogic.service.base.UserOrganizeSerivce import UserOrganizeService
+from apps.bizlogic.service.base.UserService import UserSerivce
 import json
+from apps.utilities.publiclibrary.SearchFilter import SearchFilter
 
 
 def GenerateSplitTool():
@@ -98,4 +100,54 @@ def GetUserPageDTByDepartmentId(request):
     else:
         response.content = jsons
 
+    return response
+
+@AjaxOnly
+@LoginAuthorize
+def GetUserListByPage(request):
+    page = None
+    rows = None
+    sort = None
+    order = None
+    filter = None
+    try:
+        page = request.POST['page']
+    except:
+        page = 1
+
+    try:
+        rows = request.POST['rows']
+    except:
+        rows = 50
+
+    try:
+        sort = request.POST['sort']
+    except:
+        sort = 'sortcode'
+
+    try:
+        order = request.POST['order']
+    except:
+        order = 'asc'
+
+    try:
+        filter = request.POST['filter']
+    except:
+        filter = ''
+
+    response = HttpResponse()
+
+    recordCount = 0
+    dtUser = UserSerivce.GetDTByPage(None, SearchFilter.TransfromFilterToSql(filter, False), '', '', rows, sort + ' ' + order)
+
+    recordCount = dtUser.count
+    pageValue = dtUser.page(page)
+
+    userTmp = ''
+    for role in pageValue:
+        userTmp = userTmp + ', ' + json.dumps(role, cls=DateEncoder)
+        userTmp = userTmp.strip(',')
+    returnValue = '{"total": ' + str(recordCount) + ', "rows":[' + userTmp + ']}'
+
+    response.content = returnValue
     return response
