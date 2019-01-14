@@ -46,10 +46,10 @@ class LoginAuthorize(object):
                     try:
                         user = json.loads(user, object_hook=UserInfo.json_2_obj)
                     except:
-                        return HttpResponseRedirect('/admin/index/')
+                        return HttpResponseRedirect('/Admin/Index/')
                     return self.f(*args, **kw)
                 else:
-                    return HttpResponseRedirect('/admin/index/')
+                    return HttpResponseRedirect('/Admin/Index/')
             except Exception as e:
                 print(e)
-                return HttpResponseRedirect('/admin/index/')
+                return HttpResponseRedirect('/Admin/Index/')

@@ -42,7 +42,7 @@ class SystemInfo(object):
     UpdateVisit = True
 
     #启用组织机构权限
-    EnableOrganizePermission = False
+    EnableOrganizePermission = True
 
     # 是否已经成功登录系统
 
@@ -169,9 +169,6 @@ class SystemInfo(object):
 
     EnableTableFieldPermission = False
 
-    # 启用组织机构权限
-
-    EnableOrganizePermission = False
 
     # 设置手写签名
 

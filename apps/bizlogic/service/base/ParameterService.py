@@ -35,7 +35,10 @@ class ParameterService(object):
         Returns:
             returnValue (string): 参数值
         """
-        returnValue = Ciparameter.objects.get(Q(categorykey=categoryKey) & Q(parameterid=parameterId) & Q(parametercode=parameterCode) & Q(deletemark=0)).parametercontent
+        try:
+            returnValue = Ciparameter.objects.get(Q(categorykey=categoryKey) & Q(parameterid=parameterId) & Q(parametercode=parameterCode) & Q(deletemark=0)).parametercontent
+        except Ciparameter.DoesNotExist as e:
+            returnValue = None
         return returnValue
 
     def GetEntity(self, id):

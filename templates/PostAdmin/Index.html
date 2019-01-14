@@ -1,16 +1,17 @@
-﻿@{
-    ViewBag.Title = "岗位管理";
-    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
-}
+{% extends "Shared/_LayoutIndex.html" %}
+{% block content %}
 <div id="layout">
     <div region="west" iconCls="icon16_chart_organisation" split="true" title="组织机构" style="width:220px;padding: 5px" collapsible="false">
         <ul id="organizeTree"></ul>
     </div>
     <div region="center" title="岗位列表" iconCls="icon16_list" style="padding: 2px; overflow: hidden">
         <div id="toolbar">
-            @Html.Raw(@ViewBag.ToolButton)              
+        {% autoescape off %}
+        {{ ToolButton }}
+        {% endautoescape %}
         </div>
         <table id="postlist" toolbar="#toolbar"></table>
     </div>
 </div>
-<script type="text/javascript" src="~/Areas/FrameworkModules/Biz/PostAdmin.js"></script>
+<script type="text/javascript" src="/Content/Area/FrameworkModules/Biz/PostAdmin.js"></script>
+{% endblock %}

@@ -13,19 +13,20 @@ from apps.utilities.publiclibrary.SearchFilter import SearchFilter
 import json
 from apps.hadmin.MvcAppUtilties.JsonHelper import DateEncoder
 from apps.bizlogic.service.base.ItemDetailsService import ItemDetailsService
+from apps.bizlogic.service.base.RoleService import RoleService
 
 def BuildToolBarButton(response, request):
     sb = ''
     linkbtnTemplate = "<a id=\"a_{0}\" class=\"easyui-linkbutton\" style=\"float:left\"  plain=\"true\" href=\"javascript:;\" icon=\"{1}\"  {2} title=\"{3}\">{4}</a>"
     sb = sb + "<a id=\"a_refresh\" class=\"easyui-linkbutton\" style=\"float:left\"  plain=\"true\" href=\"javascript:;\" icon=\"icon16_arrow_refresh\"  title=\"重新加载\">刷新</a> "
     sb = sb + "<div class='datagrid-btn-separator'></div> "
-    sb = sb + linkbtnTemplate.format("add", "icon16_user_add", "" if PublicController.IsAuthorized(response, request, "RoleManagement.Add") else "disabled=\"True\"", "新增角色", "新增")
-    sb = sb + linkbtnTemplate.format("edit", "icon16_user_edit", "" if PublicController.IsAuthorized(response, request, "RoleManagement.Edit") else "disabled=\"True\"", "修改选中角色", "修改")
-    sb = sb + linkbtnTemplate.format("del", "icon16_user_delete", "" if PublicController.IsAuthorized(response, request, "RoleManagement.Delete") else "disabled=\"True\"", "删除选中角色", "删除")
+    sb = sb + linkbtnTemplate.format("add", "icon16_group_add", "" if PublicController.IsAuthorized(response, request, "RoleManagement.Add") else "disabled=\"True\"", "新增角色", "新增")
+    sb = sb + linkbtnTemplate.format("edit", "icon16_group_edit", "" if PublicController.IsAuthorized(response, request, "RoleManagement.Edit") else "disabled=\"True\"", "修改选中角色", "修改")
+    sb = sb + linkbtnTemplate.format("del", "icon16_group_delete", "" if PublicController.IsAuthorized(response, request, "RoleManagement.Delete") else "disabled=\"True\"", "删除选中角色", "删除")
     sb = sb + "<div class='datagrid-btn-separator'></div> "
     sb = sb + linkbtnTemplate.format("roleuser", "icon16_group_link", "" if PublicController.IsAuthorized(response, request, "RoleManagement.RoleUser") else "disabled=\"True\"", "设置当前角色拥有的用户", "角色用户设置")
     sb = sb + "<div class='datagrid-btn-separator'></div> "
-    sb = sb + linkbtnTemplate.format("export", "icon16_user_go", "" if PublicController.IsAuthorized(response, request, "RoleManagement.Export") else "disabled=\"True\"", "导出角色数据", "导出")
+    sb = sb + linkbtnTemplate.format("export", "icon16_group_go", "" if PublicController.IsAuthorized(response, request, "RoleManagement.Export") else "disabled=\"True\"", "导出角色数据", "导出")
     sb = sb + linkbtnTemplate.format("print", "icon16_printer", "" if PublicController.IsAuthorized(response, request, "RoleManagement.Export") else "disabled=\"True\"", "打印", "打印")
     return sb
 
@@ -113,3 +114,26 @@ def GetRoleCategory(request):
     jsons = jsons + ']'
     response.content = jsons
     return response
+
+@LoginAuthorize
+def GetRoleListByOrganize(request):
+    organizeId = None
+    try:
+        organizeId = request.POST['organizeId']
+    except:
+        organizeId = None
+
+    response = HttpResponse()
+    writeJson = "[]"
+    tempJson = "["
+    if organizeId:
+        roles = RoleService.GetDTByOrganize(None, organizeId, True)
+        for role in roles:
+            tempJson = tempJson + str(role.toJSON()) + ","
+        tempJson = tempJson.strip(",")
+        tempJson = tempJson + "]"
+        response.content = tempJson
+        return response
+    else:
+        response.content = writeJson
+        return response

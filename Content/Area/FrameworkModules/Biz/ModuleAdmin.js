@@ -1,6 +1,6 @@
 ﻿var moduleGrid,
-    controlModuleUrl = '/FrameworkModules/ModuleAdmin/',
-    formUrl = "/FrameworkModules/ModuleAdmin/Form";
+    controlModuleUrl = '/Admin/FrameworkModules/ModuleAdmin/',
+    formUrl = "/Admin/FrameworkModules/ModuleAdmin/Form";
 
 $(function () {	
 	pageSizeControl.init({gridId:'moduleGrid',gridType:'treegrid'});
@@ -23,7 +23,7 @@ var moduleTree = {
     init: function () {
         $('#moduleTree').tree({
             lines: true,
-            url: controlModuleUrl + 'GetModuleTreeJson?isTree=1',
+            url: controlModuleUrl + 'GetModuleTreeJson/?isTree=1',
             animate: true,
             onLoadSuccess: function (node, data) {
 				if(data.length && data.length>0){					
@@ -48,7 +48,7 @@ var moduleTree = {
             onSelect: function (node) {
                 var keys = moduleTree.getSelectedChildIds(node);
                 $('#moduleGrid').treegrid({
-                    url: controlModuleUrl + 'GetModuleByIds',
+                    url: controlModuleUrl + 'GetModuleByIds/',
                     queryParams: { moduleIds: keys }
                 }); 
             }
@@ -93,25 +93,25 @@ var grid = {
             collapsible: false,
             onContextMenu: pageContextMenu.createTreeGridContextMenu,
             //url: controlModuleUrl,
-            idField: 'Id',
-            treeField: 'FullName',
+            idField: 'id',
+            treeField: 'fullname',
 			onDblClickRow:function(row){
 				document.getElementById('a_edit').click();
 			},
             frozenColumns: [[
-                { title: '模块（菜单）名称', field: 'FullName', width: 200 },
-                { title: '编码', field: 'Code', width: 130 }
+                { title: '模块（菜单）名称', field: 'fullname', width: 200 },
+                { title: '编码', field: 'code', width: 130 }
             ]],
             columns: [[
-                { title: 'Id', field: 'Id', hidden: true },
-                { title: 'ParentId', field: 'ParentId', hidden: true },
-                { title: '模块分类', field: 'Category', width: 100 },
-                { title: '图标', field: 'IconCss', width: 130, hidden: true },
-                { title: 'Web链接地址', field: 'NavigateUrl', width: 200 },
-                { title: 'WinForm程序集', field: 'AssemblyName', width: 150 },
-                { title: 'WinForm窗体', field: 'FormName', width: 200 },
+                { title: 'Id', field: 'id', hidden: true },
+                { title: 'ParentId', field: 'parentid', hidden: true },
+                { title: '模块分类', field: 'category', width: 100 },
+                { title: '图标', field: 'iconcss', width: 130, hidden: true },
+                { title: 'Web链接地址', field: 'navigateurl', width: 200 },
+                { title: 'WinForm程序集', field: 'assemblyname', width: 150 },
+                { title: 'WinForm窗体', field: 'formname', width: 200 },
                 {
-                    title: '模块类型', field: 'ModuleType', width: 60, align: 'center', formatter: function (v, d, i) {
+                    title: '模块类型', field: 'moduletype', width: 60, align: 'center', formatter: function (v, d, i) {
                         if (v == 1) {
                             return '<img src="/Content/images/' + "winform.png" + '" />';
                         }
@@ -127,25 +127,25 @@ var grid = {
                     }
                 },
                 {
-                    title: '公共', field: 'IsPublic', width: 50, align: 'center', formatter: function (v, d, i) {
+                    title: '公共', field: 'ispublic', width: 50, align: 'center', formatter: function (v, d, i) {
                         return '<img src="/Content/images/' + (v ? "checkmark.gif" : "checknomark.gif") + '" />';
                     }
                 },
 				{
-                    title: '可删', field: 'AllowDelete', width: 50, align: 'center', formatter: function (v, d, i) {
+                    title: '可删', field: 'allowdelete', width: 50, align: 'center', formatter: function (v, d, i) {
                         return '<img src="/Content/images/' + (v ? "checkmark.gif" : "checknomark.gif") + '" />';
                     }
                 },
                 { 
-                    title: '有效', field: 'Enabled', width: 50, align: 'center', formatter: function (v, d, i) {
+                    title: '有效', field: 'enabled', width: 50, align: 'center', formatter: function (v, d, i) {
                         return '<img src="/Content/images/' + (v ? "checkmark.gif" : "checknomark.gif") + '" />';
                     } 
                 },
-                { title: '菜单', field: 'IsMenu', width: 50, align: 'center', formatter: imgcheckbox },
-                { title: '排序', field: 'SortCode', width: 80, align: 'right' },
-                { title: '备注', field: 'Description', width: 500 },
+                { title: '菜单', field: 'ismenu', width: 50, align: 'center', formatter: imgcheckbox },
+                { title: '排序', field: 'sortcode', width: 80, align: 'right' },
+                { title: '备注', field: 'description', width: 500 },
             //{ title: 'AllowEdit', field: 'AllowEdit', hidden: true },
-                {title: 'AllowDelete', field: 'AllowDelete', hidden: true }
+                {title: 'AllowDelete', field: 'allowdelete', hidden: true }
             //{ title: 'ModuleType', field: 'ModuleType', hidden: true }
             ]]
         });
@@ -155,7 +155,7 @@ var grid = {
             var keys = moduleTree.getSelectedChildIds(treeNode);
             if (keys !== '') {
                 moduleGrid.treegrid({
-                    url: controlModuleUrl + "GetModuleByIds",
+                    url: controlModuleUrl + "GetModuleByIds/",
                     queryParams: { moduleIds: keys }
                 });
             }
@@ -167,14 +167,14 @@ var grid = {
 };
 
 var imgcheckbox = function(cellvalue, options, rowObject) {
-    return cellvalue ? '<img src="/../../Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="/../../Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
+    return cellvalue ? '<img src="/Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="/Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
 };
 
 var showIcon = function () {
     top.$('#selecticon').click(function () {
         var iconDialog = top.$.hDialog({
             iconCls: 'icon16_application',
-            href: '/../../Content/Styles/iconModuleList.htm?v=' + Math.random(),
+            href: '/Content/Styles/iconModuleList.htm?v=' + Math.random(),
             title: '选取图标', width: 800, height: 600, showBtns: false,
             onLoad: function () {
                 top.$('#iconlist li').attr('style', 'float:left;border:1px solid #fff;margin:2px;width:16px;cursor:pointer').click(function () {
@@ -364,7 +364,7 @@ var crud = {
                     pageMethod.bindCategory('Category', 'ModuleCategory');
                     pageMethod.bindCategory('ModuleType', 'ModuleType');
                     var parm = 'key=' + (row.Id || row.id); //(row.Id || row.id) 注意此处的用法很经典，其中一个为空就取另一个值。                   
-                    $.ajaxjson('/FrameworkModules/ModuleAdmin/GetEntity', parm, function (data) {
+                    $.ajaxjson('/Admin/FrameworkModules/ModuleAdmin/GetEntity', parm, function (data) {
                         if (data) {
                             SetWebControls(data, true);
                         }
@@ -527,14 +527,14 @@ var crud = {
         var setDialog = top.$.hDialog({
             title: '用户模块（菜单）权限批量设置',
             width: 670, height: 600, iconCls: 'icon16_user_gladiator', //cache: false,
-            href: "/FrameworkModules/PermissionSet/PermissionBacthSet",
+            href: "/Admin/FrameworkModules/PermissionSet/PermissionBacthSet",
             onLoad: function () {
                 using('panel', function () {
                     top.$('#panelTarget').panel({ title: '模块（菜单）', iconCls: 'icon-org', height: $(window).height() - 3 });
                 });
                 userGrid = top.$('#leftnav').datagrid({
                     title: '所有用户',
-                    url: '/FrameworkModules/UserAdmin/GetUserListJson',
+                    url: '/Admin/FrameworkModules/UserAdmin/GetUserListJson',
                     nowrap: false, //折行
                     //fit: true,
                     rownumbers: true, //行号
@@ -552,7 +552,7 @@ var crud = {
                             cascadeCheck: false, //联动选中节点
                             checkbox: true,
                             lines: true,
-                            url: '/FrameworkModules/ModuleAdmin/GetModuleTreeJson?isTree=1',
+                            url: '/Admin/FrameworkModules/ModuleAdmin/GetModuleTreeJson/?isTree=1',
                             onSelect: function (node) {
                                 top.$('#rightnav').tree('getChildren', node.target);
                             }, onLoadSuccess: function (node, data) {
@@ -564,7 +564,7 @@ var crud = {
                     onSelect: function (rowIndex, rowData) {
                         curUserModuleIds = [];
                         var query = 'userId=' + rowData.ID;
-                        $.ajaxtext('/FrameworkModules/PermissionSet/GetModuleByUserId', query, function (data) {
+                        $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetModuleByUserId/', query, function (data) {
                             var moduelTree = top.$('#rightnav');
                             moduelTree.tree('uncheckedAll');
                             if (data == '' || data.toString() == '[object XMLDocument]') {
@@ -601,7 +601,7 @@ var crud = {
                 }
 
                 var query = 'userId=' + top.$('#leftnav').datagrid('getSelected').ID + '&grantIds=' + grantModuleIds + "&revokeIds=" + revokeModuleIds;
-                $.ajaxjson('/FrameworkModules/PermissionSet/SetUserModulePermission', query, function (d) {
+                $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetUserModulePermission/', query, function (d) {
                     if (d.Data > 0) {
                         msg.ok('设置成功！');
                     }
@@ -619,14 +619,14 @@ var crud = {
         var setDialog = top.$.hDialog({
             title: '角色模块（菜单）权限批量设置',
             width: 670, height: 600, iconCls: 'icon16_group_key', //cache: false,
-            href: "/FrameworkModules/PermissionSet/PermissionBacthSet",
+            href: "/Admin/FrameworkModules/PermissionSet/PermissionBacthSet/",
             onLoad: function () {
                 using('panel', function () {
                     top.$('#panelTarget').panel({ title: '模块（菜单）', iconCls: 'icon-org', height: $(window).height() - 3 });
                 });
                 roleGrid = top.$('#leftnav').datagrid({
                     title: '所有角色',
-                    url: '/FrameworkModules/RoleAdmin/GetRoleList',
+                    url: '/Admin/FrameworkModules/RoleAdmin/GetRoleList/',
                     nowrap: false, //折行
                     //fit: true,
                     rownumbers: true, //行号
@@ -644,7 +644,7 @@ var crud = {
                             cascadeCheck: false, //联动选中节点
                             checkbox: true,
                             lines: true,
-                            url: '/FrameworkModules/ModuleAdmin/GetModuleTreeJson?isTree=1',
+                            url: '/Admin/FrameworkModules/ModuleAdmin/GetModuleTreeJson/?isTree=1',
                             onSelect: function (node) {
                                 top.$('#rightnav').tree('getChildren', node.target);
                             }, onLoadSuccess: function (node, data) {
@@ -656,7 +656,7 @@ var crud = {
                     onSelect: function (rowIndex, rowData) {
                         curRoleModuleIds = [];
                         var query = 'roleId=' + rowData.ID;
-                        $.ajaxtext('/FrameworkModules/PermissionSet/GetModuleByRoleId', query, function (data) {
+                        $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetModuleByRoleId/', query, function (data) {
                             var moduelTree = top.$('#rightnav');
                             moduelTree.tree('uncheckedAll');
                             if (data == '' || data.toString() == '[object XMLDocument]') {
@@ -692,7 +692,7 @@ var crud = {
                     ++flagGrant;
                 }
                 var query = 'roleId=' + top.$('#leftnav').datagrid('getSelected').ID + '&grantIds=' + grantModuleIds + "&revokeIds=" + revokeModuleIds;
-                $.ajaxjson('/FrameworkModules/PermissionSet/SetRoleModulePermission', query, function (d) {
+                $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRoleModulePermission', query, function (d) {
                     if (d.Data > 0) {
                         msg.ok('设置成功！');
                     }
@@ -718,7 +718,7 @@ var crud = {
             cascadeCheck: false, //联动选中节点
             checkbox: true,
             lines: true,
-            url: '/FrameworkModules/ModuleAdmin/GetModuleTreeJson?isTree=1',
+            url: '/Admin/FrameworkModules/ModuleAdmin/GetModuleTreeJson/?isTree=1',
             onLoadSuccess: function (node, data) {
                 top.$.hLoading.hide(); //加载完毕后隐藏loading
                 //alert('模块加载成功，改功能模块尚示完成！');

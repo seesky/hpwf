@@ -16,9 +16,9 @@ def BuildToolBarButton(response, request):
     linkbtnTemplate = "<a id=\"a_{0}\" class=\"easyui-linkbutton\" style=\"float:left\"  plain=\"true\" href=\"javascript:;\" icon=\"{1}\"  {2} title=\"{3}\">{4}</a>"
     sb = sb + "<a id=\"a_refresh\" class=\"easyui-linkbutton\" style=\"float:left\"  plain=\"true\" href=\"javascript:;\" icon=\"icon16_arrow_refresh\"  title=\"重新加载\">刷新</a> "
     sb = sb + "<div class='datagrid-btn-separator'></div> "
-    sb = sb + linkbtnTemplate.format("AddStaff", "icon16_user_add", "" if PublicController.IsAuthorized(response, request, "StaffAdmin.Add") else "disabled=\"True\"", "添加员工", "添加")
-    sb = sb + linkbtnTemplate.format("EditStaff", "icon16_user_edit", "" if PublicController.IsAuthorized(response, request, "StaffAdmin.Edit") else "disabled=\"True\"", "修改员工", "修改")
-    sb = sb + linkbtnTemplate.format("DeleteStaff", "icon16_user_delete", "" if PublicController.IsAuthorized(response, request, "StaffAdmin.Delete") else "disabled=\"True\"", "删除员工", "删除")
+    sb = sb + linkbtnTemplate.format("AddStaff", "icon16_vcard_add", "" if PublicController.IsAuthorized(response, request, "StaffAdmin.Add") else "disabled=\"True\"", "添加员工", "添加")
+    sb = sb + linkbtnTemplate.format("EditStaff", "icon16_vcard_edit", "" if PublicController.IsAuthorized(response, request, "StaffAdmin.Edit") else "disabled=\"True\"", "修改员工", "修改")
+    sb = sb + linkbtnTemplate.format("DeleteStaff", "icon16_vcard_delete", "" if PublicController.IsAuthorized(response, request, "StaffAdmin.Delete") else "disabled=\"True\"", "删除员工", "删除")
     sb = sb + "<div class='datagrid-btn-separator'></div> "
     sb = sb + linkbtnTemplate.format("MoveTo", "icon16_arrow_switch", "" if PublicController.IsAuthorized(response, request, "StaffAdmin.Move") else "disabled=\"True\"", "移动选中的员工", "移动")
     sb = sb + "<div class='datagrid-btn-separator'></div> "

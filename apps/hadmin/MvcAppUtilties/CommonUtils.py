@@ -71,7 +71,7 @@ class CommonUtils(object):
         tmpTheme = "default"
         vUser = CommonUtils.Current(response, request)
         if vUser:
-            tmpTheme = ParameterService.GetParameter('User', vUser.Id, 'WebTheme')
+                tmpTheme = ParameterService.GetParameter('User', vUser.Id, 'WebTheme')
         if not tmpTheme:
             tmpTheme = 'default '
 

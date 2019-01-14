@@ -29,7 +29,7 @@ var organizeTree = {
     init: function () {
         $('#organizeTree').tree({
             lines: true,
-            url: '/Admin/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/1/',
+            url: '/Admin/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/?isTree=1',
             animate: true,
             onLoadSuccess: function (node, data) {
                 $('body').data('depData', data);

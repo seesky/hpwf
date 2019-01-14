@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -78,8 +78,8 @@
                                 formMessage('登录密码错误', 'error');
                             } else if (parseInt(rs) == 3) {
                                 formMessage('登录验证成功,正在跳转首页', 'succeed');
-                                setInterval(Load, 1000);
-                                //Load()
+                                //setInterval(Load, 1000);
+                                Load()
                             } else {
                                 alert(rs);
                             }

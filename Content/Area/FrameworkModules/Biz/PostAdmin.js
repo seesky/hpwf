@@ -1,6 +1,6 @@
-﻿var formUrl = "/FrameworkModules/PostAdmin/Form",
-    controlRoleUrl = '/FrameworkModules/RoleAdmin/',
-    controlPostUrl = '/FrameworkModules/PostAdmin/',
+﻿var formUrl = "/Admin/FrameworkModules/PostAdmin/Form",
+    controlRoleUrl = '/Admin/FrameworkModules/RoleAdmin/',
+    controlPostUrl = '/Admin/FrameworkModules/PostAdmin/',
     firstCheckModule = '0',
     firstCheckPermissionItem = '0'; //是否为第一次加载时对相应目标资源权限的Check ，访问加载Check事件
 
@@ -25,7 +25,7 @@ var organizeTree = {
     init: function () {
         $('#organizeTree').tree({
             lines: true,
-            url: '/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson?isTree=1',
+            url: '/Admin/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/?isTree=1',
             animate: true,
             onLoadSuccess: function (node, data) {
                 $('body').data('depData', data);
@@ -47,7 +47,7 @@ var navgrid;
 var mygrid = {
     bindGrid: function (size) {
         navgrid = $('#postlist').datagrid({
-            url: controlRoleUrl + "GetRoleListByOrganize",
+            url: controlRoleUrl + "GetRoleListByOrganize/",
             loadMsg: "正在加载岗位数据，请稍等...",
             width: size.width,
             height: size.height,
@@ -68,7 +68,7 @@ var mygrid = {
             onLoadSuccess: function (data) {
                 if (data.total == 0) {
                     //添加一个新数据行，第一列的值为你需要的提示信息，然后将其他列合并到第一列来，注意修改colspan参数为你columns配置的总列数
-                    $(this).datagrid('appendRow', { CODE: '<div style="text-align:center;color:red">没有相关记录！</div>' }).datagrid('mergeCells', { index: 0, field: 'CODE', colspan: 4 });
+                    $(this).datagrid('appendRow', { code: '<div style="text-align:center;color:red">没有相关记录！</div>' }).datagrid('mergeCells', { index: 0, field: 'code', colspan: 4 });
                     //隐藏分页导航条，这个需要熟悉datagrid的html结构，直接用jquery操作DOM对象，easyui datagrid没有提供相关方法隐藏导航条
                     $(this).closest('div.datagrid-wrap').find('div.datagrid-pager').hide();
                 }
@@ -77,20 +77,20 @@ var mygrid = {
             },
             columns: [[
                 { field: 'ck', checkbox: true },
-                { title: '编号', field: 'CODE', width: 180 },
-                { title: '岗位名称', field: 'REALNAME', width: 200, sortable: true },
-                { title: '成员', field: 'Users', width: 400,styler: function (value, row, index) {
+                { title: '编号', field: 'code', width: 180 },
+                { title: '岗位名称', field: 'realname', width: 200, sortable: true },
+                { title: '成员', field: 'users', width: 400,styler: function (value, row, index) {
                     return 'background-color:#ffee00;color:green;';} 
                 },
-                { title: '有效', field: 'ENABLED', width: 50, formatter: function (cellvalue, options, rowObject) {
+                { title: '有效', field: 'enabled', width: 50, formatter: function (cellvalue, options, rowObject) {
 
-                    return '<img src="/../../Content/Styles/icon/bullet_' + (cellvalue ? "tick.png" : "minus.png") + '" />';
+                    return '<img src="/Content/Styles/icon/bullet_' + (cellvalue ? "tick.png" : "minus.png") + '" />';
                 }
                 },
-                { title: '描述', field: 'DESCRIPTION', width: 300 }
+                { title: '描述', field: 'description', width: 300 }
             ]],
             onSelect:function(rowIndex, rowData) {
-                if (rowData.ENABLED)
+                if (rowData.enabled)
                     $("#post_setUser,#post_setPermission").linkbutton("enable");
                 else
                     $("#post_setUser,#post_setPermission").linkbutton("disable");
@@ -253,14 +253,14 @@ var PostAdminMethod = {
                     });
 
                     top.$('#allUsers').datagrid({
-                        url: '/FrameworkModules/UserAdmin/GetUserListJson',
+                        url: '/Admin/FrameworkModules/UserAdmin/GetUserListJson',
                         onDblClickRow: function (rowIndex, rowData) {
                             top.$('#aSelectUser').click();
                         }
                     });
 
                     top.$('#selectedUser').datagrid({
-                        url: '/FrameworkModules/UserAdmin/GetDTByRole?roleId=' + selectRow.ID,
+                        url: '/Admin/FrameworkModules/UserAdmin/GetDTByRole?roleId=' + selectRow.ID,
                         onDblClickRow: function (rowIndex, rowData) {
                             top.$('#aDeleteUser').click();
                         }

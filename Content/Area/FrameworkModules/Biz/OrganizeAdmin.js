@@ -25,32 +25,32 @@ var mygrid = {
             resizable: true,
             collapsible: false,
             onContextMenu: pageContextMenu.createTreeGridContextMenu,
-            url: '/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson',
-            idField: 'Id',
-            treeField: 'FullName',
+            url: '/Admin/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/',
+            idField: 'id',
+            treeField: 'fullname',
 			onDblClickRow:function(row){
 				document.getElementById('btnEdit').click();
 			},
             frozenColumns: [[
-                { title: '组织机构名称', field: 'FullName', width: 200 },
-                { title: '编码', field: 'Code', width: 100 }
+                { title: '组织机构名称', field: 'fullname', width: 200 },
+                { title: '编码', field: 'code', width: 100 }
             ]],
             columns: [[
-                { title: '简称', field: 'ShortName', width: 120 },
-                { title: '主负责人', field: 'Manager', width: 70, align: 'center' },
-                { title: '电话', field: 'OuterPhone', width: 100, align: 'center' },
-                { title: '传真', field: 'Fax', width: 100, align: 'center' },
-                { title: '有效', field: 'Enabled', width: 50, align: 'center', formatter: imgcheckbox },
-                { title: '排序', field: 'SortCode', width: 80, align: 'center' },
-                { title: '备注', field: 'Description', width: 300 },
-                { title: 'ParentId', field: 'ParentId', hidden: true },
-                { title: 'Category', field: 'Category', hidden: true },
-                { title: 'InnerPhone', field: 'InnerPhone', hidden: true },
-                { title: 'Postalcode', field: 'Postalcode', hidden: true },
-                { title: 'Address', field: 'Address', hidden: true },
-                { title: 'Web', field: 'Web', hidden: true },
-                { title: 'AssistantManager', field: 'AssistantManager', hidden: true },
-                { title: 'IsInnerOrganize', field: 'IsInnerOrganize', hidden: true }
+                { title: '简称', field: 'shortname', width: 120 },
+                { title: '主负责人', field: 'manager', width: 70, align: 'center' },
+                { title: '电话', field: 'outerphone', width: 100, align: 'center' },
+                { title: '传真', field: 'fax', width: 100, align: 'center' },
+                { title: '有效', field: 'enabled', width: 50, align: 'center', formatter: imgcheckbox },
+                { title: '排序', field: 'sortcode', width: 80, align: 'center' },
+                { title: '备注', field: 'description', width: 300 },
+                { title: 'ParentId', field: 'parentId', hidden: true },
+                { title: 'Category', field: 'category', hidden: true },
+                { title: 'InnerPhone', field: 'innerphone', hidden: true },
+                { title: 'Postalcode', field: 'postalcode', hidden: true },
+                { title: 'Address', field: 'address', hidden: true },
+                { title: 'Web', field: 'web', hidden: true },
+                { title: 'AssistantManager', field: 'assistantmanager', hidden: true },
+                { title: 'IsInnerOrganize', field: 'isinnerorganize', hidden: true }
             ]]
         });
     },
@@ -62,7 +62,7 @@ var mygrid = {
     }
 };
 var imgcheckbox = function (cellvalue, options, rowObject) {
-    return cellvalue ? '<img src="../../Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="../../Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
+    return cellvalue ? '<img src="/Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="/Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
 };
 var OrganizeAdminMethod = {
     Refreash: function () {

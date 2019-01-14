@@ -185,7 +185,7 @@ class RoleService(object):
         Returns:
             returnValue (Pirole[]): 角色列表
         """
-        dtRole = Pirole.objects.filter(Q(organizeid=organizeId) & Q(deletemark=0))
+        dtRole = Pirole.objects.filter(Q(organizeid=organizeId) & Q(deletemark=0)).order_by('sortcode')
         if showUser:
             username = ''
             dataTableUser = UserSerivce.GetDT(self)
@@ -195,7 +195,8 @@ class RoleService(object):
                     for userid in userIds:
                         username = username + Piuser.objects.get(id=userid).realname + ', '
                 if username:
-                    role.Users = username
+                    role.users = username[:-2]
+                username = ""
         return dtRole
 
 
