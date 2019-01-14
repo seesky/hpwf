@@ -94,7 +94,7 @@ class PermissionItemService(object):
         Returns:
             returnValue (PipermissionItem[]): 权限项列表
         """
-        returnValue = Pipermissionitem.objects.filter(deletemark=0)
+        returnValue = Pipermissionitem.objects.filter(deletemark=0).order_by('sortcode')
         return returnValue
 
     def GetList(self):
@@ -137,7 +137,7 @@ class PermissionItemService(object):
         Returns:
             returnValue (PipermissionItem[]): 权限项列表
         """
-        returnValue = Pipermissionitem.objects.filter(Q(id__in=ids) & Q(deletemark=0))
+        returnValue = Pipermissionitem.objects.filter(Q(id__in=ids) & Q(deletemark=0)).order_by('sortcode')
         return returnValue
 
     def GetLicensedDT(self, userId, permissionItemCode):
