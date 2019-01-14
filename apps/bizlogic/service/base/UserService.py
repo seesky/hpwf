@@ -639,3 +639,42 @@ class UserSerivce(object):
         pageValue = Paginator(userList, pageSize)
         page = pageValue.page(pageIndex)
         return pageValue.count, page
+
+    def GetUserDTByRole(self, roleId):
+        """
+       按角色获取用户列表
+       Args:
+           roleId (string): 角色主键
+       Returns:
+           returnValue (List): 用户实体列表
+       """
+        sqlQuery = " SELECT " + 'piuser' + ".* " \
+        + "," + 'piuserlogon' + "." + 'useronline' \
+        + " FROM PIUSER LEFT OUTER JOIN PIUSERLOGON ON PIUSER.ID = PIUSERLOGON.ID ";
+
+        sqlQuery = sqlQuery + " WHERE (" + 'piuser' + "." + 'deletemark' + " = 0 "
+        + " AND " + 'piuser' + "." + 'enabled' + " = 1  "
+        + " AND " + 'piuser' + "." + 'isvisible' + " = 1 ) ";
+
+        if roleId:
+            sqlQuery = sqlQuery + " AND (" + 'piuser' + "." + 'roleid' + " = '" + roleId + "') "
+            sqlQuery += " OR " + 'piuser' + "." + 'id' + " IN (" \
+            + " SELECT " + 'userid' \
+            + "   FROM " + 'piuserrole' \
+            + "  WHERE " + 'piuserrole' + "." + 'deletemark' + " = 0  " \
+            + "       AND " + 'piuserrole' + "." + 'enabled' + " = 1  " \
+            + "       AND " + 'piuserrole' + "." + 'roleid' + " = '" + roleId + "') "
+
+        sqlQuery += " ORDER BY " + 'piuser' + "." + 'sortcode'
+        dataTable = DbCommonLibaray.executeQuery(None, sqlQuery)
+        return dataTable
+
+    def GetUserIdsByOrganizeIdsAndRoleIds(receiverIds, organizeIds, roleIds):
+        companyUsers = Piuser.objects.filter(Q(deletemark=0) & Q(enabled=1) & Q(workgroupid__in=organizeIds) & Q(departmentid__in=organizeIds) & Q(subcompanyid__in=organizeIds) & Q(companyid__in=organizeIds) | Q(id__in=Piuserorganize.objects.filter(Q(deletemark=0) & (Q(departmentid__in=organizeIds) | Q(subdepartmentid__in=organizeIds) | Q(companyid__in=organizeIds))))).order_by('sortcode').values_list('id', flat=True)
+        roleUsers = Piuserrole.objects.filter(Q(roleid__in=roleIds) & Q(userid__in=Piuser.objects.filter(Q(deletemark=0) & Q(deletionstatecode = 0)).values_list('id', flat=True)))
+        users = companyUsers.union(roleUsers)
+        returnValue = []
+        for id in users:
+            returnValue.append(id)
+        returnValue = receiverIds.extend(returnValue)
+        return returnValue

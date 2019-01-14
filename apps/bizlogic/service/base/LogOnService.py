@@ -585,3 +585,14 @@ class LogOnService(object):
             return statusCode, 1
         except Piuserlogon.DoesNotExist as e:
             pass
+
+
+    def GetOnLineStateDT(self):
+        sqlQuery = " SELECT " + 'piuserlogon' + "." + 'id' \
+            + ", " + 'piuserlogon' + "." + 'useronline' \
+            + " FROM " + 'piuserlogon' \
+            + " WHERE " + 'piuserlogon' + "." + 'lastvisit' + " IS NOT NULL " \
+            + " AND (DATEADD (s, " + str(SystemInfo.OnLineTime0ut + 5) + ", " + 'lastvisit' + ") > " + datetime.datetime.now() + ")"
+
+        returnValue = DbCommonLibaray.executeQuery(None, sqlQuery)
+        return returnValue

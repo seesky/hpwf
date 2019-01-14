@@ -13,8 +13,20 @@ from apps.bizlogic.models import Pistaff
 from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
 from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
+from apps.utilities.publiclibrary.SystemInfo import SystemInfo
+
+import datetime
 
 class OrganizeService(object):
+    # 内部组织机构表
+    InnerOrganizeDT = None
+
+    # 最后检查组织机构时间
+    LastCheckOrgTime = datetime.datetime.min
+
+    # 在线状态表
+    OnLineStateDT = None
+
     def Add(self, entity):
         """
         添加组织
@@ -317,3 +329,22 @@ class OrganizeService(object):
         for c in childrens:
             returnValue.append(c.get('id'))
         return returnValue
+
+    def GetInnerOrganizeDT(self):
+        """
+        获取内部组织机构
+        Args:
+        Returns:
+            returnValue (Piorganize[]): 模块实体列表
+        """
+        getOnLine = False
+        if OrganizeService.LastCheckOrgTime == datetime.datetime.min:
+            getOnLine = True
+        else:
+            timeSpan = datetime.datetime.now() - OrganizeService.LastCheckOrgTime
+            if timeSpan.minute * 60 + timeSpan.second >= SystemInfo.OnLineCheck * 100:
+                getOnLine = True
+        if OrganizeService.OnLineStateDT == None or getOnLine:
+            OrganizeService.InnerOrganizeDT = Piorganize.objects.filter(Q(isinnerorganize=1) & Q(enabled=1)).order_by('sortcode')
+            OrganizeService.LastCheckOrgTime = datetime.datetime.now()
+        return OrganizeService.InnerOrganizeDT

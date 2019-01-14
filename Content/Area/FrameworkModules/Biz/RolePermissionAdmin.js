@@ -1,10 +1,10 @@
 ﻿var navgrid,
-    actionUrl                       = '/FrameworkModules/PermissionSet/',
-    formUrl                         = '/FrameworkModules/PermissionItemAdmin/Form?n=' + Math.random(),
-    rolePermissionFormUrl           = '/FrameworkModules/PermissionSet/RolePermissionSet?n=' + Math.random(),
-    roleUserBatchSetUrl             = '/FrameworkModules/PermissionSet/RoleUserBatchSet?n=' + Math.random(),
-    permissionScopFormUrl           = '/FrameworkModules/PermissionSet/PermissionScopForm?n=' + Math.random(),
-    roleTableFieldPermissionFormUrl = '/FrameworkModules/PermissionSet/TableFieldPermission?n=' + Math.random(),
+    actionUrl                       = '/Admin/FrameworkModules/PermissionSet/',
+    formUrl                         = '/Admin/FrameworkModules/PermissionItemAdmin/Form/?n=' + Math.random(),
+    rolePermissionFormUrl           = '/Admin/FrameworkModules/PermissionSet/RolePermissionSet/?n=' + Math.random(),
+    roleUserBatchSetUrl             = '/Admin/FrameworkModules/PermissionSet/RoleUserBatchSet/?n=' + Math.random(),
+    permissionScopFormUrl           = '/Admin/FrameworkModules/PermissionSet/PermissionScopForm/?n=' + Math.random(),
+    roleTableFieldPermissionFormUrl = '/Admin/FrameworkModules/PermissionSet/TableFieldPermission/?n=' + Math.random(),
     firstCheckUser                  = '0',
     firstCheckRole                  = '0',
     firstCheckModule                = '0',
@@ -35,7 +35,7 @@ $(function () {
 var mygrid = {
     bindGrid: function (size) {
         navgrid = $('#list').datagrid({
-            url: '/FrameworkModules/RoleAdmin/GridPageListJson',
+            url: '/Admin/FrameworkModules/RoleAdmin/GridPageListJson/',
             toolbar: '#toolbar',
             width: size.width,
             height: size.height,
@@ -73,7 +73,7 @@ var mygrid = {
     }
 };
 var imgcheckbox = function(cellvalue, options, rowObject) {
-    return cellvalue ? '<img src="../../Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="../../Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
+    return cellvalue ? '<img src="/Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="/Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
 };
 
 var RPAdminMethod = {
@@ -96,7 +96,7 @@ var RPAdminMethod = {
                         cascadeCheck: false, //联动选中节点
                         checkbox: true,
                         lines: true,
-                        url: '/FrameworkModules/ModuleAdmin/GetModuleTreeJson?isTree=1',
+                        url: '/Admin/FrameworkModules/ModuleAdmin/GetModuleTreeJson/?isTree=1',
                         onBeforeLoad: function (node, param) {
                             top.$.hLoading.show();
                         },
@@ -105,7 +105,7 @@ var RPAdminMethod = {
                             var curRoleModuleIds = [];
                             var query = 'roleId=' + curRole.ID;
                             //1.1、得到当前角色可以访问的模块菜单主键列表
-                            $.ajaxtext('/FrameworkModules/PermissionSet/GetModuleByRoleId', query, function (d) {
+                            $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetModuleByRoleId/', query, function (d) {
                                 if (d != '' && d.toString() != '[object XMLDocument]') {
                                     curRoleModuleIds = d.split(',');
                                 }
@@ -125,13 +125,13 @@ var RPAdminMethod = {
                         onCheck: function (node, checked) {
                             if (firstCheckModule == '0') {
                                 if (checked) { //授予当前角色所选模块的访问权限                                           
-                                    $.ajaxjson('/FrameworkModules/PermissionSet/SetRoleModulePermission', 'roleId=' + curRole.ID + '&grantIds=' + node.id, function (d) {
+                                    $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRoleModulePermission/', 'roleId=' + curRole.ID + '&grantIds=' + node.id, function (d) {
                                         if (d.Data != '1') {
                                             msg.warning('授予角色模块访问权限失败！');
                                         }
                                     });
                                 } else { //回收当前角色所选模块的访问权限
-                                    $.ajaxjson('/FrameworkModules/PermissionSet/SetRoleModulePermission', 'roleId=' + curRole.ID + '&revokeIds=' + node.id, function (d) {
+                                    $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRoleModulePermission/', 'roleId=' + curRole.ID + '&revokeIds=' + node.id, function (d) {
                                         if (d.Data != '1') {
                                             msg.warning('收回角色模块访问权限失败！');
                                         }
@@ -146,7 +146,7 @@ var RPAdminMethod = {
                         cascadeCheck: false, //联动选中节点
                         checkbox: true,
                         lines: true,
-                        url: '/FrameworkModules/PermissionItemAdmin/GetPermissionItemTreeJson?isTree=1',
+                        url: '/Admin/FrameworkModules/PermissionItemAdmin/GetPermissionItemTreeJson/?isTree=1',
                         onBeforeLoad: function (node, param) {
                             top.$.hLoading.show();
                         },
@@ -155,7 +155,7 @@ var RPAdminMethod = {
                             var curRolePermissionItemIds = [];
                             var query = 'roleId=' + curRole.ID;
                             //2.1、得到当前角色可以访问的操作权限主键列表
-                            $.ajaxtext('/FrameworkModules/PermissionSet/GetPermissionItemsByRoleId', query, function (d) {
+                            $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetPermissionItemsByRoleId/', query, function (d) {
                                 if (d != '' && d.toString() != '[object XMLDocument]') {
                                     curRolePermissionItemIds = d.split(',');
                                 }
@@ -175,13 +175,13 @@ var RPAdminMethod = {
                         onCheck: function (node, checked) {
                             if (firstCheckPermissionItem == '0') {
                                 if (checked) { //授予当前角色所选操作权限
-                                    $.ajaxjson('/FrameworkModules/PermissionSet/SetRolePermissionItem', 'roleId=' + curRole.ID + '&grantIds=' + node.id, function (d) {
+                                    $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRolePermissionItem/', 'roleId=' + curRole.ID + '&grantIds=' + node.id, function (d) {
                                         if (d.Data != '1') {
                                             msg.warning('授予角色操作权限失败！');
                                         }
                                     });
                                 } else {  //回收当前角色所选操作权限
-                                    $.ajaxjson('/FrameworkModules/PermissionSet/SetRolePermissionItem', 'roleId=' + curRole.ID + '&revokeIds=' + node.id, function (d) {
+                                    $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRolePermissionItem/', 'roleId=' + curRole.ID + '&revokeIds=' + node.id, function (d) {
                                         if (d.Data != '1') {
                                             msg.warning('收回角色操作权限失败！');
                                         }
@@ -207,7 +207,7 @@ var RPAdminMethod = {
         var currentRole = mygrid.selected();
         if (currentRole) {
             var rDialog = top.$.hDialog({
-                href: '/FrameworkModules/PermissionSet/RoleUserSet', width: 600, height: 500, title: '角色用户关联', iconCls: 'icon16_group_link',
+                href: '/Admin/FrameworkModules/PermissionSet/RoleUserSet/', width: 600, height: 500, title: '角色用户关联', iconCls: 'icon16_group_link',
                 onLoad: function () {
                     top.$('#rlayout').layout();
                     top.$('#roleName').text(currentRole.REALNAME);
@@ -230,14 +230,14 @@ var RPAdminMethod = {
                     });
 
                     top.$('#allUsers').datagrid({
-                        url: '/FrameworkModules/UserAdmin/GetUserListJson',
+                        url: '/Admin/FrameworkModules/UserAdmin/GetUserListJson/',
                         onDblClickRow: function (rowIndex, rowData) {
                             top.$('#aSelectUser').click();
                         }
                     });
 
                     top.$('#selectedUser').datagrid({
-                        url: '/FrameworkModules/UserAdmin/GetDTByRole&roleId=' + currentRole.ID,
+                        url: '/Admin/FrameworkModules/UserAdmin/GetDTByRole/?roleId=' + currentRole.ID,
                         onDblClickRow: function (rowIndex, rowData) {
                             top.$('#aDeleteUser').click();
                         }
@@ -256,7 +256,7 @@ var RPAdminMethod = {
                                 top.$('#selectedUser').datagrid('appendRow', _row);
                                 //添加用户
                                 var query = 'targetIds=' + currentRole.ID + '&userId=' + _row.ID;
-                                $.ajaxtext('/FrameworkModules/PermissionSet/AddUserToRole', query, function (d) {
+                                $.ajaxtext('/Admin/FrameworkModules/PermissionSet/AddUserToRole/', query, function (d) {
                                     if (d != "1") {
                                         msg.ok('添加用户失败。');
                                     }
@@ -278,7 +278,7 @@ var RPAdminMethod = {
                             top.$('#selectedUser').datagrid('deleteRow', rIndex).datagrid('unselectAll');
                             //移除角色
                             var query = 'targetIds=' + currentRole.ID + '&userId=' + trow.ID;
-                            $.ajaxtext('/FrameworkModules/PermissionSet/RemoveUserFromRole', query, function (d) {
+                            $.ajaxtext('/Admin/FrameworkModules/PermissionSet/RemoveUserFromRole/', query, function (d) {
                                 if (d != "1") {
                                     msg.ok('移除用户失败。');
                                 }
@@ -317,7 +317,7 @@ var RPAdminMethod = {
                 });
 
                 top.$('#tableRole').datagrid({
-                    url: '/FrameworkModules/RoleAdmin/GetRoleList',
+                    url: '/Admin/FrameworkModules/RoleAdmin/GetRoleList/',
                     singleSelect: true, //单选 
                     columns: [[
                     //{ title: '编码', field: 'CODE', width: 100 },
@@ -326,7 +326,7 @@ var RPAdminMethod = {
                     onSelect: function (rowIndex, rowData) {
                         if (rowData) {
                             //1、加载当前角色所拥有的用户                            
-                            $.ajaxtext('/FrameworkModules/PermissionSet/GetRoleUserIds', 'roleId=' + rowData.ID, function (data) {
+                            $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetRoleUserIds/', 'roleId=' + rowData.ID, function (data) {
                                 firstCheckUser = "1";
                                 top.$('#tableUser').datagrid('uncheckAll'); //取消所有选中行
                                 if (data != '' && data.toString() != '[object XMLDocument]') {
@@ -345,7 +345,7 @@ var RPAdminMethod = {
                 });
 
                 top.$('#tableUser').datagrid({
-                    url: '/FrameworkModules/UserAdmin/GetUserListJson',
+                    url: '/Admin/FrameworkModules/UserAdmin/GetUserListJson/',
                     columns: [[
                        { title: 'Id', field: 'ID', width: 30, align: 'left', checkbox: true },
 			           { title: '登录名', field: 'USERNAME', width: 100, align: 'left' },
@@ -355,7 +355,7 @@ var RPAdminMethod = {
                         var currentRole = top.$('#tableRole').datagrid('getSelected');
                         if (firstCheckUser != '1' && currentRole) {
                             var query = 'roleId=' + currentRole.ID + '&targetIds=' + rowData.ID;
-                            $.ajaxjson('/FrameworkModules/PermissionSet/AddRoleUser', query, function (d) {
+                            $.ajaxjson('/Admin/FrameworkModules/PermissionSet/AddRoleUser/', query, function (d) {
                                 if (d.Data != '1') {
                                     msg.warning('授予用户失败！');
                                 }
@@ -366,7 +366,7 @@ var RPAdminMethod = {
                         var currentRole = top.$('#tableRole').datagrid('getSelected');
                         if (firstCheckUser != '1' && currentRole) {
                             var query = 'roleId=' + currentRole.ID + '&targetIds=' + rowData.ID;
-                            $.ajaxjson('/FrameworkModules/PermissionSet/RemoveRoleUser', query, function (d) {
+                            $.ajaxjson('/Admin/FrameworkModules/PermissionSet/RemoveRoleUser/', query, function (d) {
                                 if (d.Data != '1') {
                                     msg.warning('回收用户失败！');
                                 }
@@ -384,7 +384,7 @@ var RPAdminMethod = {
     },
     SetRoleBatchPermission: function () {  //角色权限批量设置
         var batchPermissionDialog = top.$.hDialog({
-            href: '/FrameworkModules/PermissionSet/RolePermissionBatchSet', width: 1100, height: 630, title: '角色权限批量设置', iconCls: 'icon16_shape_square_key',
+            href: '/Admin/FrameworkModules/PermissionSet/RolePermissionBatchSet/', width: 1100, height: 630, title: '角色权限批量设置', iconCls: 'icon16_shape_square_key',
             onLoad: function () {
                 top.$('#FormContent').layout('panel', 'center').panel({ title: '' });
                 //1、绑定界面控件
@@ -407,7 +407,7 @@ var RPAdminMethod = {
                 });
 
                 top.$('#tableRole').datagrid({
-                    url: '/FrameworkModules/RoleAdmin/GetRoleList',
+                    url: '/Admin/FrameworkModules/RoleAdmin/GetRoleList/',
                     singleSelect: true, //单选 
                     columns: [[
                     //{ title: '编码', field: 'CODE', width: 100 },
@@ -417,7 +417,7 @@ var RPAdminMethod = {
                         if (rowData) {
                             //1.2、加载当前角色所拥有的目标资源权限  
                             //1.2.1、加载当前角色所拥有的用户                        
-                            $.ajaxtext('/FrameworkModules/PermissionSet/GetRoleUserIds', 'roleId=' + rowData.ID, function (data) {
+                            $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetRoleUserIds/', 'roleId=' + rowData.ID, function (data) {
                                 firstCheckUser = "1";
                                 top.$('#tableUser').datagrid('uncheckAll'); //取消所有选中行
                                 if (data != '' && data.toString() != '[object XMLDocument]') {
@@ -435,7 +435,7 @@ var RPAdminMethod = {
                             //1.2.2、绑定当前角色已经拥有的模块（菜单）访问权限。
                             var curUserModuleIds = [];
                             var tmpquery = 'roleId=' + rowData.ID;
-                            $.ajaxtext('/FrameworkModules/PermissionSet/GetModuleByRoleId', tmpquery, function (data) {
+                            $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetModuleByRoleId/', tmpquery, function (data) {
                                 firstCheckModule = '1';
                                 var moduelTree = top.$('#tableModule');
                                 moduelTree.tree('uncheckedAll');
@@ -456,7 +456,7 @@ var RPAdminMethod = {
                             //1.2.3、绑定当前角色已经拥有的操作权限
                             var curUserPermissionItemIds = [];
                             var query = 'roleId=' + rowData.ID;
-                            $.ajaxtext('/FrameworkModules/PermissionSet/GetPermissionItemsByRoleId', query, function (data) {
+                            $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetPermissionItemsByRoleId/', query, function (data) {
                                 firstCheckPermissionItem = '1';
                                 var permissionItemTree = top.$('#tablePermissionItem');
                                 permissionItemTree.tree('uncheckedAll');
@@ -479,7 +479,7 @@ var RPAdminMethod = {
 
                 //绑定用户
                 top.$('#tableUser').datagrid({
-                    url: '/FrameworkModules/UserAdmin/GetUserListJson',
+                    url: '/Admin/FrameworkModules/UserAdmin/GetUserListJson/',
                     columns: [[
                        { title: 'Id', field: 'ID', width: 30, align: 'left', checkbox: true },			           
                        { title: '名称', field: 'REALNAME', width: 125, align: 'left' }
@@ -488,7 +488,7 @@ var RPAdminMethod = {
                         var currentRole = top.$('#tableRole').datagrid('getSelected');
                         if (firstCheckUser != '1' && currentRole) {
                             var query = 'roleId=' + currentRole.ID + '&targetIds=' + rowData.ID;
-                            $.ajaxjson('/FrameworkModules/PermissionSet/AddRoleUser', query, function (d) {
+                            $.ajaxjson('/Admin/FrameworkModules/PermissionSet/AddRoleUser/', query, function (d) {
                                 if (d.Data != '1') {
                                     msg.warning('授予用户失败！');
                                 }
@@ -499,7 +499,7 @@ var RPAdminMethod = {
                         var currentRole = top.$('#tableRole').datagrid('getSelected');
                         if (firstCheckUser != '1' && currentRole) {
                             var query = 'roleId=' + currentRole.ID + '&targetIds=' + rowData.ID;
-                            $.ajaxjson('/FrameworkModules/PermissionSet/RemoveRoleUser', query, function (d) {
+                            $.ajaxjson('/Admin/FrameworkModules/PermissionSet/RemoveRoleUser/', query, function (d) {
                                 if (d.Data != '1') {
                                     msg.warning('回收用户失败！');
                                 }
@@ -516,19 +516,19 @@ var RPAdminMethod = {
                 });
 
                 top.$('#tableModule').tree({
-                    url: '/FrameworkModules/ModuleAdmin/GetModuleTreeJson?isTree=1',
+                    url: '/Admin/FrameworkModules/ModuleAdmin/GetModuleTreeJson/?isTree=1',
                     onCheck: function (node, checked) {
                         var curRole = top.$('#tableRole').datagrid('getSelected');
                         if (curRole) {
                             if (firstCheckModule == '0') {
                                 if (checked) { //1.3.1、授予当前角色所选模块的访问权限                                           
-                                    $.ajaxjson('/FrameworkModules/PermissionSet/SetRoleModulePermission', 'roleId=' + curRole.ID + '&grantIds=' + node.id, function (d) {
+                                    $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRoleModulePermission/', 'roleId=' + curRole.ID + '&grantIds=' + node.id, function (d) {
                                         if (d.Data != '1') {
                                             msg.warning('授予角色模块访问权限失败！');
                                         }
                                     });
                                 } else { //1.3.2、回收当前角色所选模块的访问权限
-                                    $.ajaxjson('/FrameworkModules/PermissionSet/SetRoleModulePermission', 'roleId=' + curRole.ID + '&revokeIds=' + node.id, function (d) {
+                                    $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRoleModulePermission/', 'roleId=' + curRole.ID + '&revokeIds=' + node.id, function (d) {
                                         if (d.Data != '1') {
                                             msg.warning('收回角色模块访问权限失败！');
                                         }
@@ -542,19 +542,19 @@ var RPAdminMethod = {
                 });
                 //1.4、绑定操作权限项列表
                 top.$('#tablePermissionItem').tree({
-                    url: '/FrameworkModules/PermissionItemAdmin/GetPermissionItemTreeJson?isTree=1',
+                    url: '/Admin/FrameworkModules/PermissionItemAdmin/GetPermissionItemTreeJson/?isTree=1',
                     onCheck: function (node, checked) {
                         var curRole = top.$('#tableRole').datagrid('getSelected');
                         if (curRole) {
                             if (firstCheckPermissionItem == '0') {
                                 if (checked) { //1.4.1、授予当前角色所选操作权限
-                                    $.ajaxjson('/FrameworkModules/PermissionSet/SetRolePermissionItem', 'roleId=' + curRole.ID + '&grantIds=' + node.id, function (d) {
+                                    $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRolePermissionItem/', 'roleId=' + curRole.ID + '&grantIds=' + node.id, function (d) {
                                         if (d.Data != '1') {
                                             msg.warning('授予角色操作权限失败！');
                                         }
                                     });
                                 } else {  //1.4.2、回收当前角色所选操作权限
-                                    $.ajaxjson('/FrameworkModules/PermissionSet/SetRolePermissionItem', 'roleId=' + curRole.ID + '&revokeIds=' + node.id, function (d) {
+                                    $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRolePermissionItem/', 'roleId=' + curRole.ID + '&revokeIds=' + node.id, function (d) {
                                         if (d.Data != '1') {
                                             msg.warning('收回角色操作权限失败！');
                                         }
@@ -596,7 +596,7 @@ var RPAdminMethod = {
                 onLoad: function () {
                     top.$('#FormContent').layout('panel', 'center').panel({ title: '当前资源：' + currentTableFieldPermissionUser.REALNAME });
                     top.$('#tableList').datagrid({
-                        url: '/FrameworkModules/PermissionSet/GetAllTableScope?resourceCategory=PIROLE&resourceId=' + currentTableFieldPermissionUser.ID,
+                        url: '/Admin/FrameworkModules/PermissionSet/GetAllTableScope/?resourceCategory=PIROLE&resourceId=' + currentTableFieldPermissionUser.ID,
                         idField: 'ID',
                         sortName: 'SORTCODE',
                         sortOrder: 'asc',
@@ -620,7 +620,7 @@ var RPAdminMethod = {
                         onClickRow: function (rowIndex, rowData) {
                             var cc = rowData.ITEMVALUE;
                             top.$('#tableFiledList').datagrid({
-                                url: '/FrameworkModules/PermissionSet/GetDTByTable',
+                                url: '/Admin/FrameworkModules/PermissionSet/GetDTByTable/',
                                 queryParams: { tableName: cc, resourceCategory: 'PIROLE', resourceId: currentTableFieldPermissionUser.ID }
                             });
                         }
@@ -690,7 +690,7 @@ var RPAdminMethod = {
                 }],
                 onOpen: function () {
                     top.$('#tmpGridList').datagrid({
-                        url: '/FrameworkModules/PermissionSet/GetConstraintDT?resourceCategory=PIROLE&resourceId=' + currentRoleTableConstraint.ID,
+                        url: '/Admin/FrameworkModules/PermissionSet/GetConstraintDT/?resourceCategory=PIROLE&resourceId=' + currentRoleTableConstraint.ID,
                         singleSelect: true,
                         selectOnCheck: true,
                         checkOnSelect: true,
@@ -717,7 +717,7 @@ var RPAdminMethod = {
                                         submit: function () {
                                             if (top.$('#txtContraint').val()) {
                                                 var tmpParam = 'resourceCategory=PIROLE&resourceId=' + currentRoleTableConstraint.ID + '&tableName=' + tmpUserTableConstraintGridRow.TABLECODE + '&tableConstraint=' + top.$('#txtContraint').val();
-                                                $.ajaxjson('/FrameworkModules/PermissionSet/SetConstraint', tmpParam, function (d) {
+                                                $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetConstraint/', tmpParam, function (d) {
                                                     if (d.Data > 0) {
                                                         msg.ok('设置成功！');
                                                         top.$('#tmpGridList').datagrid('reload');
@@ -745,7 +745,7 @@ var RPAdminMethod = {
                                 if (tmpRoleTableConstraintGridRow && tmpRoleTableConstraintGridRow.PERMISSIONCONSTRAINT != null) {
                                     top.$.messager.confirm('询问提示', '确定要删除【' + tmpRoleTableConstraintGridRow.TABLENAME + '】的约束条件吗？', function (data) {
                                         if (data) {
-                                            $.ajaxjson('/FrameworkModules/PermissionSet/DeleteConstraint', 'keyId=' + tmpRoleTableConstraintGridRow.ID, function (d) {
+                                            $.ajaxjson('/Admin/FrameworkModules/PermissionSet/DeleteConstraint/', 'keyId=' + tmpRoleTableConstraintGridRow.ID, function (d) {
                                                 if (d.Data > 0) {
                                                     msg.ok('删除成功！');
                                                     top.$('#tmpGridList').datagrid('reload');
