@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>叠加柱状图(百分比)</title>
+    <script src="/Content/Scripts/jquery-1.8.3.min.js"></script>
+    <script src="/Content/Scripts/highcharts/highcharts.js"></script>
+    
+    <script>
+        $(function () {
+            $('#container').highcharts({
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: '营养含量'
+                },
+                xAxis: {
+                    categories: ['苹果', '橙子', '梨', '葡萄', '香蕉']
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: '营养含量'
+                    }
+                },
+                tooltip: {
+                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
+                    shared: true
+                },
+                plotOptions: {
+                    column: {
+                        stacking: 'percent'
+                    }
+                },
+                series: [{
+                    name: '维生素A',
+                    data: [5, 3, 4, 7, 2]
+                }, {
+                    name: '维生素B',
+                    data: [2, 2, 3, 2, 1]
+                }, {
+                    name: '维生素C',
+                    data: [3, 4, 4, 2, 5]
+                }]
+            });
+        });
+
+
+    </script>
+</head>
+<body>
+    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+</body>
+</html>

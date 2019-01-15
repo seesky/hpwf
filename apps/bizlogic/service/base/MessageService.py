@@ -316,11 +316,11 @@ class MessageService(object):
             whereConditional = whereConditional + ' deletemark = 0 '
 
         if whereConditional:
-            sqlQuery = "select * from cimessage where " + whereConditional
+            sqlQuery = "select * from cimessage where " + whereConditional + " order by " + order
         else:
-            sqlQuery = "select * from cimessage"
+            sqlQuery = "select * from cimessage"+ " order by " + order
 
-        dataTable = DbCommonLibaray.executeQuery(sqlQuery)
+        dataTable = DbCommonLibaray.executeQuery(None, sqlQuery)
         pages = Paginator(dataTable, pageSize)
         recordCount = pages.count
         return recordCount, pages.page(pageIndex)

@@ -13,6 +13,8 @@ import apps.hadmin.views.FramworkModules.ModuleAdminController_view as ModuleAdm
 import apps.hadmin.views.FramworkModules.PermissionItemAdminController_views as PermissionItem
 import apps.hadmin.views.FramworkModules.UserPermissionAdminController_views as UserPermission
 import apps.hadmin.views.FramworkModules.RolePermissionAdminController_views as RolePermission
+import apps.hadmin.views.FramworkModules.MessageAdminController_view as MessageAdmin
+import apps.hadmin.views.FramworkModules.HighchartsController_view as Highcharts
 
 urlpatterns = [
     url(r'^Index/', LoginController.Index),
@@ -40,4 +42,38 @@ urlpatterns = [
     url(r'^FrameworkModules/PermissionItemAdmin/GetPermissionItemByIds/', PermissionItem.GetPermissionItemByIds),
     url(r'^FrameworkModules/UserPermissionAdmin/Index/', UserPermission.Index),
     url(r'^FrameworkModules/RolePermissionAdmin/Index/', RolePermission.Index),
+    url(r'^FrameworkModules/MessageAdmin/Index/', MessageAdmin.Index),
+    url(r'^FrameworkModules/MessageAdmin/GetMessageListByFunctionCode/', MessageAdmin.GetMessageListByFunctionCode),
+
+    url(r'^FrameworkModules/Highcharts/Sample1/', Highcharts.Sample1),
+    url(r'^FrameworkModules/Highcharts/Sample2/', Highcharts.Sample2),
+    url(r'^FrameworkModules/Highcharts/Sample3/', Highcharts.Sample3),
+    url(r'^FrameworkModules/Highcharts/Sample4/', Highcharts.Sample4),
+    url(r'^FrameworkModules/Highcharts/Sample5/', Highcharts.Sample5),
+    url(r'^FrameworkModules/Highcharts/Sample6/', Highcharts.Sample6),
+    url(r'^FrameworkModules/Highcharts/Sample7/', Highcharts.Sample7),
+    url(r'^FrameworkModules/Highcharts/Sample8/', Highcharts.Sample8),
+    url(r'^FrameworkModules/Highcharts/Sample9/', Highcharts.Sample9),
+    url(r'^FrameworkModules/Highcharts/Sample10/', Highcharts.Sample10),
+    url(r'^FrameworkModules/Highcharts/Sample11/', Highcharts.Sample11),
+    url(r'^FrameworkModules/Highcharts/Sample12/', Highcharts.Sample12),
+    url(r'^FrameworkModules/Highcharts/Sample13/', Highcharts.Sample13),
+    url(r'^FrameworkModules/Highcharts/Sample14/', Highcharts.Sample14),
+    url(r'^FrameworkModules/Highcharts/Sample15/', Highcharts.Sample15),
+    url(r'^FrameworkModules/Highcharts/Sample16/', Highcharts.Sample16),
+    url(r'^FrameworkModules/Highcharts/Sample17/', Highcharts.Sample17),
+    url(r'^FrameworkModules/Highcharts/Sample18/', Highcharts.Sample18),
+    url(r'^FrameworkModules/Highcharts/Sample19/', Highcharts.Sample19),
+    url(r'^FrameworkModules/Highcharts/Sample20/', Highcharts.Sample20),
+    url(r'^FrameworkModules/Highcharts/Sample21/', Highcharts.Sample21),
+    url(r'^FrameworkModules/Highcharts/Sample22/', Highcharts.Sample22),
+    url(r'^FrameworkModules/Highcharts/Sample23/', Highcharts.Sample23),
+    url(r'^FrameworkModules/Highcharts/Sample24/', Highcharts.Sample24),
+    url(r'^FrameworkModules/Highcharts/Sample25/', Highcharts.Sample25),
+    url(r'^FrameworkModules/Highcharts/Sample26/', Highcharts.Sample26),
+    url(r'^FrameworkModules/Highcharts/Sample27/', Highcharts.Sample27),
+    url(r'^FrameworkModules/Highcharts/Sample28/', Highcharts.Sample28),
+    url(r'^FrameworkModules/Highcharts/Sample29/', Highcharts.Sample29),
+
+
 ]

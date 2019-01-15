@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>叠加柱状图(多列)</title>
+    <script src="/Content/Scripts/jquery-1.8.3.min.js"></script>
+    <script src="/Content/Scripts/highcharts/highcharts.js"></script>
+
+    <script>
+        $(function () {
+            $('#container').highcharts({
+
+                chart: {
+                    type: 'column'
+                },
+
+                title: {
+                    text: '营养含量'
+                },
+
+                xAxis: {
+                    categories: ['苹果', '橙子', '梨', '葡萄', '香蕉']
+                },
+
+                yAxis: {
+                    allowDecimals: false,
+                    min: 0,
+                    title: {
+                        text: '水果数量'
+                    }
+                },
+
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.x + '</b><br/>' +
+                            this.series.name + ': ' + this.y + '<br/>' +
+                            '总量: ' + this.point.stackTotal;
+                    }
+                },
+
+                plotOptions: {
+                    column: {
+                        stacking: 'normal'
+                    }
+                },
+
+                series: [{
+                    name: '维生素A',
+                    data: [5, 3, 4, 7, 2],
+                    stack: 'male'
+                }, {
+                    name: '维生素B',
+                    data: [3, 4, 4, 2, 5],
+                    stack: 'male'
+                }, {
+                    name: '维生素C',
+                    data: [2, 5, 6, 2, 1],
+                    stack: 'female'
+                }, {
+                    name: '维生素D',
+                    data: [3, 0, 4, 4, 3],
+                    stack: 'female'
+                }]
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+﻿@{
+    ViewBag.Title = "广播消息";
+    Layout = "~/Views/Shared/_LayoutForm.cshtml";
+}
+
+<style type="text/css">
+    .background{background-color:#F2F2F2;}
+    .border{border:1px solid #ccc;}
+    .bottomline{border-bottom:1px solid #ccc;}
+</style>
+
+<form id="form1" style="margin: 1px;">
+    <div class="background border" style="padding: 15px; padding-top: 0px; padding-bottom: 0px;">
+        <div class="bottomline" style="height: 30px; line-height: 30px;">
+            <label><a>信息内容</a>：</label> 
+        </div>
+
+        <div class="bottomline" style="height: 325px; line-height: 30px;">
+            <textarea style="width:99%;height:95%;" class="txt01" id="MSGContent" name="MSGContent"></textarea>
+        </div>
+        <div style="height: 30px; line-height: 30px;">
+            <label style="float: left;">发件人：@ViewBag.Addresser</label>
+        </div>
+    </div>
+</form>

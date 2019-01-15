@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>叠加面积图(百分比)</title>
+    <script src="/Content/Scripts/jquery-1.8.3.min.js"></script>
+    <script src="/Content/Scripts/highcharts/highcharts.js"></script>
+
+    <script>
+        $(function () {
+            $('#container').highcharts({
+                chart: {
+                    type: 'area'
+                },
+                title: {
+                    text: '主标题'
+                },
+                subtitle: {
+                    text: '副标题'
+                },
+                xAxis: {
+                    categories: ['1750', '1800', '1850', '1900', '1950', '1999', '2050'],
+                    tickmarkPlacement: 'on',
+                    title: {
+                        enabled: false
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: '百分比'
+                    }
+                },
+                tooltip: {
+                    pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.percentage:.1f}%</b> ({point.y:,.0f} 百万)<br/>',
+                    shared: true
+                },
+                plotOptions: {
+                    area: {
+                        stacking: 'percent',
+                        lineColor: '#ffffff',
+                        lineWidth: 1,
+                        marker: {
+                            lineWidth: 1,
+                            lineColor: '#ffffff'
+                        }
+                    }
+                },
+                series: [{
+                    name: '北京',
+                    data: [502, 635, 809, 947, 1402, 3634, 5268]
+                }, {
+                    name: '深圳',
+                    data: [106, 107, 111, 133, 221, 767, 1766]
+                }, {
+                    name: '上海',
+                    data: [163, 203, 276, 408, 547, 729, 628]
+                }, {
+                    name: '广州',
+                    data: [18, 31, 54, 156, 339, 818, 1201]
+                }]
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+</body>
+</html>

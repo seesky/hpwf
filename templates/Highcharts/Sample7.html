@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>叠加面积图</title>
+    <script src="/Content/Scripts/jquery-1.8.3.min.js"></script>
+    <script src="/Content/Scripts/highcharts/highcharts.js"></script>
+
+    <script>
+        $(function () {
+            $('#container').highcharts({
+                chart: {
+                    type: 'area'
+
+                },
+                title: {
+                    text: '主标题'
+                },
+                subtitle: {
+                    text: '副标题'
+                },
+                xAxis: {
+                    categories: ['1750', '1800', '1850', '1900', '1950', '1999', '2050'],
+                    tickmarkPlacement: 'on',
+                    title: {
+                        enabled: false
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: '千万'
+                    },
+                    labels: {
+                        formatter: function () {
+                            return this.value / 1000;
+                        }
+                    }
+                },
+                tooltip: {
+                    shared: true,
+                    valueSuffix: ' 百万'
+                },
+                plotOptions: {
+                    area: {
+                        stacking: 'normal',
+                        lineColor: '#666666',
+                        lineWidth: 1,
+                        marker: {
+                            lineWidth: 1,
+                            lineColor: '#666666'
+                        }
+                    }
+                },
+                series: [{
+                    name: '北京',
+                    data: [502, 635, 809, 947, 1402, 3634, 5268]
+                }, {
+                    name: '深圳',
+                    data: [106, 107, 111, 133, 221, 767, 1766]
+                }, {
+                    name: '广州',
+                    data: [163, 203, 276, 408, 547, 729, 628]
+                }, {
+                    name: '上海',
+                    data: [18, 31, 54, 156, 339, 818, 1201]
+                }, {
+                    name: '南京',
+                    data: [2, 20, 20, 60, 130, 300, 460]
+                }]
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+</body>
+</html>
