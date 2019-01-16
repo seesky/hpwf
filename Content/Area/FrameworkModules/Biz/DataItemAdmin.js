@@ -1,4 +1,4 @@
-﻿var controlUrl = '/FrameworkModules/DataItemAdmin/';
+﻿var controlUrl = '/Admin/FrameworkModules/DataItemAdmin/';
 
 $(function () {    
     pageSizeControl.init({ gridId: 'dicGrid', gridType: 'treegrid' });
@@ -30,7 +30,7 @@ $(function () {
 var DicCategory = {
     bindTree: function () {
         $('#dataDicType').tree({
-            url: controlUrl + 'GetDataItemTreeJson?isTree=1',
+            url: controlUrl + 'GetDataItemTreeJson/?isTree=1',
             onLoadSuccess: function (node, data) {
                 if (data.length == 0) {
                     $('#noCategoryInfo').fadeIn();
@@ -42,7 +42,7 @@ var DicCategory = {
                 $(this).tree('toggle', node.target);
                 var cc = node.id;
                 $('#dicGrid').treegrid({
-                    url: controlUrl + 'GetDataItemDetailById',
+                    url: controlUrl + 'GetDataItemDetailById/',
                     queryParams: { categoryId: cc }
                 });
             }
@@ -79,7 +79,7 @@ var DicCategory = {
         var addDialog = top.$.hDialog({
             title: '添加字典类别',
             iconCls: 'icon16_add',
-            href: '/FrameworkModules/DataItemAdmin/DataItem?n=' + Math.random(),
+            href: '/Admin/FrameworkModules/DataItemAdmin/DataItem/?n=' + Math.random(),
             width: 390,
             height: 350,
             onLoad: function () {
@@ -110,7 +110,7 @@ var DicCategory = {
             var editDialog = top.$.hDialog({
                 title: '编辑字典类别',
                 iconCls: 'icon16_edit_button',
-                href: '/FrameworkModules/DataItemAdmin/DataItem?n=' + Math.random(),
+                href: '/Admin/FrameworkModules/DataItemAdmin/DataItem/?n=' + Math.random(),
                 width: 390,
                 height: 350,
                 onLoad: function () {
@@ -128,7 +128,7 @@ var DicCategory = {
                     var isValid = top.$('#ItemsForm').form("validate");
                     if (isValid) {
                         var queryString = pageMethod.serializeJson(top.$('#ItemsForm'));
-                        $.ajaxjson(controlUrl + 'SubmitItemsForm?key=' + node.id, queryString, function (d) {
+                        $.ajaxjson(controlUrl + 'SubmitItemsForm/?key=' + node.id, queryString, function (d) {
                             if (d.Data > 0) {
                                 msg.ok('亲，字典类别编辑成功啦。');
                                 editDialog.dialog('close');
@@ -181,21 +181,21 @@ var mygrid = {
             nowrap: false, //折行
             rownumbers: true, //行号
             striped: true, //隔行变色
-            idField: 'Id', //主键
-            treeField: 'ItemName',
+            idField: 'id', //主键
+            treeField: 'itemname',
             singleSelect: true, //单选          
             columns: [
                 [
-                    { title: 'ItemId', field: 'ItemId', hidden: true },
-                    { title: 'ParentId', field: 'ParentId', hidden: true },
-                    { title: 'ID', field: 'Id', width: 60, hidden: true },
-                    { title: '名称', field: 'ItemName', width: 170 },
-                    { title: '编码', field: 'ItemCode', width: 130 },
-                    { title: '值', field: 'ItemValue', width: 130 },
-                    { title: '排序', field: 'SortCode', width: 40 },
+                    { title: 'ItemId', field: 'itemid', hidden: true },
+                    { title: 'ParentId', field: 'parentid', hidden: true },
+                    { title: 'ID', field: 'id', width: 60, hidden: true },
+                    { title: '名称', field: 'itemname', width: 170 },
+                    { title: '编码', field: 'itemcode', width: 130 },
+                    { title: '值', field: 'itemvalue', width: 130 },
+                    { title: '排序', field: 'sortcode', width: 40 },
                     {
                         title: '有效',
-                        field: 'Enabled',
+                        field: 'enabled',
                         width: 40,
                         formatter: function(v, d, i) {
                             return '<img src="/Content/images/' + (v == '1' ? 'checkmark.gif' : 'checknomark.gif') + '" />';
@@ -204,7 +204,7 @@ var mygrid = {
                     },
                     {
                         title: '公共',
-                        field: 'IsPublic',
+                        field: 'ispublic',
                         width: 40,
                         formatter: function(v, d, i) {
                             return '<img src="/Content/images/' + (v == '1' ? 'checkmark.gif' : 'checknomark.gif') + '" />';
@@ -213,7 +213,7 @@ var mygrid = {
                     },
                     {
                         title: '允许编辑',
-                        field: 'AllowEdit',
+                        field: 'allowedit',
                         width: 40,
                         formatter: function(v, d, i) {
                             return '<img src="/Content/images/' + (v == '1' ? 'checkmark.gif' : 'checknomark.gif') + '" />';
@@ -222,14 +222,14 @@ var mygrid = {
                     },
                     {
                         title: '允许删除',
-                        field: 'AllowDelete',
+                        field: 'allowdelete',
                         width: 40,
                         formatter: function(v, d, i) {
                             return '<img src="/Content/images/' + (v == '1' ? 'checkmark.gif' : 'checknomark.gif') + '" />';
                         },
                         align: 'center'
                     },
-                    { title: '描述', field: 'Description', width: 200 }
+                    { title: '描述', field: 'description', width: 200 }
                 ]
             ],
             pagination: false
@@ -237,7 +237,7 @@ var mygrid = {
     },
     reload: function(cc) {
         $('#dicGrid').treegrid({
-            url: controlUrl + 'GetDataItemDetailById',
+            url: controlUrl + 'GetDataItemDetailById/',
             queryParams: { categoryId: cc }
         });
     },
@@ -290,7 +290,7 @@ var mygrid = {
         }
 
         dicDialog = top.$.hDialog({
-            href: '/FrameworkModules/DataItemAdmin/DataItemDetail?n=' + Math.random(),
+            href: '/Admin/FrameworkModules/DataItemAdmin/DataItemDetail/?n=' + Math.random(),
             width: 400,
             height: 400,
             title: '新增选项明细',
@@ -325,7 +325,7 @@ var mygrid = {
             return false;
         }
         dicDialog = top.$.hDialog({
-            href: '/FrameworkModules/DataItemAdmin/DataItemDetail?n=' + Math.random(),
+            href: '/Admin/FrameworkModules/DataItemAdmin/DataItemDetail/?n=' + Math.random(),
             width: 400,
             height: 400,
             title: '编辑字典',
@@ -343,7 +343,7 @@ var mygrid = {
             submit: function() {
                 if (top.$('#ItemDetailForm').form('validate')) {
                     var queryString = pageMethod.serializeJson(top.$('#ItemDetailForm'));
-                    $.ajaxjson(controlUrl + 'SubmitItemsDetailForm?key=' + row.Id, queryString, function (d) {
+                    $.ajaxjson(controlUrl + 'SubmitItemsDetailForm/?key=' + row.Id, queryString, function (d) {
                         if (d.Data > 0) {
                             msg.ok(d.Message);
                             mygrid.reload(top.$('#ItemId').combobox('getValue'));

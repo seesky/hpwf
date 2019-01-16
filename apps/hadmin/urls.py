@@ -16,7 +16,10 @@ import apps.hadmin.views.FramworkModules.RolePermissionAdminController_views as 
 import apps.hadmin.views.FramworkModules.MessageAdminController_view as MessageAdmin
 import apps.hadmin.views.FramworkModules.LogAdminController_view as LogAdmin
 import apps.hadmin.views.FramworkModules.ExceptionAdminController_view as ExceptionAdmin
+import apps.hadmin.views.FramworkModules.DataItemAdminController_view as DataItemAdmin
+import apps.hadmin.views.FramworkModules.ParameterAdminController_view as ParameterAdmin
 import apps.hadmin.views.FramworkModules.HighchartsController_view as Highcharts
+
 
 urlpatterns = [
     url(r'^Index/', LoginController.Index),
@@ -50,6 +53,11 @@ urlpatterns = [
     url(r'^FrameworkModules/LogAdmin/GridPageListJson/', LogAdmin.GridPageListJson),
     url(r'^FrameworkModules/ExceptionAdmin/Index/', ExceptionAdmin.Index),
     url(r'^FrameworkModules/ExceptionAdmin/GridPageListJson/', ExceptionAdmin.GridPageListJson),
+    url(r'^FrameworkModules/DataItemAdmin/Index/', DataItemAdmin.Index),
+    url(r'^FrameworkModules/DataItemAdmin/GetDataItemTreeJson/', DataItemAdmin.GetDataItemTreeJson),
+    url(r'^FrameworkModules/DataItemAdmin/GetDataItemDetailById/', DataItemAdmin.GetDataItemDetailById),
+    url(r'^FrameworkModules/ParameterAdmin/Index/', ParameterAdmin.Index),
+    url(r'^FrameworkModules/ParameterAdmin/GridPageListJson/', ParameterAdmin.GridPageListJson),
 
     url(r'^FrameworkModules/Highcharts/Sample1/', Highcharts.Sample1),
     url(r'^FrameworkModules/Highcharts/Sample2/', Highcharts.Sample2),

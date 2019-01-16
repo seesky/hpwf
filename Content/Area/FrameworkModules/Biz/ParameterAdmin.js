@@ -1,23 +1,5 @@
-﻿/*
-RDIFramework.NET，基于.NET的快速信息化系统开发、整合框架，给用户和开发者最佳的.Net框架部署方案。
-框架官网：http://www.rdiframework.net/
-框架博客：http://blog.rdiframework.net/
-交流QQ：406590790 
-邮件交流：406590790@qq.com
-
-其他博客：
-http://www.cnblogs.com/huyong 
-http://blog.csdn.net/chinahuyong
-*************************************************************************************
-* RDIFramework.NET框架“系统参数管理”业务界面逻辑
-*
-* 主要完成系统参数的增加、修改、删除、导出等。
-* 修改记录：
-*   1、 2015-08-05 EricHu V3.0 新增本业务逻辑的编写。
-*/
-
-var controlUrl = '/FrameworkModules/ParameterAdmin/',
-    formUrl = '/FrameworkModules/ParameterAdmin/Form?n=' + Math.random();
+﻿var controlUrl = '/Admin/FrameworkModules/ParameterAdmin/',
+    formUrl = '/Admin/FrameworkModules/ParameterAdmin/Form/?n=' + Math.random();
 
 $(function () {
     autoResize({ dataGrid: '#list', gridType: 'datagrid', callback: mygrid.bindGrid, height: 5 });
@@ -40,7 +22,7 @@ var navgrid;
 var mygrid = {
     bindGrid: function (size) {
         navgrid = $('#list').datagrid({
-            url: controlUrl + 'GridPageListJson',
+            url: controlUrl + 'GridPageListJson/',
             toolbar: '#toolbar',
             width: size.width,
             height: size.height,
@@ -103,7 +85,7 @@ var ParameterAdmin = {
             submit: function () {
                 if (top.$('#uiform').validate().form()) {
                     var postData = pageMethod.serializeJson(top.$('#uiform'));
-                    $.ajaxjson("/FrameworkModules/ParameterAdmin/SubmitForm", postData, function (d) {     
+                    $.ajaxjson("/Admin/FrameworkModules/ParameterAdmin/SubmitForm/", postData, function (d) {
                         if (d.Success) {
                             msg.ok(d.Message);
                             addDailog.dialog('close');
@@ -129,7 +111,7 @@ var ParameterAdmin = {
                 title: '修改系统参数', width: 295, height: 338, href: formUrl, iconCls: 'icon16_cog_edit',
                 onLoad: function () {
                     var parm = 'key=' + curParameter.ID;
-                    $.ajaxjson("/FrameworkModules/ParameterAdmin/GetEntity", parm, function (data) {
+                    $.ajaxjson("/Admin/FrameworkModules/ParameterAdmin/GetEntity", parm, function (data) {
                         if (data) {
                             SetWebControls(data, true);
                         }
@@ -140,7 +122,7 @@ var ParameterAdmin = {
                 submit: function () {
                     if (top.$('#uiform').validate().form()) {
                         var postData = pageMethod.serializeJson(top.$('#uiform'));
-                        $.ajaxjson("/FrameworkModules/ParameterAdmin/SubmitForm?key=" + curParameter.ID, postData, function (d) {
+                        $.ajaxjson("/Admin/FrameworkModules/ParameterAdmin/SubmitForm/?key=" + curParameter.ID, postData, function (d) {
                             if (d.Success) {
                                 msg.ok(d.Message);
                                 editDailog.dialog('close');
@@ -169,7 +151,7 @@ var ParameterAdmin = {
             $.messager.confirm('询问提示', '确认要删除所选系统参数吗?', function (data) {
                 if (data) {
                      var parm = 'key=' + row.ID;
-                     $.ajaxjson("/FrameworkModules/ParameterAdmin/Delete", parm, function (d) {
+                     $.ajaxjson("/Admin/FrameworkModules/ParameterAdmin/Delete/", parm, function (d) {
                         if (d.Data > 0) {
                             msg.ok('系统参数删除成功。');
                             mygrid.reload();
