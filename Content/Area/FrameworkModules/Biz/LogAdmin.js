@@ -17,7 +17,7 @@ $(function () {
 var mygrid = {
     databind: function (size) {
         grd = $('#list').datagrid({
-            url: '/FrameworkModules/LogAdmin/GridPageListJson',
+            url: '/Admin/FrameworkModules/LogAdmin/GridPageListJson/',
             toolbar: '#toolbar',
             width: size.width,
             height: size.height-5,
@@ -102,7 +102,7 @@ var showLogInfo = function (oLogInfo) {
 //清空全部日志数据
 var ClearLog = function () {
     if (confirm('确定清空所有日志数据吗？')) {
-        $.ajaxjson('/FrameworkModules/LogAdmin/DeleteAll', "", function (data) {
+        $.ajaxjson('/Admin/FrameworkModules/LogAdmin/DeleteAll/', "", function (data) {
             if (d.Data > 0) {
                 msg.ok('清空日志成功。');
                 mygrid.reload();
@@ -125,7 +125,7 @@ var DeleteLog = function () {
     if (keys.length > 0) {
         $.messager.confirm('询问提示', '确认删除所选日志记录吗？', function(data) {
             if (data) {
-                $.ajaxjson('/FrameworkModules/LogAdmin/Delete', "keys=" + keys.join(','), function (d) {
+                $.ajaxjson('/Admin/FrameworkModules/LogAdmin/Delete/', "keys=" + keys.join(','), function (d) {
                     if (d.Data > 0) {
                         msg.ok('所选日志删除成功。');
                         mygrid.reload();

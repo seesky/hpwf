@@ -3,7 +3,7 @@ __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/11 16:02'
 
 from apps.bizlogic.models import Ciexception
-
+from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 from django.core.paginator import Paginator
 from django.db.utils import DatabaseError
 from django.db.transaction import TransactionManagementError
@@ -50,7 +50,7 @@ class ExceptionService(object):
         returnValue = Ciexception.objects.all()
         return returnValue
 
-    def GetDTByPage(self, searchValue, departmentId, roleId, pageSize=50, order=None):
+    def GetDTByPage(pageIndex=1, pageSize=20, whereConditional="", order=""):
         """
         获取系统异常分页列表
         Args:
@@ -62,9 +62,16 @@ class ExceptionService(object):
         Returns:
             returnValue (Paginator): 异常分页列表
         """
-        data = Ciexception.objects.all()
-        returnValue = Paginator(data, pageSize)
-        return returnValue
+        if whereConditional:
+            whereConditional = "WHERE " + whereConditional
+        if not order:
+            order = " createon "
+        sqlQuery = "select * from ciexception " + whereConditional + " order by " + order
+
+        dtException = DbCommonLibaray.executeQuery(None, sqlQuery)
+        pages = Paginator(dtException, pageSize)
+        recordCount = pages.count
+        return recordCount, pages.page(pageIndex)
 
     def GetEntity(self, id):
         """

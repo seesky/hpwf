@@ -10,7 +10,7 @@
 var mygrid = {
     databind: function(size) {
         grd = $('#list').datagrid({
-            url: "/FrameworkModules/ExceptionAdmin/GridPageListJson",
+            url: "/Admin/FrameworkModules/ExceptionAdmin/GridPageListJson/",
             toolbar: '#toolbar',
             width: size.width,
             height: size.height,
@@ -62,7 +62,7 @@ var ExportData = function() {
 //清空全部异常数据
 var ClearException = function () {
     if (confirm('确定清空所有异常数据吗？')) {
-        $.ajaxjson('/FrameworkModules/ExceptionAdmin/DeleteAll', "", function (data) {
+        $.ajaxjson('/Admin/FrameworkModules/ExceptionAdmin/DeleteAll/', "", function (data) {
             if (d.Data > 0) {
                 msg.ok('清空异常数据成功！');
                 mygrid.reload();
@@ -86,7 +86,7 @@ var DeleteException = function () {
     if (keys.length > 0) {
         $.messager.confirm('询问提示', '确认删除所选异常记录吗？', function (data) {
             if (data) {
-                $.ajaxjson('/FrameworkModules/ExceptionAdmin/Delete', "keys=" + keys.join(','), function (d) {
+                $.ajaxjson('/Admin/FrameworkModules/ExceptionAdmin/Delete/', "keys=" + keys.join(','), function (d) {
                     if (d.Data > 0) {
                         msg.ok('所选异常删除成功！');
                         mygrid.reload();

@@ -207,7 +207,7 @@ class PermissionScopeService(object):
               returnValue(Piuser[]): 用户列表
         """
         #这里应该考虑，当前用户的管理权限是，所在公司？所在部门？所以在工作组等情况
-        ids = ScopPermission.GetTreeResourceScopeIds(self, managerUserId, 'PIORGANIZE', permissionItemCode, False)
+        ids = PermissionScopeService.GetTreeResourceScopeIds(self, managerUserId, 'PIORGANIZE', permissionItemCode, False)
 
         #这里列出只是有效地，没被删除的组织机构主键
         if ids:
@@ -216,7 +216,7 @@ class PermissionScopeService(object):
 
     def GetRoleIds(self, managerUserId, permissionItemCode):
         #这是一个QuerySet
-        roleIds = ScopPermission.GetRoleIdsSql(self, managerUserId, permissionItemCode)
+        roleIds = PermissionScopeService.GetRoleIdsSql(self, managerUserId, permissionItemCode)
         if roleIds.count() > 0:
             return Pirole.objects.filter(Q(id__in=roleIds) & Q(enabled=1) & Q(deletemark=0)).values_list('id', flat=True)
         return roleIds

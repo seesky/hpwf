@@ -1,7 +1,5 @@
-﻿@{
-    ViewBag.Title = "系统日志管理";
-    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
-}
+﻿{% extends "Shared/_LayoutIndex.html" %}
+{% block content %}
 <div class="searchArea">
     操作用户：<input type="text" name="opuser" id="txtOpuser" class="txt03" style="width: 120px;"/>&nbsp;
     操作日期：<input type="text" id="dtOpstart"/> 至 <input type="text" id="dtOpend"/>&nbsp;
@@ -10,11 +8,14 @@
 </div>  
 <div id="toolbar">
 <div>
-	 @Html.Raw(@ViewBag.ToolButton)  
+        {% autoescape off %}
+        {{ ToolButton }}
+        {% endautoescape %}
 </div>
 </div>
 <!--用于数据显示-->    
 <table id="list"></table>    
 
-<script type="text/javascript" src="~/Areas/FrameworkModules/Biz/LogAdmin.js?v=30"></script>
-<script type="text/javascript" src="~/Content/Scripts/Business/exportutil.js"></script>
+<script type="text/javascript" src="/Content/Area/FrameworkModules/Biz/LogAdmin.js?v=30"></script>
+<script type="text/javascript" src="/Content/Scripts/Business/exportutil.js"></script>
+{% endblock %}
