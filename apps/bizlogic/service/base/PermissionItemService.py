@@ -377,3 +377,32 @@ class PermissionItemService(object):
             return id
         except Pipermissionitem.DoesNotExist as e:
             return None
+
+    def GetIdByAdd(permissionItemCode, permissionItemName = None):
+        """
+        获取一个操作权限的主键,若不存在就自动增加一个
+        Args:
+            permissionItemCode (string): 操作权限编号
+            permissionItemName (string): 操作权限名称
+        Returns:
+            returnValue (int): 主键
+        """
+        #判断当前判断的权限是否存在，否则很容易出现前台设置了权限，后台没此项权限
+        #需要自动的能把前台判断过的权限，都记录到后台来
+
+        Pipermissionitem.objects.get_or_create(defaults={'deletemark':'0', 'enabled':'1', 'code': permissionItemCode},
+                                                      code=permissionItemCode,
+                                                      fullname = permissionItemCode if permissionItemName else permissionItemName,
+                                                      categorycode = "Application",
+                                                      parentid = None,
+                                                      isscope = 0,
+                                                      ispublic = 0,
+                                                      allowdelete = 1,
+                                                      allowedit = 1,
+                                                      enabled = 1,
+                                                      deletemark = 0,
+                                                      moduleid = None
+                                                      )
+
+        item = Pipermissionitem.objects.get(Q(code=permissionItemCode) & Q(deletemark=0) & Q(enabled=1))
+        return item.id

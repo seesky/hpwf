@@ -14,6 +14,7 @@ from apps.utilities.publiclibrary.StringHelper import StringHelper
 from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 
 #from apps.bizlogic.service.permission.ScopPermission import ScopPermission
+from apps.bizlogic.service.base.PermissionItemService import PermissionItemService
 
 from django.db.models import Q
 
@@ -221,6 +222,45 @@ class PermissionScopeService(object):
             return Pirole.objects.filter(Q(id__in=roleIds) & Q(enabled=1) & Q(deletemark=0)).values_list('id', flat=True)
         return roleIds
 
+    def GetDT(valuesDic):
+        """
+        按键值对获取列表
+        valueDic = {key:value, key:value, ...}
+        Args:
+            valueDic (Dic{key:value}): 参数和值对
+        Returns:
+            returnValue (Pioranize[]): 角色列表
+        """
+        q = Q()
+        for i in valuesDic:
+            q.add(Q(**{i: valuesDic[i]}), Q.AND)
+        returnValue = Pipermissionitem.objects.filter(q)
+        return returnValue
+
+    def GetIdByAdd(resourceCategory, resourceId, tableName, permissionCode, constraint, enabled = True):
+        permissionId = PermissionItemService.GetIdByAdd(permissionCode)
+
+        Pipermissionscope.objects.get_or_create(
+            defaults={'resourcecategory': resourceCategory, 'resourceid': resourceId, 'targetcategory': 'Table',
+                      'targetid': tableName, 'deletemark': 0},
+            resourcecategory=resourceCategory,
+            resourceid=resourceId,
+            targetcategory='Table',
+            targetid=tableName,
+            permissionconstraint=constraint,
+            permissionid=permissionId,
+            deletemark=0,
+            enabled=1 if enabled else 0
+            )
+        scope = Pipermissionscope.objects.get(
+            Q(resourcecategory=resourceCategory) & Q(resourceid=resourceId) & Q(targetcategory='Table') & Q(
+                targetid=tableName) & Q(permissionconstraint=constraint) & Q(permissionid=permissionId) & Q(
+                deletemark=0))
+
+        scope.permissionconstraint = 1 if enabled else 0
+        scope.enabled = 1 if enabled else 0
+        scope.save()
+        return scope.id
 
 
 

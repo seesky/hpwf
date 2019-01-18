@@ -1,24 +1,5 @@
-﻿/*
-RDIFramework.NET，基于.NET的快速信息化系统开发、整合框架，给用户和开发者最佳的.Net框架部署方案。
-框架官网：http://www.rdiframework.net/
-框架博客：http://blog.rdiframework.net/
-交流QQ：406590790 
-邮件交流：406590790@qq.com
-
-其他博客：
-http://www.cnblogs.com/huyong 
-http://blog.csdn.net/chinahuyong
-
-
-* RDIFramework.NET框架“序列管理”业务界面逻辑
-*
-* 主要完成序列的增加、修改、删除、导出等。
-* 修改记录：
-*   1、 2015-08-05 EricHu V3.0 新增本业务逻辑的编写。
-*/
-
-var controlUrl = '/FrameworkModules/SequenceAdmin/',
-    formUrl = '/FrameworkModules/SequenceAdmin/Form?n=' + Math.random();
+﻿var controlUrl = '/Admin/FrameworkModules/SequenceAdmin/',
+    formUrl = '/Admin/FrameworkModules/SequenceAdmin/Form/?n=' + Math.random();
 
 $(function () {
     autoResize({ dataGrid: '#list', gridType: 'datagrid', callback: mygrid.bindGrid, height: 5 });
@@ -41,7 +22,7 @@ var navgrid;
 var mygrid = {
     bindGrid: function (size) {
         navgrid = $('#list').datagrid({
-            url: controlUrl + 'GridPageListJson',
+            url: controlUrl + 'GridPageListJson/',
             toolbar: '#toolbar',
             width: size.width,
             height: size.height,
@@ -96,7 +77,7 @@ var SequenceAdmin = {
             submit: function () {
                 if (top.$('#uiform').validate().form()) {
                     var postData = pageMethod.serializeJson(top.$('#uiform'));
-                    $.ajaxjson("/FrameworkModules/SequenceAdmin/SubmitForm", postData, function (d) {                
+                    $.ajaxjson("/Admin/FrameworkModules/SequenceAdmin/SubmitForm/", postData, function (d) {
                         if (d.Success) {
                             msg.ok(d.Message);
                             addDailog.dialog('close');
@@ -121,7 +102,7 @@ var SequenceAdmin = {
                 title: '修改序列', width: 295, height: 365, href: formUrl, iconCls: 'icon16_table_edit',
                 onLoad: function () {
                     var parm = 'key=' + curSequence.ID;
-                    $.ajaxjson("/FrameworkModules/SequenceAdmin/GetEntity", parm, function (data) {
+                    $.ajaxjson("/Admin/FrameworkModules/SequenceAdmin/GetEntity/", parm, function (data) {
                         if (data) {
                             SetWebControls(data, true);
                         }
@@ -131,7 +112,7 @@ var SequenceAdmin = {
                 submit: function () {
                     if (top.$('#uiform').validate().form()) {
                         var postData = pageMethod.serializeJson(top.$('#uiform'));
-                        $.ajaxjson("/FrameworkModules/SequenceAdmin/SubmitForm?key=" + curSequence.ID, postData, function (d) {
+                        $.ajaxjson("/Admin/FrameworkModules/SequenceAdmin/SubmitForm/?key=" + curSequence.ID, postData, function (d) {
                             if (d.Success) {
                                 msg.ok(d.Message);
                                 editDailog.dialog('close');
@@ -155,7 +136,7 @@ var SequenceAdmin = {
             $.messager.confirm('询问提示', '确认要删除[' + row.FULLNAME + ']序列吗?', function (data) {
                 if (data) {
                      var parm = 'key=' + row.ID;
-                     $.ajaxjson("/FrameworkModules/SequenceAdmin/Delete", parm, function (d) {
+                     $.ajaxjson("/Admin/FrameworkModules/SequenceAdmin/Delete/", parm, function (d) {
                         if (d.Data > 0) {
                             msg.ok('序列删除成功。');
                             mygrid.reload();

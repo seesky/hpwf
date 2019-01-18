@@ -73,7 +73,7 @@ class SequenceService(object):
         except TransactionManagementError as e:
             return returnValue
 
-    def GetDTByPage(self, searchValue, departmentId, roleId, pageSize=50, order=None):
+    def GetDTByPage(self, searchValue, pageSize=50, order=None):
         """
         分页查询
         Args:

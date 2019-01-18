@@ -18,7 +18,9 @@ import apps.hadmin.views.FramworkModules.LogAdminController_view as LogAdmin
 import apps.hadmin.views.FramworkModules.ExceptionAdminController_view as ExceptionAdmin
 import apps.hadmin.views.FramworkModules.DataItemAdminController_view as DataItemAdmin
 import apps.hadmin.views.FramworkModules.ParameterAdminController_view as ParameterAdmin
+import apps.hadmin.views.FramworkModules.SequenceAdminController_view as SequenceAdmin
 import apps.hadmin.views.FramworkModules.HighchartsController_view as Highcharts
+
 
 
 urlpatterns = [
@@ -58,6 +60,8 @@ urlpatterns = [
     url(r'^FrameworkModules/DataItemAdmin/GetDataItemDetailById/', DataItemAdmin.GetDataItemDetailById),
     url(r'^FrameworkModules/ParameterAdmin/Index/', ParameterAdmin.Index),
     url(r'^FrameworkModules/ParameterAdmin/GridPageListJson/', ParameterAdmin.GridPageListJson),
+    url(r'^FrameworkModules/SequenceAdmin/GridPageListJson/', SequenceAdmin.GridPageListJson),
+    url(r'^FrameworkModules/SequenceAdmin/Index/', SequenceAdmin.Index),
 
     url(r'^FrameworkModules/Highcharts/Sample1/', Highcharts.Sample1),
     url(r'^FrameworkModules/Highcharts/Sample2/', Highcharts.Sample2),
