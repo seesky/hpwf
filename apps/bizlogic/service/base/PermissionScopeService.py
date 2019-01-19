@@ -240,6 +240,23 @@ class PermissionScopeService(object):
     def GetIdByAdd(resourceCategory, resourceId, tableName, permissionCode, constraint, enabled = True):
         permissionId = PermissionItemService.GetIdByAdd(permissionCode)
 
+        Pipermissionitem.objects.get_or_create(defaults={'deletemark': '0', 'enabled': '1', 'code': permissionCode},
+                                               code=permissionCode,
+                                               fullname=permissionCode if None else None,
+                                               categorycode="Application",
+                                               parentid=None,
+                                               isscope=0,
+                                               ispublic=0,
+                                               allowdelete=1,
+                                               allowedit=1,
+                                               enabled=1,
+                                               deletemark=0,
+                                               moduleid=None
+                                               )
+
+        permissionId = Pipermissionitem.objects.get(Q(code=permissionCode) & Q(deletemark=0) & Q(enabled=1))
+
+
         Pipermissionscope.objects.get_or_create(
             defaults={'resourcecategory': resourceCategory, 'resourceid': resourceId, 'targetcategory': 'Table',
                       'targetid': tableName, 'deletemark': 0},

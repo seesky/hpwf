@@ -12,8 +12,10 @@ from django.db.transaction import TransactionManagementError
 from apps.bizlogic.models import Pipermissionitem
 from apps.bizlogic.models import Pipermission
 from apps.bizlogic.models import Pirole
+from apps.bizlogic.models import Piuser
+from apps.bizlogic.models import Piuserrole
 #from apps.bizlogic.service.base.UserRoleService import UserRoleService
-from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
+#from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
 from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
 
@@ -365,7 +367,13 @@ class PermissionItemService(object):
         roleId = Pirole.objects.get(Q(deletemark=0) & Q(code=roleCode)).id
         if not roleId:
             return False
-        roleIds = UserRoleService.GetAllRoleIds(self, userId)
+
+        list1 = Piuser.objects.filter(Q(id=userId) & Q(deletemark=0) & Q(enabled=1)).values_list('roleid', flat=True)
+        list2 = Piuserrole.objects.filter(
+            Q(userid=userId) & Q(roleid__in=Pirole.objects.filter(deletemark=0).values('id')) & Q(
+                deletemark=0)).values_list('roleid', flat=True)
+        roleIds = list1.union(list2)
+
         if roleId in roleIds:
             return True
         else:

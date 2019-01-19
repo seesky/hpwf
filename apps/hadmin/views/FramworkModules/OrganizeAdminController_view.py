@@ -132,3 +132,25 @@ def Index(request):
     new_body = tmp.render(render_content)  # 渲染模板
     response.content = new_body  # 设置返回内容
     return response
+
+@LoginAuthorize
+def GetOrganizeByCategory(request):
+    try:
+        organizeCategory = request.GET['organizeCategory']
+    except:
+        organizeCategory = ''
+
+    returnValue = "[]"
+    dtOrganize = OrganizeService.GetDTByValues(None, {'category':organizeCategory, 'enabled':1, 'deletemark':0})
+    if dtOrganize and len(dtOrganize) > 0:
+        returnValue = '['
+        for org in dtOrganize:
+            returnValue = returnValue + org.toJSON() + ","
+        returnValue = returnValue.strip(",")
+        returnValue = returnValue + "]"
+
+        response = HttpResponse()
+        response.content = returnValue
+        return response
+
+    return returnValue

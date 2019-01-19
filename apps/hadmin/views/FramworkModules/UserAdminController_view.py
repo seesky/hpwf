@@ -14,7 +14,11 @@ from apps.bizlogic.service.base.UserOrganizeSerivce import UserOrganizeService
 from apps.bizlogic.service.base.UserService import UserSerivce
 import json
 from apps.utilities.publiclibrary.SearchFilter import SearchFilter
-
+from apps.bizlogic.models import Piuser
+from apps.utilities.message.StatusCode import StatusCode
+from apps.utilities.message.FrameworkMessage import FrameworkMessage
+import uuid
+import datetime
 
 def GenerateSplitTool():
     sbTool = ''
@@ -53,6 +57,21 @@ def Index(request):
     render_content = {'Skin': CommonUtils.Theme(response, request),
                       'CurrentUserId': CommonUtils.Current(response, request).Id,
                       'ToolButton': BuildToolBarButton(response, request)}  # 将要渲染到模板的数据
+    new_body = tmp.render(render_content)  # 渲染模板
+    response.content = new_body  # 设置返回内容
+    return response
+
+
+@LoginAuthorize
+def Form(request):
+    """
+    起始页
+    Args:
+    Returns:
+    """
+    response = HttpResponse()
+    tmp = loader.get_template('UserAdmin/Form.html')  # 加载模板
+    render_content = {}  # 将要渲染到模板的数据
     new_body = tmp.render(render_content)  # 渲染模板
     response.content = new_body  # 设置返回内容
     return response
@@ -151,3 +170,89 @@ def GetUserListByPage(request):
 
     response.content = returnValue
     return response
+
+@LoginAuthorize
+def SubmitForm(request):
+    try:
+        IsOk = '1'
+        try:
+            key = request.GET['key']
+        except:
+            key = None
+
+        response = HttpResponse()
+
+        curUser = CommonUtils.Current(response, request)
+
+        if not key:
+            user = Piuser()
+            user = user.loadJson(request)
+            user.id = uuid.uuid4()
+            # user.isstaff = 0
+            # user.isvisible = 1
+            # user.isdimission = 0
+            user.deletemark = 0
+            user.createon = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            user.createby = curUser.RealName
+            user.createuserid = curUser.Id
+            user.isstaff = 0
+            user.isvisible = 1
+            user.isdimission = 0
+
+
+            returnCode, returnMessage, returnValue = UserSerivce.AddUser(None, user)
+            if returnCode == StatusCode.statusCodeDic['OKAdd']:
+                response.content = json.dumps({'Success':True, 'Data':IsOk, 'Message':returnMessage})
+                return response
+            else:
+                response.content = json.dumps({'Success': False, 'Data': '0', 'Message': returnMessage})
+                return response
+        else:
+            updateEntity = UserSerivce.GetEntity(key)
+            if updateEntity:
+                updateEntity = updateEntity.loadJson(request)
+
+            if curUser:
+                updateEntity.modifiedby = curUser.RealName
+                updateEntity.modifieduserid = curUser.Id
+                returnCode, returnMessage = UserSerivce.UpdateUser(None, updateEntity)
+                if returnCode == StatusCode.statusCodeDic['OKUpdate']:
+                    response.content = json.dumps({'Success': True, 'Data': IsOk, 'Message': returnMessage})
+                    return response
+                else:
+                    response.content = json.dumps({'Success': False, 'Data': '0', 'Message': returnMessage})
+                    return response
+    except Exception as e:
+        print(e)
+        response = HttpResponse()
+        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
+        return response
+
+@LoginAuthorize
+def GetEntity(request):
+    try:
+        key = request.POST['key']
+    except:
+        key = None
+    entity = UserSerivce.GetEntity(key)
+    response = HttpResponse()
+    response.content = entity.toJSON()
+    return response
+
+@LoginAuthorize
+def Delete(request):
+    try:
+        key = request.POST['key']
+    except:
+        key = ''
+
+    returnValue = UserSerivce.SetDeleted(None, [key])
+
+    if returnValue:
+        response = HttpResponse()
+        response.content = json.dumps({'Success': True, 'Data': '1', 'Message': FrameworkMessage.MSG0013})
+        return response
+    else:
+        response = HttpResponse()
+        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
+        return response

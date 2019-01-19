@@ -19,6 +19,8 @@ import apps.hadmin.views.FramworkModules.ExceptionAdminController_view as Except
 import apps.hadmin.views.FramworkModules.DataItemAdminController_view as DataItemAdmin
 import apps.hadmin.views.FramworkModules.ParameterAdminController_view as ParameterAdmin
 import apps.hadmin.views.FramworkModules.SequenceAdminController_view as SequenceAdmin
+import apps.hadmin.views.FramworkModules.TableFieldAdminController_view as TableFieldAdmin
+import apps.hadmin.views.FramworkModules.UtilityController_view as Utility
 import apps.hadmin.views.FramworkModules.HighchartsController_view as Highcharts
 
 
@@ -29,17 +31,30 @@ urlpatterns = [
     url(r'^AccordionTreeIndex/', HomeController.AccordiontreeIndex),
     url(r'^LoadTreeMenu/', HomeController.LoadTreeMenu),
     url(r'^StartPage/', HomeController.StartPage),
+    #
+    url(r'^FrameworkModules/Utility/GetCategory/', Utility.GetCategory),
+    #用户管理
     url(r'^FrameworkModules/UserAdmin/Index/', UserAdminController.Index),
     url(r'^FrameworkModules/UserAdmin/GetUserPageDTByDepartmentId/', UserAdminController.GetUserPageDTByDepartmentId),
     url(r'^FrameworkModules/UserAdmin/GetUserListByPage/', UserAdminController.GetUserListByPage),
+    url(r'^FrameworkModules/UserAdmin/Form/', UserAdminController.Form),
+    url(r'^FrameworkModules/UserAdmin/SubmitForm/', UserAdminController.SubmitForm),
+    url(r'^FrameworkModules/UserAdmin/GetEntity/', UserAdminController.GetEntity),
+    url(r'^FrameworkModules/UserAdmin/Delete/', UserAdminController.Delete),
+    #组织机构管理
     url(r'^FrameworkModules/OrganizeAdmin/Index/', OrganizeAdmin.Index),
     url(r'^FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/', OrganizeAdmin.GetOrganizeTreeJson),
+    url(r'^FrameworkModules/OrganizeAdmin/GetOrganizeByCategory/', OrganizeAdmin.GetOrganizeByCategory),
+    #员工管理
     url(r'^FrameworkModules/StaffAdmin/Index/', StaffAdmin.Index),
     url(r'^FrameworkModules/StaffAdmin/GetStaffByOrganizeId/', StaffAdmin.GetStaffByOrganizeId),
+    #角色管理
     url(r'^FrameworkModules/RoleAdmin/Index/', RoleAdmin.Index),
     url(r'^FrameworkModules/RoleAdmin/GridPageListJson/', RoleAdmin.GridPageListJson),
     url(r'^FrameworkModules/RoleAdmin/GetRoleListByOrganize/', RoleAdmin.GetRoleListByOrganize),
     url(r'^FrameworkModules/RoleAdmin/GetRoleCategory/', RoleAdmin.GetRoleCategory),
+    url(r'^FrameworkModules/RoleAdmin/GetEnabledRoleList/', RoleAdmin.GetEnabledRoleList),
+
     url(r'^FrameworkModules/PostAdmin/Index/', PostAdmin.Index),
     url(r'^FrameworkModules/ModuleAdmin/Index/', ModuleAdmin.Index),
     url(r'^FrameworkModules/ModuleAdmin/GetModuleTreeJson/', ModuleAdmin.GetModuleTreeJson),
@@ -62,6 +77,9 @@ urlpatterns = [
     url(r'^FrameworkModules/ParameterAdmin/GridPageListJson/', ParameterAdmin.GridPageListJson),
     url(r'^FrameworkModules/SequenceAdmin/GridPageListJson/', SequenceAdmin.GridPageListJson),
     url(r'^FrameworkModules/SequenceAdmin/Index/', SequenceAdmin.Index),
+    url(r'^FrameworkModules/TableFieldAdmin/Index/', TableFieldAdmin.Index),
+    url(r'^FrameworkModules/TableFieldAdmin/GetTableNameAndCode/', TableFieldAdmin.GetTableNameAndCode),
+    url(r'^FrameworkModules/TableFieldAdmin/GetDTByTable/', TableFieldAdmin.GetDTByTable),
 
     url(r'^FrameworkModules/Highcharts/Sample1/', Highcharts.Sample1),
     url(r'^FrameworkModules/Highcharts/Sample2/', Highcharts.Sample2),

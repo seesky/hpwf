@@ -137,3 +137,20 @@ def GetRoleListByOrganize(request):
     else:
         response.content = writeJson
         return response
+
+@LoginAuthorize
+def GetEnabledRoleList(request):
+    returnValue = "[]"
+    dtRole = RoleService.GetDTByValues(None, {'deletemark':0, 'enabled':1})
+    if dtRole and len(dtRole) > 0:
+        returnValue = '['
+        for role in dtRole:
+            returnValue = returnValue + role.toJSON() + ","
+        returnValue = returnValue.strip(",")
+        returnValue = returnValue + "]"
+
+        response = HttpResponse()
+        response.content = returnValue
+        return response
+
+    return returnValue

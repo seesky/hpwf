@@ -1,4 +1,4 @@
-﻿var controlUrl = '/FrameworkModules/TableFieldAdmin/';
+﻿var controlUrl = '/Admin/FrameworkModules/TableFieldAdmin/';
 
 $(function () {
     var size = { width: $(window).width(), height: $(window).height() };
@@ -41,7 +41,7 @@ var tableList = {
             resizable: true,
             singleSelect: true,
             collapsible: false,
-            url: controlUrl + 'GetTableNameAndCode',
+            url: controlUrl + 'GetTableNameAndCode/',
             columns: [[
                  { title: '表名', field: 'TABLENAME', width: 260 },
                  { title: 'TableCode', field: 'TABLECODE', hidden: true }
@@ -51,7 +51,7 @@ var tableList = {
             onClickRow: function (rowIndex, rowData) {
                 var cc = rowData.TABLECODE;
                 $('#tableFieldGird').datagrid({
-                    url: controlUrl + 'GetDTByTable',
+                    url: controlUrl + 'GetDTByTable/',
                     queryParams: { tableCode: cc }
                 });
             }
@@ -76,21 +76,21 @@ var mygrid = {
             onRowContextMenu: pageContextMenu.createDataGridContextMenu,
             columns: [[
                     { field: 'ck', checkbox: true },
-                    { title: 'Id', field: 'ID', hidden: true },
-                    { title: '英文名称', field: 'COLUMNCODE', width: 130 },
-                    { title: '数据类型', field: 'DATATYPE', width: 70 },
-                    { title: '中文名称', field: 'COLUMNNAME', width: 130 },
-                    { title: '公开', field: 'ISPUBLIC', align: "center", width: 50, formatter: imgcheckbox },
-                    { title: '访问权限', field: 'COLUMNACCESS', align: "center", width: 50, formatter: imgcheckbox },
-                    { title: '编辑权限', field: 'COLUMNEDIT', align: "center", width: 50, formatter: imgcheckbox },
-                    { title: '拒绝访问', field: 'COLUMNDENEY', align: "center", width: 50, formatter: imgcheckbox },
-                    { title: '启用约束', field: 'USECONSTRAINT', align: "center", width: 50, formatter: imgcheckbox },
-                    { title: '查询列', field: 'ISSEARCHCOLUMN', align: "center", width: 50, formatter: imgcheckbox },
-                    { title: '展示列', field: 'ISEXHIBITCOLUMN', align: "center", width: 50, formatter: imgcheckbox },
-                    { title: '允许编辑', field: 'ALLOWEDIT', align: "center", width: 50, formatter: imgcheckbox },
-                    { title: '允许删除', field: 'ALLOWDELETE', align: "center", width: 50, formatter: imgcheckbox },
-                    { title: '有效', field: 'ENABLED', width: 50, align: 'center', formatter: imgcheckbox },
-                    { title: '描述', field: 'DESCRIPTION', width: 260 }
+                    { title: 'Id', field: 'id', hidden: true },
+                    { title: '英文名称', field: 'columncode', width: 130 },
+                    { title: '数据类型', field: 'datatype', width: 70 },
+                    { title: '中文名称', field: 'columnname', width: 130 },
+                    { title: '公开', field: 'ispublic', align: "center", width: 50, formatter: imgcheckbox },
+                    { title: '访问权限', field: 'columnaccess', align: "center", width: 50, formatter: imgcheckbox },
+                    { title: '编辑权限', field: 'columnedit', align: "center", width: 50, formatter: imgcheckbox },
+                    { title: '拒绝访问', field: 'columndeney', align: "center", width: 50, formatter: imgcheckbox },
+                    { title: '启用约束', field: 'useconstraint', align: "center", width: 50, formatter: imgcheckbox },
+                    { title: '查询列', field: 'issearchcolumn', align: "center", width: 50, formatter: imgcheckbox },
+                    { title: '展示列', field: 'isexhibitcolumn', align: "center", width: 50, formatter: imgcheckbox },
+                    { title: '允许编辑', field: 'allowedit', align: "center", width: 50, formatter: imgcheckbox },
+                    { title: '允许删除', field: 'allowdelete', align: "center", width: 50, formatter: imgcheckbox },
+                    { title: '有效', field: 'enabled', width: 50, align: 'center', formatter: imgcheckbox },
+                    { title: '描述', field: 'description', width: 260 }
                 ]]
         });
     },
@@ -106,7 +106,7 @@ var mygrid = {
 };
 
 var imgcheckbox = function (cellvalue, options, rowObject) {
-    return cellvalue ? '<img src="../../Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="../../Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
+    return cellvalue ? '<img src="/Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="/Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
 };
 
 var tableFieldBacthFormatter = function (cellvalue, options, rowObject) {
@@ -181,7 +181,7 @@ var TableFieldAdminMethod = {
 
         var nb = top.$('#nb').treegrid({
             title: '表字段明细',
-            url: '/FrameworkModules/TableFieldAdmin/GetDTForEditByTable?tableCode=' + curTable.TABLECODE,
+            url: '/Admin/FrameworkModules/TableFieldAdmin/GetDTForEditByTable/?tableCode=' + curTable.TABLECODE,
             height: ad.dialog('options').height - 115,
             idField: 'ID',
             treeField: 'COLUMNNAME',
@@ -325,7 +325,7 @@ function SetTablePermissionMethod() {
     var currentRole = tableList.selectRow();
     if (currentRole) {
         var rDialog = top.$.hDialog({
-            href: '/FrameworkModules/TableFieldAdmin/SetTablePermission', width: 660, height: 515, title: '设置需要做表权限控件的数据表', iconCls: 'icon16_table_lightning',
+            href: '/Admin/FrameworkModules/TableFieldAdmin/SetTablePermission/', width: 660, height: 515, title: '设置需要做表权限控件的数据表', iconCls: 'icon16_table_lightning',
             onLoad: function () {
                 top.$('#rlayout').layout();
                 //top.$('#roleName').text(currentRole.REALNAME);
@@ -361,14 +361,14 @@ function SetTablePermissionMethod() {
                 });
 
                 top.$('#allDataTables').datagrid({
-                    url: '/FrameworkModules/TableFieldAdmin/GetTableNameAndCodeForPermission',
+                    url: '/Admin/FrameworkModules/TableFieldAdmin/GetTableNameAndCodeForPermission/',
                     onDblClickRow: function (rowIndex, rowData) {
                         top.$('#aSelectTable').click();
                     }
                 });
 
                 top.$('#selectDataTables').datagrid({
-                    url: '/FrameworkModules/TableFieldAdmin/GetTablePermissionScopeList',
+                    url: '/Admin/FrameworkModules/TableFieldAdmin/GetTablePermissionScopeList/',
                     onDblClickRow: function (rowIndex, rowData) {
                         top.$('#aDeleteTable').click();
                     }
@@ -395,7 +395,7 @@ function SetTablePermissionMethod() {
 
                             //添加权限控制表
                             var query = 'tableName=' + _row.TABLENAME;
-                            $.ajaxjson('/FrameworkModules/TableFieldAdmin/AddTablePermissionScope', query, function (d) {
+                            $.ajaxjson('/Admin/FrameworkModules/TableFieldAdmin/AddTablePermissionScope/', query, function (d) {
                                 if (d.Data > 0) {
                                     top.$('#allDataTables').datagrid('deleteRow', top.$('#allDataTables').datagrid('getRowIndex', _row.TABLECODE));
                                 } else {
@@ -418,7 +418,7 @@ function SetTablePermissionMethod() {
                         top.$('#selectDataTables').datagrid('deleteRow', rIndex).datagrid('unselectAll');
                         //移除数据表
                         var query = 'itemValue=' + trow.ITEMVALUE;
-                        $.ajaxjson('/FrameworkModules/TableFieldAdmin/DeleteTablePermissionScope', query, function (d) {
+                        $.ajaxjson('/Admin/FrameworkModules/TableFieldAdmin/DeleteTablePermissionScope/', query, function (d) {
                             if (d.Data > 0 ) {
                                 top.$('#allDataTables').datagrid('appendRow', {
                                     TABLENAME: trow.ITEMNAME,

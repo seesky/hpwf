@@ -6,35 +6,35 @@ var pageMethod = {
             return false;
         }
 
-        if (categoryControl === 'RoleId') {
+        if (categoryControl === 'roleid') {
             top.$('#' + categoryControl).combobox({
-                url: '/FrameworkModules/RoleAdmin/GetEnabledRoleList',
+                url: '/Admin/FrameworkModules/RoleAdmin/GetEnabledRoleList/',
                 method: 'get',
-                valueField: 'ID',
-                textField: 'REALNAME',
+                valueField: 'id',
+                textField: 'realname',
                 editable: false,
                 panelHeight: '200'
                 //panelHeight: 'auto'
             });
-        } else if (categoryControl === 'CompanyId' ||
-            categoryControl === 'SubCompanyId' ||
-            categoryControl === 'DepartmentId' ||
-            categoryControl === 'SubDepartmentId' ||
-            categoryControl === 'WorkgroupId') {
+        } else if (categoryControl === 'companyid' ||
+            categoryControl === 'subcompanyid' ||
+            categoryControl === 'departmentid' ||
+            categoryControl === 'subdepartmentid' ||
+            categoryControl === 'workgroupid') {
             top.$('#' + categoryControl).combobox({
-                url: '/FrameworkModules/OrganizeAdmin/GetOrganizeByCategory?organizeCategory=' + categoryCode,
+                url: '/Admin/FrameworkModules/OrganizeAdmin/GetOrganizeByCategory/?organizeCategory=' + categoryCode,
                 method: 'get',
-                valueField: 'ID',
-                textField: 'FULLNAME',
+                valueField: 'id',
+                textField: 'fullname',
                 editable: false,
                 panelHeight: 'auto'
             });
         } else {
             top.$('#' + categoryControl).combobox({
-                url: '/Utility/GetCategory?categoryCode=' + categoryCode,
+                url: '/Admin/FrameworkModules/Utility/GetCategory?categoryCode=' + categoryCode,
                 method: 'get',
-                valueField: 'ITEMVALUE',
-                textField: 'ITEMNAME',
+                valueField: 'itemvalue',
+                textField: 'itemname',
                 editable: false,
                 panelHeight: 'auto'
             });
@@ -318,7 +318,7 @@ var pageContextMenu = {
 
 //针对datagrid的图标列
 function ImageCheckBox(value, options, rowObject) {
-    return value ? '<img src="../../Content/Styles/icon/checkbox_yes.png" alt="⊙" title="是" />' : '<img src="../../Content/Styles/icon/checkbox_no.png" alt="〇" title="否" />';
+    return value ? '<img src="/Content/Styles/icon/checkbox_yes.png" alt="⊙" title="是" />' : '<img src="/Content/Styles/icon/checkbox_no.png" alt="〇" title="否" />';
 };
 
 /********

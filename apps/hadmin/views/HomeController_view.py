@@ -52,7 +52,7 @@ def LoadTreeMenu(request):
     if CommonUtils.Current(response, request).IsAdministrator:
         list = ModuleService.GetList(ModuleService)
     else:
-        list = UserPermission.GetModuleDTByUserId(UserPermission, CommonUtils.Current(response, request).Id)
+        list = UserPermission.GetModuleDTByUserId(None, CommonUtils.Current(response, request) , CommonUtils.Current(response, request).Id)
 
     listWhere = list.filter(Q(moduletype = None) | Q(moduletype = 2) | Q(moduletype = 3) | Q(ispublic = 1))
 

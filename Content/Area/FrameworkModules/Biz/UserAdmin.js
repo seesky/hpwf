@@ -1,4 +1,4 @@
-﻿var formUrl = "/FrameworkModules/UserAdmin/Form";
+﻿var formUrl = "/Admin/FrameworkModules/UserAdmin/Form/";
 
 $(function () {
     $('#sb').splitbutton({
@@ -208,13 +208,13 @@ var UserAdminMethod = {
     },
     initData: function () {
         //绑定各数据字典
-        pageMethod.bindCategory('Gender', 'Gender');
-        pageMethod.bindCategory('RoleId', 'undefined');
-        pageMethod.bindCategory('CompanyId', 'Company');
-        pageMethod.bindCategory('SubCompanyId', 'SubCompany');
-        pageMethod.bindCategory('DepartmentId', 'Department');
-        pageMethod.bindCategory('SubDepartmentId', 'SubDepartment');
-        pageMethod.bindCategory('WorkgroupId', 'Workgroup');
+        pageMethod.bindCategory('gender', 'Gender');
+        pageMethod.bindCategory('roleid', 'undefined');
+        pageMethod.bindCategory('companyid', 'Company');
+        pageMethod.bindCategory('subcompanyid', 'SubCompany');
+        pageMethod.bindCategory('departmentid', 'Department');
+        pageMethod.bindCategory('subdepartmentid', 'SubDepartment');
+        pageMethod.bindCategory('workgroupid', 'Workgroup');
     },
     AddUser: function () { //添加用户
         var addDialog = top.$.hDialog({
@@ -225,19 +225,19 @@ var UserAdminMethod = {
             iconCls: 'icon16_user_add',
             onLoad: function () {
                 UserAdminMethod.initData();
-                top.$('#Enabled').attr("checked", true);
-                top.$('#Description').val("");
-                top.$('#UserName').focus();
+                top.$('#enabled').attr("checked", true);
+                top.$('#description').val("");
+                top.$('#username').focus();
             },
             submit: function () {
                 if (top.$('#uiform').validate().form()) {                    
                     var postData = pageMethod.serializeJson(top.$('#uiform'));
-                    postData.CompanyName = top.$('#CompanyId').combobox('getText');
-                    postData.SubCompanyName = top.$('#SubCompanyId').combobox('getText');
-                    postData.DepartmentName = top.$('#DepartmentId').combobox('getText');
-                    postData.SubDepartmentName = top.$('#SubDepartmentId').combobox('getText');
-                    postData.WorkgroupName = top.$('#WorkgroupId').combobox('getText');
-                    $.ajaxjson("/FrameworkModules/UserAdmin/SubmitForm", postData, function (d) {
+                    postData.companyname = top.$('#companyid').combobox('getText');
+                    postData.subcompanyname = top.$('#subcompanyid').combobox('getText');
+                    postData.departmentname = top.$('#departmentid').combobox('getText');
+                    postData.subdepartmentname = top.$('#subdepartmentid').combobox('getText');
+                    postData.workgroupname = top.$('#workgroupid').combobox('getText');
+                    $.ajaxjson("/Admin/FrameworkModules/UserAdmin/SubmitForm/", postData, function (d) {
                         if (d.Success) {
                             msg.ok(d.Message);
                             addDialog.dialog('close');
@@ -248,7 +248,7 @@ var UserAdminMethod = {
                     });
                 } else {
                     msg.warning('请输入用户名称。');
-                    top.$('#UserName').focus();
+                    top.$('#username').focus();
                 }
             }
         });
@@ -272,23 +272,23 @@ var UserAdminMethod = {
                 onLoad: function () {
                     UserAdminMethod.initData();
                     var parm = 'key=' + selectRow.ID;
-                    $.ajaxjson('/FrameworkModules/UserAdmin/GetEntity', parm, function (data) {
+                    $.ajaxjson('/Admin/FrameworkModules/UserAdmin/GetEntity/', parm, function (data) {
                         if (data) {
                             //初始化相关数据
                             SetWebControls(data, true);
-                            top.$('#UserPassword').after('******').remove();
+                            top.$('#userpassword').after('******').remove();
                         }
                     });
                 },
                 submit: function () {
                     if (top.$('#uiform').validate().form()) {                      
                         var postData = pageMethod.serializeJson(top.$('#uiform'));   
-                        postData.CompanyName = top.$('#CompanyId').combobox('getText');
-                        postData.SubCompanyName = top.$('#SubCompanyId').combobox('getText');
-                        postData.DepartmentName = top.$('#DepartmentId').combobox('getText');
-                        postData.SubDepartmentName = top.$('#SubDepartmentId').combobox('getText');
-                        postData.WorkgroupName = top.$('#WorkgroupId').combobox('getText');
-                        $.ajaxjson("/FrameworkModules/UserAdmin/SubmitForm?key=" + selectRow.ID, postData, function (d) {
+                        postData.companyname = top.$('#companyid').combobox('getText');
+                        postData.subcompanyname = top.$('#subcompanyid').combobox('getText');
+                        postData.departmentname = top.$('#departmentid').combobox('getText');
+                        postData.subdepartmentname = top.$('#subdepartmentid').combobox('getText');
+                        postData.workgroupname = top.$('#workgroupid').combobox('getText');
+                        $.ajaxjson("/Admin/FrameworkModules/UserAdmin/SubmitForm/?key=" + selectRow.ID, postData, function (d) {
                             if (d.Success) {
                                 msg.ok(d.Message);
                                 editDailog.dialog('close');
@@ -323,7 +323,7 @@ var UserAdminMethod = {
             $.messager.confirm('询问提示', '确认要删除用户【' + selectRow.REALNAME + '】吗？', function (data) {
                 if (data) {
                     var parm = 'key=' + selectRow.ID;
-                    $.ajaxjson("/FrameworkModules/UserAdmin/Delete", parm, function (d) {
+                    $.ajaxjson("/Admin/FrameworkModules/UserAdmin/Delete/", parm, function (d) {
                         if (d.Success) {
                             msg.ok(d.Message);
                             mygrid.reload();
