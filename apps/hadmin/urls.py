@@ -63,6 +63,9 @@ urlpatterns = [
     url(r'^FrameworkModules/RoleAdmin/GetRoleListByOrganize/', RoleAdmin.GetRoleListByOrganize),
     url(r'^FrameworkModules/RoleAdmin/GetRoleCategory/', RoleAdmin.GetRoleCategory),
     url(r'^FrameworkModules/RoleAdmin/GetEnabledRoleList/', RoleAdmin.GetEnabledRoleList),
+    url(r'^FrameworkModules/RoleAdmin/Form/', RoleAdmin.Form),
+    url(r'^FrameworkModules/RoleAdmin/SubmitForm/', RoleAdmin.SubmitForm),
+    url(r'^FrameworkModules/RoleAdmin/GetEntity/', RoleAdmin.GetEntity),
 
     url(r'^FrameworkModules/PostAdmin/Index/', PostAdmin.Index),
     url(r'^FrameworkModules/ModuleAdmin/Index/', ModuleAdmin.Index),

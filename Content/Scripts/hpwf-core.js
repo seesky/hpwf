@@ -41,11 +41,53 @@ var pageMethod = {
         }
         return false;
     },
+
+
+    serializeArray : function(elms) {
+        var name, type, result = [],
+            add = function(value) {
+                if (value.forEach) return value.forEach(add);
+                result.push({
+                    name: name,
+                    value: value
+                });
+            };
+        if (elms[0]) $.each(elms[0].elements, function(_, field) {
+            type = field.type, name = field.name;
+            if (name && field.nodeName.toLowerCase() != 'fieldset' &&
+                !field.disabled && type != 'submit' && type != 'reset' && type != 'button' && type != 'file' && type != 'checkbox' && (type != 'radio' || field.checked)) {
+                add($(field).val());
+            } else if (type == 'checkbox') {
+                add(field.checked);
+            }
+        });
+        return result;
+    },
+
+    serialize : function(elms) {
+        var result = [];
+        pageMethod.serializeArray(elms).forEach(function(elm) {
+            //result.push(encodeURIComponent(elm.name) + '=' + encodeURIComponent(elm.value));
+            //result[encodeURIComponent(elm.name)] = encodeURIComponent(elm.value)
+            //var name = encodeURIComponent(elm.name)
+            //var value = encodeURIComponent(elm.value)
+            var name = elm.name
+            var value = elm.value
+            result.push({name:name, value:value})
+
+        });
+        //return result.join('&');
+        return result
+    },
+
     //表单序列化为json
     serializeJson: function (uiFormObj) {
+
         var serializeObj = {};
-        var array = uiFormObj.serializeArray();
+        //var array = uiFormObj.serializeArray();
+        var array = pageMethod.serialize(uiFormObj)
         var str = uiFormObj.serialize();
+        //$(array).each(function () {
         $(array).each(function () {
             if (serializeObj[this.name]) {
                 if ($.isArray(serializeObj[this.name])) {
@@ -55,7 +97,13 @@ var pageMethod = {
                 }
             } else {
                 if (top.$('#' + this.name) && (top.$('#' + this.name).attr('type') === 'checkbox' || $('#' + this.name).attr('type') === 'checkbox')) {
-                    serializeObj[this.name] = this.value.replace('on', 1).replace('off', 0); //替换checkbox的值
+                    if(this.value == true) {
+                        serializeObj[this.name] = 1;
+                    }else{
+                        serializeObj[this.name] = 0;
+                    }
+                    //serializeObj[this.name] = this.value.replace('on', 1).replace('off', 0); //替换checkbox的值
+                    //serializeObj[this.name] = this.value.replace('true', 1).replace('false', 0); //替换checkbox的值
                 } else {
                     serializeObj[this.name] = this.value;
                 }

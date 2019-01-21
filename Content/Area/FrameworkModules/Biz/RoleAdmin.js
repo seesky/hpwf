@@ -1,4 +1,4 @@
-﻿var formUrl = '/FrameworkModules/RoleAdmin/Form';
+﻿var formUrl = '/Admin/FrameworkModules/RoleAdmin/Form/';
 
 $(function () {
         autoResize({ dataGrid: '#list', gridType: 'datagrid', callback: mygrid.bindGrid, height: 5 });
@@ -108,14 +108,14 @@ var RoleAdminMethod = {
         var addDailog = top.$.hDialog({
             title: '添加角色', width: 430, height: 290, href: formUrl, iconCls: 'icon16_group_add',
             onLoad: function () {
-                pageMethod.bindCategory('Category', 'RoleCategory');
-                top.$('#Enabled').attr("checked", true);
-                top.$('#Code').focus();
+                pageMethod.bindCategory('category', 'RoleCategory');
+                top.$('#enabled').attr("checked", true);
+                top.$('#code').focus();
             },
             submit: function () {
                 if (top.$('#uiform').validate().form()) {
                     var postData = pageMethod.serializeJson(top.$('#uiform'));
-                    $.ajaxjson("/FrameworkModules/RoleAdmin/SubmitForm?key=", postData, function (d) {
+                    $.ajaxjson("/Admin/FrameworkModules/RoleAdmin/SubmitForm/?key=", postData, function (d) {
                         if (d.Success) {
                             msg.ok(d.Message);
                             addDailog.dialog('close');
@@ -140,19 +140,19 @@ var RoleAdminMethod = {
             var editDailog = top.$.hDialog({
                 title: '修改角色', width: 430, height: 290, href: formUrl, iconCls: 'icon16_group_edit',
                 onLoad: function () {
-                    pageMethod.bindCategory('Category', 'RoleCategory');
+                    pageMethod.bindCategory('category', 'RoleCategory');
                     var parm = 'key=' + curRole.ID;
-                    $.ajaxjson("/FrameworkModules/RoleAdmin/GetEntity", parm, function (data) {
+                    $.ajaxjson("/Admin/FrameworkModules/RoleAdmin/GetEntity/", parm, function (data) {
                         if (data) {
                             SetWebControls(data, true);
                         }
                     });
-                    top.$('#Code').focus();
+                    top.$('#code').focus();
                 },
                 submit: function () {
                     if (top.$('#uiform').validate().form()) {
                         var postData = pageMethod.serializeJson(top.$('#uiform'));
-                        $.ajaxjson("/FrameworkModules/RoleAdmin/SubmitForm?key=" + curRole.ID, postData, function (d) {
+                        $.ajaxjson("/Admin/FrameworkModules/RoleAdmin/SubmitForm/?key=" + curRole.ID, postData, function (d) {
                             if (d.Success) {
                                 msg.ok(d.Message);
                                 editDailog.dialog('close');
@@ -174,8 +174,8 @@ var RoleAdminMethod = {
         if (row) {
             $.messager.confirm('询问提示', '确认要删除[' + row.REALNAME + ']角色吗?', function (data) {
                 if (data) {
-                    var parm = 'key=' + row.ID;
-                    $.ajaxjson("/FrameworkModules/RoleAdmin/Delete", parm, function (d) {
+                    var parm = 'key=' + row.id;
+                    $.ajaxjson("/Admin/FrameworkModules/RoleAdmin/Delete/", parm, function (d) {
                         if (d.Data > 0) {
                             msg.ok('角色删除成功。');
                             mygrid.reload();
@@ -194,7 +194,7 @@ var RoleAdminMethod = {
         var currentRole = mygrid.selected();
         if (currentRole) {
             var rDialog = top.$.hDialog({
-                href: '/FrameworkModules/PermissionSet/RoleUserSet', width: 600, height: 500, title: '角色用户关联', iconCls: 'icon16_group_link',
+                href: '/Admin/FrameworkModules/PermissionSet/RoleUserSet/', width: 600, height: 500, title: '角色用户关联', iconCls: 'icon16_group_link',
                 onLoad: function () {
                     top.$('#rlayout').layout();
                     top.$('#roleName').text(currentRole.REALNAME);
@@ -217,14 +217,14 @@ var RoleAdminMethod = {
                     });
 
                     top.$('#allUsers').datagrid({
-                        url: '/FrameworkModules/UserAdmin/GetUserListJson',
+                        url: '/Admin/FrameworkModules/UserAdmin/GetUserListJson/',
                         onDblClickRow: function (rowIndex, rowData) {
                             top.$('#aSelectUser').click();
                         }
                     });
 
                     top.$('#selectedUser').datagrid({
-                        url: '/FrameworkModules/UserAdmin/GetDTByRole?roleId=' + currentRole.ID,
+                        url: '/Admin/FrameworkModules/UserAdmin/GetDTByRole/?roleId=' + currentRole.ID,
                         onDblClickRow: function (rowIndex, rowData) {
                             top.$('#aDeleteUser').click();
                         }
@@ -243,7 +243,7 @@ var RoleAdminMethod = {
                                 top.$('#selectedUser').datagrid('appendRow', _row);
                                 //添加用户                               
                                 var query = 'roleId=' + currentRole.ID + '&addUserIds=' + _row.ID;
-                                $.ajaxjson('/FrameworkModules/RoleAdmin/AddUserToRole', query, function (d) {
+                                $.ajaxjson('/Admin/FrameworkModules/RoleAdmin/AddUserToRole/', query, function (d) {
                                     if (d.Data != '1') {
                                         msg.warning(d.Message);
                                     } else {
@@ -267,7 +267,7 @@ var RoleAdminMethod = {
                             top.$('#selectedUser').datagrid('deleteRow', rIndex).datagrid('unselectAll');
                             //移除角色
                             var query = 'roleId=' + currentRole.ID + '&userId=' + trow.ID;
-                            $.ajaxjson('/FrameworkModules/RoleAdmin/RemoveUserFromRole', query, function (d) {
+                            $.ajaxjson('/Admin/FrameworkModules/RoleAdmin/RemoveUserFromRole/', query, function (d) {
                                 if (d.Data == 1) {
                                     msg.ok(d.Message);                                    
                                 } else {

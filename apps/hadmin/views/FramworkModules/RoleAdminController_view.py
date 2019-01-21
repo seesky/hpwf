@@ -14,6 +14,11 @@ import json
 from apps.hadmin.MvcAppUtilties.JsonHelper import DateEncoder
 from apps.bizlogic.service.base.ItemDetailsService import ItemDetailsService
 from apps.bizlogic.service.base.RoleService import RoleService
+from apps.bizlogic.models import Pirole
+import datetime
+from apps.utilities.message.StatusCode import StatusCode
+from apps.utilities.message.FrameworkMessage import FrameworkMessage
+import uuid
 
 def BuildToolBarButton(response, request):
     sb = ''
@@ -154,3 +159,90 @@ def GetEnabledRoleList(request):
         return response
 
     return returnValue
+
+
+@LoginAuthorize
+def Form(request):
+    """
+    起始页
+    Args:
+    Returns:
+    """
+    response = HttpResponse()
+    tmp = loader.get_template('RoleAdmin/Form.html')  # 加载模板
+    render_content = {}  # 将要渲染到模板的数据
+    new_body = tmp.render(render_content)  # 渲染模板
+    response.content = new_body  # 设置返回内容
+    return response
+
+
+@LoginAuthorize
+def SubmitForm(request):
+    try:
+        IsOk = '1'
+        try:
+            key = request.GET['key']
+        except:
+            key = None
+
+        response = HttpResponse()
+
+        curUser = CommonUtils.Current(response, request)
+
+        if not key:
+            role = Pirole()
+            role = role.loadJson(request)
+
+            role.id = uuid.uuid4()
+            # user.isstaff = 0
+            # user.isvisible = 1
+            # user.isdimission = 0
+            role.deletemark = 0
+            role.allowdelete = 1
+            role.allowedit = 1
+            role.createon = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            role.createby = curUser.RealName
+            role.modifiedon = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            role.modifiedby = curUser.RealName
+            role.enabled = 1
+
+            returnCode, returnMessage, returnValue = RoleService.Add(None, role)
+
+
+            if returnCode == StatusCode.statusCodeDic['OKAdd']:
+                response.content = json.dumps({'Success':True, 'Data':IsOk, 'Message':returnMessage})
+                return response
+            else:
+                response.content = json.dumps({'Success': False, 'Data': '0', 'Message': returnMessage})
+                return response
+        else:
+            role = RoleService.GetEntity(None, key)
+            if role:
+                role = role.loadJson(request)
+
+            if curUser:
+                role.modifiedby = curUser.RealName
+                role.modifieduserid = curUser.Id
+                returnCode, returnMessage = RoleService.Update(None, role)
+                if returnCode == StatusCode.statusCodeDic['OKUpdate']:
+                    response.content = json.dumps({'Success': True, 'Data': IsOk, 'Message': returnMessage})
+                    return response
+                else:
+                    response.content = json.dumps({'Success': False, 'Data': '0', 'Message': returnMessage})
+                    return response
+    except Exception as e:
+        print(e)
+        response = HttpResponse()
+        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
+        return response
+
+@LoginAuthorize
+def GetEntity(request):
+    try:
+        key = request.POST['key']
+    except:
+        key = None
+    entity = RoleService.GetEntity(None, key)
+    response = HttpResponse()
+    response.content = entity.toJSON()
+    return response
