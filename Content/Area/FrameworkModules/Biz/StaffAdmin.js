@@ -1,4 +1,4 @@
-﻿var formUrl = "/FrameworkModules/StaffAdmin/Form";
+﻿var formUrl = "/Admin/FrameworkModules/StaffAdmin/Form/";
 
 $(function () {
 	pageSizeControl.init({gridId:'staffGird',gridType:'datagrid'});
@@ -146,8 +146,9 @@ var StaffAdminMethod = {
         mygrid.reload();
     },
     initData: function (organizeId) {
-        top.$('#Education,#Degree,#Title,#TitleLevel,#WorkingProperty,#Party,#Gender').combobox({ panelHeight: 'auto' });
-        top.$('#Birthday,#TitleDate,#WorkingDate,#DimissionDate,#JoinInDate').datebox({
+        top.$('#education,#degree,#title,#titlelevel,#workingproperty,#party').combobox({ panelHeight: 'auto' });
+        top.$('#gender').combobox({ panelHeight: 'auto', required:true });
+        top.$('#birthday,#titledate,#workingdate,#dimissiondate,#joinindate').datebox({
             formatter: function (date) {
                 return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
             },
@@ -157,28 +158,27 @@ var StaffAdminMethod = {
         });
 
         var _organizeId = organizeId || 0;
-        top.$('#OrganizeId').combotree({
+        top.$('#organizeid').combotree({
             data: organizeTree.data('1'),
             valuefield: 'ID',
             textField: 'text',
             value: _organizeId
         });
         //绑定各数据字典
-        pageMethod.bindCategory('Gender', 'Gender');
-        pageMethod.bindCategory('Education', 'Education');
-        pageMethod.bindCategory('WorkingProperty', 'WorkingProperty');
-        pageMethod.bindCategory('Degree', 'Degree');
-        pageMethod.bindCategory('Gender', 'Gender');
-        pageMethod.bindCategory('Title', 'Title');
-        pageMethod.bindCategory('TitleLevel', 'TitleLevel');
-        pageMethod.bindCategory('Nationality', 'Nationality');
-        pageMethod.bindCategory('Party', 'PoliticalStatus');
+        pageMethod.bindCategory('gender', 'Gender');
+        pageMethod.bindCategory('education', 'Education');
+        pageMethod.bindCategory('workingproperty', 'WorkingProperty');
+        pageMethod.bindCategory('degree', 'Degree');
+        pageMethod.bindCategory('title', 'Title');
+        pageMethod.bindCategory('titlelevel', 'TitleLevel');
+        pageMethod.bindCategory('nationality', 'Nationality');
+        pageMethod.bindCategory('party', 'PoliticalStatus');
         top.$('#staffTab').tabs({
             onSelect: function () {
                 top.$('.validatebox-tip').remove();
             }
         });
-        top.$('#passSalt').val(randomString());
+        top.$('#passsalt').val(randomString());
 
     },
     AddStaff: function () { //增加员工（职员）
@@ -194,7 +194,7 @@ var StaffAdminMethod = {
                 if (dep) {
                     depID = dep.id || 0;
                 };
-                top.$('#Enabled').attr("checked", true);
+                top.$('#enabled').attr("checked", true);
                 //如果左侧有选中组织机构，则添加的时候，部门默认选中
                 StaffAdminMethod.initData(depID);
             },
@@ -203,9 +203,9 @@ var StaffAdminMethod = {
                 var tab = top.$('#staffTab').tabs('getSelected');
                 var index = top.$('#staffTab').tabs('getTabIndex', tab);
                 if (top.$('#uiform').form('validate')) {
-                    var vOrganizeId = top.$('#OrganizeId').combobox('getValue');                   
+                    var vOrganizeId = top.$('#organizeid').combobox('getValue');
                     var postData = pageMethod.serializeJson(top.$('#uiform'));
-                    $.ajaxjson("/FrameworkModules/StaffAdmin/SubmitForm?organizeId=" + vOrganizeId, postData, function (d) {                    
+                    $.ajaxjson("/Admin/FrameworkModules/StaffAdmin/SubmitForm/?organizeId=" + vOrganizeId, postData, function (d) {
                         if (d.Success) {
                             msg.ok('添加成功');
                             mygrid.reload();
@@ -247,8 +247,8 @@ var StaffAdminMethod = {
                     }
 
                     StaffAdminMethod.initData(depID);
-                    var parm = 'key=' + row.ID;
-                    $.ajaxjson('/FrameworkModules/StaffAdmin/GetEntity', parm, function (data) {
+                    var parm = 'key=' + row.id;
+                    $.ajaxjson('/Admin/FrameworkModules/StaffAdmin/GetEntity/', parm, function (data) {
                         if (data) {
                             SetWebControls(data, true);                           
                         }
@@ -256,9 +256,9 @@ var StaffAdminMethod = {
                 },
                 submit: function () {
                     if (top.$('#uiform').validate().form()) {
-                        var vOrganizeId = top.$('#OrganizeId').combobox('getValue');
+                        var vOrganizeId = top.$('#organizeid').combobox('getValue');
                         var postData = pageMethod.serializeJson(top.$('#uiform'));
-                        $.ajaxjson("/FrameworkModules/StaffAdmin/SubmitForm?organizeId=" + vOrganizeId + "&key=" + row.ID, postData, function (d) {
+                        $.ajaxjson("/Admin/FrameworkModules/StaffAdmin/SubmitForm/?organizeId=" + vOrganizeId + "&key=" + row.id, postData, function (d) {
                             if (d.Success) {
                                 msg.ok(d.Message);
                                 editDailog.dialog('close');
@@ -281,8 +281,8 @@ var StaffAdminMethod = {
         if (row != null) {            
             $.messager.confirm('询问提示', '确定要删除选中的员工（职员）吗？', function (data) {
                 if (data) {
-                    var parm = 'key=' + row.ID;
-                    $.ajaxjson("/FrameworkModules/StaffAdmin/Delete", parm, function (d) {
+                    var parm = 'key=' + row.id;
+                    $.ajaxjson("/Admin/FrameworkModules/StaffAdmin/Delete/", parm, function (d) {
                         if (d.Success) {
                             msg.ok(d.Message);
                             mygrid.reload();
@@ -315,7 +315,7 @@ var StaffAdminMethod = {
                 submit: function () {
                     var node = top.$('#orgTree').tree('getSelected');
                     if (node) {
-                        $.ajaxjson("/FrameworkModules/StaffAdmin/MoveTo", 'staffId=' + row.ID + '&organizeId=' + node.id, function (d) {
+                        $.ajaxjson("/Admin/FrameworkModules/StaffAdmin/MoveTo/", 'staffId=' + row.id + '&organizeId=' + node.id, function (d) {
                             if (d.Success) {
                                 msg.ok('移动成功！');
                                 mygrid.reload();

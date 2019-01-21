@@ -52,6 +52,11 @@ urlpatterns = [
     #员工管理
     url(r'^FrameworkModules/StaffAdmin/Index/', StaffAdmin.Index),
     url(r'^FrameworkModules/StaffAdmin/GetStaffByOrganizeId/', StaffAdmin.GetStaffByOrganizeId),
+    url(r'^FrameworkModules/StaffAdmin/Form/', StaffAdmin.Form),
+    url(r'^FrameworkModules/StaffAdmin/SubmitForm/', StaffAdmin.SubmitForm),
+    url(r'^FrameworkModules/StaffAdmin/GetEntity/', StaffAdmin.GetEntity),
+    url(r'^FrameworkModules/StaffAdmin/Delete/', StaffAdmin.Delete),
+    url(r'^FrameworkModules/StaffAdmin/MoveTo/', StaffAdmin.MoveTo),
     #角色管理
     url(r'^FrameworkModules/RoleAdmin/Index/', RoleAdmin.Index),
     url(r'^FrameworkModules/RoleAdmin/GridPageListJson/', RoleAdmin.GridPageListJson),

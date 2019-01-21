@@ -1,0 +1,148 @@
+﻿ <form id="uiform">
+     <div id="staffTab" fit="true" style="height: 330px; overflow: hidden;" >
+         <div title="基本信息" style="padding: 2px; overflow: hidden;">
+             <table class="grid">
+                 <tr>
+                    <td align="right">员工姓名：</td>
+                    <td><input type="text" data-bind="value:RealName" data-options="required:true,missingMessage:'请输入员工姓名'" name="realname" class="txt03 easyui-validatebox" id="realname"/> </td>
+                    <td align="right">工员/编号：</td>
+                    <td><input type="text" data-bind="value:Code" name="code" class="txt03 easyui-validatebox" id="code"/> </td>
+                 </tr>
+                 <tr>
+                    <td align="right">姓　　别：</td>
+                    <td><input  type="text" name="gender" data-bind="value:Gender" class="txt03 easyui-validatebox" id="gender"></td>
+                    <td align="right">组织机构：</td>
+                    <td><input type="text" name="organizeid" class="txt03 easyui-validatebox" id="organizeid"/></td>
+                 </tr>                             
+                 <tr>
+                    <td align="right">出生日期：</td>
+                    <td><input type="text" data-bind="value:birthday" name="Birthday" class="txt03 easyui-validatebox" id="birthday"/></td>
+                    <td align="right">年    龄：</td>
+                    <td><input type="text" data-bind="value:age" name="Age" class="txt03 easyui-validatebox" id="age"/></td>
+                 </tr>
+                 <tr>
+                    <td align="right">专    业：</td>
+                    <td><input type="text" data-bind="value:Major" name="major" class="txt03 easyui-validatebox" id="major"/></td>
+                    <td align="right">毕业院校：</td>
+                    <td><input type="text" data-bind="value:School" name="school" class="txt03 easyui-validatebox" id="school"/></td>
+                 </tr>
+                 <tr>
+                    <td align="right">最高学历：</td>
+                    <td><input type="text" data-bind="value:Education" name="education" class="txt03 easyui-validatebox" id="education"/></td>
+                    <td align="right">最高学位：</td>
+                    <td><input type="text" data-bind="value:Degree" name="degree" class="txt03 easyui-validatebox" id="degree"/></td>
+                 </tr>
+                 <tr>
+                    <td align="right">职    称：</td>
+                    <td><input type="text" data-bind="value:Title" name="title" class="txt03 easyui-validatebox" id="title"/></td>
+                    <td align="right">职称等级：</td>
+                    <td><input type="text" data-bind="value:TitleLevel" name="titlelevel" class="txt03 easyui-validatebox" id="titlelevel"/></td>
+                 </tr>
+                 <tr>
+                    <td  align="right">职称评期：</td>
+                    <td><input type="text" data-bind="value:TitleDate" name="titledate" class="txt03 easyui-validatebox" id="titledate"/></td>
+                    <td  align="right">有效：</td>
+                    <td><input type="checkbox" class="txt03" name="enabled" id="enabled" /></td>
+                 </tr>
+                  <tr>
+                     <td align="right">描   述：</td>
+                     <td colspan="3"><textarea style="width:500px; height: 30px" data-bind="value:Description" name="description" id="description" class="txt03"/></td>
+                 </tr>
+             </table>
+         </div>
+         <div title="工作相关"  style="padding: 2px">
+             <table class="grid">
+                 <tr>
+                    <td align="right">工作性质：</td>
+                    <td><input type="text" data-bind="value:WorkingProperty" name="workingproperty" class="txt03 easyui-validatebox" id="workingproperty"/></td>
+                    <td align="right">工作时间：</td>
+                    <td><input type="text" data-bind="value:WorkingDate" name="workingdate" class="txt03 easyui-validatebox" id="workingdate"/></td>
+                 </tr>  
+                 <tr>
+                    <td align="right">身份证号：</td>
+                    <td colspan="3"><input type="text"  style="width:500px;" data-bind="value:IdentificationCode" name="identificationcode" class="txt03 easyui-validatebox" id="identificationcode"/></td>
+                 </tr>
+                 <tr>
+                    <td align="right">工资卡号：</td>
+                    <td colspan="3"><input type="text" style="width:500px;"  data-bind="value:BankCode" name="bankcode" class="txt03 easyui-validatebox" id="bankcode"/></td>
+                 </tr>  
+                 <tr>
+                    <td align="right">加入单位：</td>
+                    <td><input type="text" data-bind="value:JoinInDate" name="joinindate" class="txt03 easyui-validatebox" id="joinindate"/></td>
+                    <td align="right">邮　　箱：</td>
+                    <td><input type="text" name="email" data-bind="value:Email" class="txt03 easyui-validatebox" data-options="validType:'email'" style="width:150px" id="email"/></td>
+                 </tr>                
+                 <tr>                   
+                    <td align="right">手　　机：</td>
+                    <td><input type="text" data-bind="value:Mobile" name="mobile" id="mobile" class="txt03"/></td>
+                    <td align="right">短　　号：</td>
+                    <td><input type="text"  data-bind="value:ShortNumber" name="shortnumber" id="shortnumber" class="txt03"/></td>
+                 </tr>
+                 <tr>                   
+                    <td align="right">QQ  号码：</td>
+                    <td><input type="text" data-bind="value:QICQ" name="qicq" id="qicq" class="txt03"/></td>
+                    <td align="right">办公邮编：</td>
+                    <td><input type="text" data-bind="value:OfficeZipCode" name="officezipcode" id="officezipcode" class="txt03"/></td>
+                 </tr>
+                 <tr>
+                    <td align="right">办公电话：</td>
+                    <td><input type="text" data-bind="value:OfficePhone" name="officephone" id="officephone" class="txt03"/></td>
+                    <td align="right">办公传真：</td>
+                    <td><input type="text" data-bind="value:OfficeFax" name="officefax" id="officefax" class="txt03"/></td>
+                 </tr>
+                   <tr>                    
+                    <td align="right">办公地址：</td>
+                    <td colspan = "3"><textarea style="width:500px; height: 30px" data-bind="value:OfficeAddress" name="officeaddress" id="officeaddress" class="txt03"/></td>
+                 </tr>             
+             </table>
+         </div>
+         <div title="家庭相关"  style="padding: 2px">
+            <table class="grid">
+                 <tr>
+                    <td align="right">籍　　贯：</td>
+                    <td><input type="text" class="txt03" data-bind="value:NativePlace" name="nativeplace" id="nativeplace"/></td>
+                    <td align="right">家庭邮编：</td>
+                    <td><input type="text" class="txt03" data-bind="value:HomeZipCode" name="homezipcode" id="homezipcode"/></td>
+                 </tr>
+                 <tr>
+                    <td align="right">家庭传真：</td>
+                    <td><input type="text" class="txt03" data-bind="value:HomeFax" name="homefax" id="homefax"/></td>
+                    <td align="right">政治面貌：</td>
+                    <td><input type="text" class="txt03" data-bind="value:Party" name="party" id="party"/></td>
+                 </tr>
+                 <tr>
+                    <td align="right">国　　籍：</td>
+                    <td><input type="text" class="txt03" data-bind="value:Nation" name="nation" id="nation"/></td>
+                    <td align="right">民　　族：</td>
+                    <td><input type="text" class="txt03" data-bind="value:Nationality" name="nationality" id="nationality"/></td>
+                 </tr>
+                 <tr>
+                    <td align="right">住宅电话：</td>
+                    <td><input type="text" class="txt03" data-bind="value:HomePhone" name="homephone" id="homephone"/></td>
+                    <td align="right">紧急联系：</td>
+                    <td><input type="text" class="txt03" data-bind="value:Telephone" name="telephone" id="telephone"/></td>
+                 </tr>
+                 <tr>
+                    <td align="right">家庭住址：</td>                    
+                    <td colspan="3"><input type="text"  style="width:500px;"  class="txt03" data-bind="value:HomeAddress" name="homeaddress" id="homeaddress"/></td>
+                 </tr>
+                 <tr>
+                    <td align="right">离职日期：</td>
+                    <td><input type="text" class="txt03" data-bind="value:DimissionDate" name="dimissiondate" id="dimissiondate"/></td>
+                    <td align="right">离职去向：</td>
+                    <td><input type="text" class="txt03" data-bind="value:DimissionWhither" name="dimissionwhither" id="dimissionwhither"/></td>
+                 </tr>                
+                 <tr>
+                    <td align="right">是否离职：</td>
+                    <td colspan="3"><input type="checkbox" class="txt03" name="isdimission" id="isdimission" /></td>
+                 </tr>    
+                 <tr>
+                    <td align="right">离职原因：</td>
+                    <td colspan="3"><textarea style="width:500px; height: 30px" data-bind="value:DimissionCause" name="dimissioncause" id="dimissioncause" class="txt03"/></td>
+                 </tr>
+            </table>
+         </div>
+     </div>
+     <input type="hidden" name="passsalt" id="passsalt"/>
+ </form>
+

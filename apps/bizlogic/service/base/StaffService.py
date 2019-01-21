@@ -37,6 +37,7 @@ class StaffService(object):
             entity.save()
             staffId = entity.id
             staffOrganize = Pistafforganize()
+            staffOrganize.id = uuid.uuid4()
             staffOrganize.staffid = staffId
             staffOrganize.organizeid = organizeId
             staffOrganize.enabled = 1
