@@ -19,6 +19,7 @@ from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
 import uuid
 import datetime
+from apps.bizlogic.service.base.LogOnService import LogOnService
 
 def GenerateSplitTool():
     sbTool = ''
@@ -255,4 +256,58 @@ def Delete(request):
     else:
         response = HttpResponse()
         response.content = json.dumps({'Success': False, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
+        return response
+
+@LoginAuthorize
+def SetUserPassword(request):
+    userId = ''
+    password = ''
+    try:
+        userId = request.POST['userId']
+    except:
+        userId = ''
+
+    try:
+        password = request.POST['password']
+    except:
+        password = ''
+
+    if userId and password:
+        returnCode, returnValue = LogOnService.SetPassword(None, [userId], password)
+        if returnCode and returnCode == StatusCode.statusCodeDic['SetPasswordOK']:
+            response = HttpResponse()
+            response.content = json.dumps({'Success': True, 'Data': '1', 'Message': FrameworkMessage.MSG9963})
+            return response
+        else:
+            response = HttpResponse()
+            response.content = json.dumps({'Success': True, 'Data': '1', 'Message': FrameworkMessage.MSG3020})
+            return response
+
+@LoginAuthorize
+def UserDimission(request):
+    #TODO:用户离职的所有前台代码需要重写
+    response = HttpResponse()
+    tmp = loader.get_template('UserAdmin/UserDimission.html')  # 加载模板
+    render_content = {}  # 将要渲染到模板的数据
+    new_body = tmp.render(render_content)  # 渲染模板
+    response.content = new_body  # 设置返回内容
+    return response
+
+@LoginAuthorize
+def SetUserDimission(request):
+    response = HttpResponse()
+    curUser = CommonUtils.Current(response, request)
+    userEntity = Piuser()
+    userEntity.loadJson(request)
+    if userEntity.username and userEntity.id:
+        userEntity.username = UserSerivce.GetEntity(curUser.Id).username
+    returnValue = LogOnService.UserDimission(None, userEntity.username, userEntity.dimissioncause, userEntity.dimissiondate, userEntity.dimissionwhither)
+
+    if returnValue > 0:
+        response = HttpResponse()
+        response.content = json.dumps({'Success': True, 'Data': '1', 'Message': FrameworkMessage.MSG3010})
+        return response
+    else:
+        response = HttpResponse()
+        response.content = json.dumps({'Success': True, 'Data': '1', 'Message': FrameworkMessage.MSG3020})
         return response

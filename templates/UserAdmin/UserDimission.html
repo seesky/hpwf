@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>用户离职管理</title>
-    <link rel="stylesheet" href="~/Content/Scripts/bootstrap-3.3.6/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/Content/Scripts/bootstrap-3.3.6/css/bootstrap-datetimepicker.min.css" />
+    <link rel="stylesheet" href="/Content/Scripts/bootstrap-3.3.6/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/Content/Scripts/bootstrap-3.3.6/css/bootstrap-datetimepicker.min.css" />
 </head>
     <body>
         <form id="uiForm" class="form-horizontal" role="form">
@@ -88,13 +88,15 @@
                 </div>
             </fieldset>
         </form>
-        <script type="text/javascript" src="~/Content/Scripts/jquery-1.12.1.min.js"></script>
-        <script type="text/javascript" src="~/Content/Scripts/bootstrap-3.3.6/js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="~/Content/Scripts/bootstrap-3.3.6/bootstrap-datetimepicker.min.js"></script>
-        <script type="text/javascript" src="~/Content/Scripts/bootstrap-3.3.6/bootstrap-datetimepicker.zh-CN.js"></script>
-        <script type="text/javascript" src="~/Content/Scripts/easyui/jquery.validate.js"></script>
-        <script type="text/javascript" src="~/Content/Scripts/rdiframework-core.js"></script>
-        <script type="text/javascript" src="~/Content/Scripts/jQuery.Ajax.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/jquery-1.12.1.min.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/bootstrap-3.3.6/bootstrap-datetimepicker.min.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/bootstrap-3.3.6/bootstrap-datetimepicker.zh-CN.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/easyui/jquery.validate.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/hpwf-core.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/jQuery.Ajax.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/jQuery.cookie.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/csrf.js"></script>
         <script type="text/javascript">
             $(function () {
                 $('#btnSubmit').attr('onclick', 'return SubmitForm();');
@@ -157,7 +159,7 @@
             };
 
             var BindPage = function (id) {
-                $.ajaxjson("/FrameworkModules/UserAdmin/GetEntity", 'key=' + id, function (data) {
+                $.ajaxjson("/Admin/FrameworkModules/UserAdmin/GetEntity/", 'key=' + id, function (data) {
                     if (data) {
                         if (data.IsDimission) { //已离职就不要再去修改了
                             $("#btnSubmit").attr("disabled", true);
@@ -174,7 +176,7 @@
                 }
                 if (confirm('确定离职?')) {
                     var postData = pageMethod.serializeJson($('#uiForm'));
-                    $.ajaxjson("/FrameworkModules/UserAdmin/SetUserDimission", postData, function (d) {
+                    $.ajaxjson("/Admin/FrameworkModules/UserAdmin/SetUserDimission/", postData, function (d) {
                         if (d.Success) {
                             alert(d.Message);
                             CloseWindow();

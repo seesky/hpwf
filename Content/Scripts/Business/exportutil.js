@@ -31,7 +31,7 @@ ExportExcel.prototype = {
                 var where = $('body').data('where');
                 if (!where)
                     where = "";
-                window.open('/Utility/ExportExcel?tableName=' + tableName + '&sortField=' + sortField + '&fields=' + selectedFields + '&filters=' + where);
+                window.open('/Admin/FrameworkModules/Utility/ExportExcel?tableName=' + tableName + '&sortField=' + sortField + '&fields=' + selectedFields + '&filters=' + where);
             }
         });
 

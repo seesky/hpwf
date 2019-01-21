@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^StartPage/', HomeController.StartPage),
     #
     url(r'^FrameworkModules/Utility/GetCategory/', Utility.GetCategory),
+    url(r'^FrameworkModules/Utility/ExportExcel/', Utility.ExportExcel),
     #用户管理
     url(r'^FrameworkModules/UserAdmin/Index/', UserAdminController.Index),
     url(r'^FrameworkModules/UserAdmin/GetUserPageDTByDepartmentId/', UserAdminController.GetUserPageDTByDepartmentId),
@@ -41,6 +42,9 @@ urlpatterns = [
     url(r'^FrameworkModules/UserAdmin/SubmitForm/', UserAdminController.SubmitForm),
     url(r'^FrameworkModules/UserAdmin/GetEntity/', UserAdminController.GetEntity),
     url(r'^FrameworkModules/UserAdmin/Delete/', UserAdminController.Delete),
+    url(r'^FrameworkModules/UserAdmin/SetUserPassword/', UserAdminController.SetUserPassword),
+    url(r'^FrameworkModules/UserAdmin/UserDimission/', UserAdminController.UserDimission),
+    url(r'^FrameworkModules/UserAdmin/SetUserDimission/', UserAdminController.SetUserDimission),
     #组织机构管理
     url(r'^FrameworkModules/OrganizeAdmin/Index/', OrganizeAdmin.Index),
     url(r'^FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/', OrganizeAdmin.GetOrganizeTreeJson),

@@ -20,3 +20,14 @@ class DbCommonLibaray(object):
                 objDict[col_names[index]] = value
             result.append(objDict)
         return result
+
+    def GetDTByPage(tableName, conditions, orderby, selectField = "*", pageIndex = 1, pageSize = 20):
+        if not selectField:
+            selectField = "*"
+        if conditions:
+            conditions = "WHERE " + conditions
+        sqlStart = str((pageIndex - 1) * pageSize)
+        sqlEnd = str(pageIndex * pageSize)
+        sqlQuery = "SELECT " + str(selectField) + " FROM " + tableName + " " + str(conditions) + " ORDER BY " + str(orderby) + " LIMIT " + str(sqlStart) + ", " + str(sqlEnd)
+        returnValue = DbCommonLibaray.executeQuery(None, sqlQuery)
+        return returnValue

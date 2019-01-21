@@ -557,7 +557,7 @@ function SetWebControls(data,isTop) {
         if (cls && cls.indexOf('numberbox-f') > 0) {
             type = 'numberbox';
         }
-        
+
         
         switch (type) {
             case "checkbox":
@@ -588,7 +588,7 @@ function SetWebControls(data,isTop) {
                 break;
             case "numberbox":
                 id.numberbox('setValue', value);
-                break;                
+                break;
             default:
                 id.val(value);
                 break;

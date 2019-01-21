@@ -207,6 +207,15 @@ var UserAdminMethod = {
         exportData.go('PIUSER', 'SORTCODE');
     },
     initData: function () {
+
+        top.$('#birthday').datebox({
+            formatter: function (date) {
+                return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+            },
+            arser: function (date) {
+                return new Date(Date.parse(date.replace(/-/g, "/")));
+            }
+        });
         //绑定各数据字典
         pageMethod.bindCategory('gender', 'Gender');
         pageMethod.bindCategory('roleid', 'undefined');
@@ -226,6 +235,7 @@ var UserAdminMethod = {
             onLoad: function () {
                 UserAdminMethod.initData();
                 top.$('#enabled').attr("checked", true);
+                //top.$('birthday').datetimebox({required: false,showSeconds: false });
                 top.$('#description').val("");
                 top.$('#username').focus();
             },
@@ -352,7 +362,7 @@ var UserAdminMethod = {
                 submit: function () {
                     if (top.$('#txtNewPassword').validatebox('isValid')) {
                         var parm = 'userId=' + selectRow.ID + '&password=' + top.$('#txtNewPassword').val();
-                        $.ajaxjson("/FrameworkModules/UserAdmin/SetUserPassword", parm, function (d) {
+                        $.ajaxjson("/Admin/FrameworkModules/UserAdmin/SetUserPassword/", parm, function (d) {
                             if (d.Data > 0) {
                                 msg.ok('密码修改成功，请牢记新密码！');
                                 mygrid.reload();
@@ -381,7 +391,7 @@ var UserAdminMethod = {
         var selectRow = mygrid.getSelectedRow();
         if (selectRow) {
             var index = top.layer.msg('加载中', { icon: 16 });
-            AddToTab('用户访问详情', '/FrameworkModules/LogAdmin/LogByUser', 'icon16_diagnostic_chart', 'pageLogByUser');
+            AddToTab('用户访问详情', '/Admin/FrameworkModules/LogAdmin/LogByUser/', 'icon16_diagnostic_chart', 'pageLogByUser');
             window.setTimeout(function () {
                 var test = parent.$("#pageLogByUser")[0].contentWindow;
                 test.$('#txtOpuser').val(selectRow.REALNAME);
@@ -394,7 +404,7 @@ var UserAdminMethod = {
         //AddToTab('用户访问详情', '/FrameworkModules/LogAdmin/LogByUser', 'icon16_diagnostic_chart', 'pageLogByUser');
     },
     LogByGeneral: function () {
-        AddToTab('用户访问情况', '/FrameworkModules/LogAdmin/LogByGeneral', 'icon16_address_block', 'pageLogByGeneral');
+        AddToTab('用户访问情况', '/Admin/FrameworkModules/LogAdmin/LogByGeneral/', 'icon16_address_block', 'pageLogByGeneral');
     },
     Dimission: function () {
         var selectRow = mygrid.getSelectedRow();
@@ -404,7 +414,7 @@ var UserAdminMethod = {
                 return false;
             }
             var index = top.layer.msg('加载中', { icon: 16 });
-            AddToTab('用户离职', '/FrameworkModules/UserAdmin/UserDimission', 'icon16_aol_messenger', 'pageUserDimission');
+            AddToTab('用户离职', '/Admin/FrameworkModules/UserAdmin/UserDimission/', 'icon16_aol_messenger', 'pageUserDimission');
             window.setTimeout(function () {
                 var test = parent.$("#pageUserDimission")[0].contentWindow;
                 test.BindPage(selectRow.ID);

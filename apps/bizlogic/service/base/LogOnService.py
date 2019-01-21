@@ -185,20 +185,20 @@ class LogOnService(object):
         returnCode = ''
         returnMessage = ''
         enableCheckIPAddress = 0
-        if not userIds or userIds.count() == 0:
+        if not userIds or len(userIds) == 0:
             returnCode = StatusCode.statusCodeDic['NotFound']
             return returnCode,returnValue
 
         #设置密码
         if SystemInfo.EnableEncryptServerPassword:
-            password = SecretHelper.AESEncrypt(self, password)
+            password = SecretHelper.AESEncrypt(password)
 
         if SystemInfo.EnableCheckIPAddress:
             enableCheckIPAddress = 1
         for id in userIds:
-            Piuserlogon.objects.update_or_create(defaults={'id':id}, others={'checkipaddress':enableCheckIPAddress, 'userpassword':password, 'openid':uuid.uuid1()})
+            Piuserlogon.objects.update_or_create(id = id, defaults={'checkipaddress':enableCheckIPAddress, 'userpassword':bytes.decode(password), 'openid':uuid.uuid1(), 'useronline':0, 'createon':datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'modifiedon':datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
             returnValue = returnValue + 1
-            returnCode = StatusCode.statusCodeDic['OK']
+            returnCode = StatusCode.statusCodeDic['SetPasswordOK']
         return returnCode,returnValue
 
     def UserIsLogOn(self):
@@ -249,7 +249,7 @@ class LogOnService(object):
         """
         returnValue = 0
         userid = ''
-        user = Piuser.objects.get(Q(username=userName) & Q(enabled=1) & Q(deletemark=0))
+        user = Piuser.objects.filter(Q(username=userName) & Q(enabled=1) & Q(deletemark=0))
         returnValue = user.count()
         if returnValue > 0:
             user.update(enabled=0, isdimission=1, dimissioncause=dimissionCause, dimissionwhither=dimissionWhither, dimissiondate=dimissionDate)
