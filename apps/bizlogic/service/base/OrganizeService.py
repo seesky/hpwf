@@ -9,6 +9,7 @@ from django.db.models import Q
 from apps.bizlogic.models import Piorganize
 from apps.bizlogic.models import Piuser
 from apps.bizlogic.models import Pistaff
+from apps.bizlogic.models import Pistafforganize
 
 from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
@@ -290,7 +291,7 @@ class OrganizeService(object):
                 Piuser.objects.filter(subdepartmentid=id).update(subdepartmentid = None, subdepartmentname = None)
                 Piuser.objects.filter(workgroupid=id).update(workgroupid = None, workgroupname = None)
                 #同步处理员工表组织机构相关数据
-                Pistaff.objects.filter(organizeid=id).update(deletemark=1)
+                Pistafforganize.objects.filter(organizeid=id).update(deletemark=1)
                 return True
         except Exception as e:
             return False

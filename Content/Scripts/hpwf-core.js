@@ -67,16 +67,10 @@ var pageMethod = {
     serialize : function(elms) {
         var result = [];
         pageMethod.serializeArray(elms).forEach(function(elm) {
-            //result.push(encodeURIComponent(elm.name) + '=' + encodeURIComponent(elm.value));
-            //result[encodeURIComponent(elm.name)] = encodeURIComponent(elm.value)
-            //var name = encodeURIComponent(elm.name)
-            //var value = encodeURIComponent(elm.value)
             var name = elm.name
             var value = elm.value
             result.push({name:name, value:value})
-
         });
-        //return result.join('&');
         return result
     },
 
@@ -87,7 +81,6 @@ var pageMethod = {
         //var array = uiFormObj.serializeArray();
         var array = pageMethod.serialize(uiFormObj)
         var str = uiFormObj.serialize();
-        //$(array).each(function () {
         $(array).each(function () {
             if (serializeObj[this.name]) {
                 if ($.isArray(serializeObj[this.name])) {

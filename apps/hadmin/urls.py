@@ -21,6 +21,7 @@ import apps.hadmin.views.FramworkModules.ParameterAdminController_view as Parame
 import apps.hadmin.views.FramworkModules.SequenceAdminController_view as SequenceAdmin
 import apps.hadmin.views.FramworkModules.TableFieldAdminController_view as TableFieldAdmin
 import apps.hadmin.views.FramworkModules.UtilityController_view as Utility
+import apps.hadmin.views.FramworkModules.PermissionSetController_view as PermissionSet
 import apps.hadmin.views.FramworkModules.HighchartsController_view as Highcharts
 
 
@@ -45,10 +46,17 @@ urlpatterns = [
     url(r'^FrameworkModules/UserAdmin/SetUserPassword/', UserAdminController.SetUserPassword),
     url(r'^FrameworkModules/UserAdmin/UserDimission/', UserAdminController.UserDimission),
     url(r'^FrameworkModules/UserAdmin/SetUserDimission/', UserAdminController.SetUserDimission),
+    url(r'^FrameworkModules/UserAdmin/GetUserListJson/', UserAdminController.GetUserListJson),
+    url(r'^FrameworkModules/UserAdmin/GetDTByRole/', UserAdminController.GetDTByRole),
     #组织机构管理
     url(r'^FrameworkModules/OrganizeAdmin/Index/', OrganizeAdmin.Index),
     url(r'^FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/', OrganizeAdmin.GetOrganizeTreeJson),
     url(r'^FrameworkModules/OrganizeAdmin/GetOrganizeByCategory/', OrganizeAdmin.GetOrganizeByCategory),
+    url(r'^FrameworkModules/OrganizeAdmin/Form/', OrganizeAdmin.Form),
+    url(r'^FrameworkModules/OrganizeAdmin/SubmitForm/', OrganizeAdmin.SubmitForm),
+    url(r'^FrameworkModules/OrganizeAdmin/GetEntity/', OrganizeAdmin.GetEntity),
+    url(r'^FrameworkModules/OrganizeAdmin/Delete/', OrganizeAdmin.Delete),
+    url(r'^FrameworkModules/OrganizeAdmin/MoveTo/', OrganizeAdmin.MoveTo),
     #员工管理
     url(r'^FrameworkModules/StaffAdmin/Index/', StaffAdmin.Index),
     url(r'^FrameworkModules/StaffAdmin/GetStaffByOrganizeId/', StaffAdmin.GetStaffByOrganizeId),
@@ -66,6 +74,9 @@ urlpatterns = [
     url(r'^FrameworkModules/RoleAdmin/Form/', RoleAdmin.Form),
     url(r'^FrameworkModules/RoleAdmin/SubmitForm/', RoleAdmin.SubmitForm),
     url(r'^FrameworkModules/RoleAdmin/GetEntity/', RoleAdmin.GetEntity),
+    url(r'^FrameworkModules/RoleAdmin/Delete/', RoleAdmin.Delete),
+    url(r'^FrameworkModules/RoleAdmin/AddUserToRole/', RoleAdmin.AddUserToRole),
+    url(r'^FrameworkModules/RoleAdmin/RemoveUserFromRole/', RoleAdmin.RemoveUserFromRole),
 
     url(r'^FrameworkModules/PostAdmin/Index/', PostAdmin.Index),
     url(r'^FrameworkModules/ModuleAdmin/Index/', ModuleAdmin.Index),
@@ -92,6 +103,11 @@ urlpatterns = [
     url(r'^FrameworkModules/TableFieldAdmin/Index/', TableFieldAdmin.Index),
     url(r'^FrameworkModules/TableFieldAdmin/GetTableNameAndCode/', TableFieldAdmin.GetTableNameAndCode),
     url(r'^FrameworkModules/TableFieldAdmin/GetDTByTable/', TableFieldAdmin.GetDTByTable),
+    #权限设置
+    url(r'^FrameworkModules/PermissionSet/RoleUserSet/', PermissionSet.RoleUserSet),
+    url(r'^FrameworkModules/PermissionSet/PermissionBacthSet/', PermissionSet.PermissionBacthSet),
+    url(r'^FrameworkModules/PermissionSet/GetPermissionScopeTargetIds/', PermissionSet.GetPermissionScopeTargetIds),
+    url(r'^FrameworkModules/PermissionSet/GrantRevokePermissionScopeTargets/', PermissionSet.GrantRevokePermissionScopeTargets),
 
     url(r'^FrameworkModules/Highcharts/Sample1/', Highcharts.Sample1),
     url(r'^FrameworkModules/Highcharts/Sample2/', Highcharts.Sample2),

@@ -1,4 +1,4 @@
-﻿var formUrl = "/FrameworkModules/OrganizeAdmin/Form",
+﻿var formUrl = "/Admin/FrameworkModules/OrganizeAdmin/Form/",
     navgrid;
 
 $(function () {
@@ -43,7 +43,7 @@ var mygrid = {
                 { title: '有效', field: 'enabled', width: 50, align: 'center', formatter: imgcheckbox },
                 { title: '排序', field: 'sortcode', width: 80, align: 'center' },
                 { title: '备注', field: 'description', width: 300 },
-                { title: 'ParentId', field: 'parentId', hidden: true },
+                { title: 'ParentId', field: 'parentid', hidden: true },
                 { title: 'Category', field: 'category', hidden: true },
                 { title: 'InnerPhone', field: 'innerphone', hidden: true },
                 { title: 'Postalcode', field: 'postalcode', hidden: true },
@@ -77,21 +77,21 @@ var OrganizeAdminMethod = {
             height: 450,
             onLoad: function () {
                 pubMethod.bindCtrl();
-                top.$('#Enabled,#IsInnerOrganize').attr("checked", true);
-                pageMethod.bindCategory('Category', 'OrganizeCategory');
+                top.$('#enabled,#isinnerorganize').attr("checked", true);
+                pageMethod.bindCategory('category', 'OrganizeCategory');
                 pubMethod.bindComboGrid();
                 var row = mygrid.selected();
                 if (row) {
-                    top.$('#ParentId').combotree('setValue', row.ParentId);
+                    top.$('#parentid').combotree('setValue', row.parentid);
                 }
             },
             submit: function () {
                 if (top.$('#uiform').validate().form()) {
-                    var Manager = top.$('#ManagerId').combogrid('getText');
-                    var AssistantManager = top.$('#AssistantManagerId').combogrid('getText');
+                    var Manager = top.$('#managerid').combogrid('getText');
+                    var AssistantManager = top.$('#assistantmanagerid').combogrid('getText');
                     var postData = pageMethod.serializeJson(top.$('#uiform'));
                     var parOther = 'Manager=' + Manager + '&AssistantManager=' + AssistantManager;
-                    $.ajaxjson("/FrameworkModules/OrganizeAdmin/SubmitForm?" + parOther, postData, function (d) {
+                    $.ajaxjson("/Admin/FrameworkModules/OrganizeAdmin/SubmitForm/?" + parOther, postData, function (d) {
                         if (d.Success) {
                             msg.ok(d.Message);
                             addDialog.dialog('close');
@@ -115,12 +115,12 @@ var OrganizeAdminMethod = {
                 width: 750,
                 height: 450,
                 onLoad: function () {
-                    pubMethod.bindCtrl(row.Id);
-                    pageMethod.bindCategory('Category', 'OrganizeCategory');
+                    pubMethod.bindCtrl(row.id);
+                    pageMethod.bindCategory('category', 'OrganizeCategory');
                     pubMethod.bindComboGrid();
-                    var parm = 'key=' + row.Id;
+                    var parm = 'key=' + row.id;
                     setTimeout(
-                        $.ajaxjson('/FrameworkModules/OrganizeAdmin/GetEntity', parm, function (data) {
+                        $.ajaxjson('/Admin/FrameworkModules/OrganizeAdmin/GetEntity/', parm, function (data) {
                             if (data) {
                                 SetWebControls(data, true);
                             }
@@ -130,10 +130,10 @@ var OrganizeAdminMethod = {
                     if (top.$('#uiform').validate().form()) {
 
                         //保存时判断当前节点所选的父节点，不能为当前节点的子节点，这样就乱套了....
-                        var treeParentId = top.$('#ParentId').combotree('tree'); // 得到树对象
+                        var treeParentId = top.$('#parentid').combotree('tree'); // 得到树对象
                         var node = treeParentId.tree('getSelected');
                         if (node) {
-                            var nodeParentId = treeParentId.tree('find', row.Id);
+                            var nodeParentId = treeParentId.tree('find', row.id);
                             var children = treeParentId.tree('getChildren', nodeParentId.target);
                             var nodeIds = '';
                             var isFind = 'false';
@@ -149,11 +149,11 @@ var OrganizeAdminMethod = {
                                 return;
                             }
                         }
-                        var Manager = top.$('#ManagerId').combogrid('getText');
-                        var AssistantManager = top.$('#AssistantManagerId').combogrid('getText');
+                        var Manager = top.$('#managerid').combogrid('getText');
+                        var AssistantManager = top.$('#assistantmanagerid').combogrid('getText');
                         var postData = pageMethod.serializeJson(top.$('#uiform'));
-                        var parOther = 'key=' + row.Id + '&Manager=' + Manager + '&AssistantManager=' + AssistantManager;
-                        $.ajaxjson("/FrameworkModules/OrganizeAdmin/SubmitForm?" + parOther, postData, function (d) {
+                        var parOther = 'key=' + row.id + '&Manager=' + Manager + '&AssistantManager=' + AssistantManager;
+                        $.ajaxjson("/Admin/FrameworkModules/OrganizeAdmin/SubmitForm/?" + parOther, postData, function (d) {
                             if (d.Success) {
                                 msg.ok(d.Message);
                                 editDailog.dialog('close');
@@ -176,15 +176,15 @@ var OrganizeAdminMethod = {
     DeleteOrganize: function () { //删除组织机构
         var row = mygrid.selected();
         if (row != null) {
-            var childs = $('#organizeGrid').treegrid('getChildren', row.Id);
+            var childs = $('#organizeGrid').treegrid('getChildren', row.id);
             if (childs.length > 0) {
                 $.messager.alert('警告提示', '当前所选有子节点数据，不能删除。', 'warning');
                 return false;
             }
             $.messager.confirm('询问提示', '确认要删除选中的组织机构吗？', function (data) {
                 if (data) {
-                    var parm = 'key=' + row.Id;
-                    $.ajaxjson("/FrameworkModules/OrganizeAdmin/Delete", parm, function (d) {
+                    var parm = 'key=' + row.id;
+                    $.ajaxjson("/Admin/FrameworkModules/OrganizeAdmin/Delete/", parm, function (d) {
                         if (d.Success) {
                             msg.ok(d.Message);
                             mygrid.reload();
@@ -209,14 +209,14 @@ var OrganizeAdminMethod = {
                 max: false,
                 width: 300,
                 height: 500,
-                title: '移动组织机构 ━ ' + row.FullName,
+                title: '移动组织机构 ━ ' + row.fullname,
                 iconCls: 'icon16_arrow_switch',
                 content: '<ul id="orgTree"></ul>',
                 submit: function () {
                     var node = top.$('#orgTree').tree('getSelected');
                     if (node) {
-                        var parm = 'organizeId=' + row.Id + '&parentId=' + node.id;
-                        $.ajaxjson("/FrameworkModules/OrganizeAdmin/MoveTo", parm, function (d) {
+                        var parm = 'organizeId=' + row.id + '&parentId=' + node.id;
+                        $.ajaxjson("/Admin/FrameworkModules/OrganizeAdmin/MoveTo/", parm, function (d) {
                             if (d.Success) {
                                 msg.ok('移动成功！');
                                 mygrid.reload();
@@ -233,7 +233,7 @@ var OrganizeAdminMethod = {
 
             top.$(ad).hLoading();
             top.$('#orgTree').tree({
-                url: '/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson?isTree=1',
+                url: '/Admin/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/?isTree=1',
                 valuefield: 'id',
                 textField: 'text',
                 animate: true,
@@ -253,8 +253,8 @@ var OrganizeAdminMethod = {
         return false;
     },
     ExportOrganize: function () { //导出组织机构
-        alert('参考其他通用导出模块代码');
-        return false;
+        var exportData = new ExportExcel('organizeGrid');
+        exportData.go('PIORGANIZE', 'SORTCODE');
     },
     SetUserOrganizePermission: function () { //设置用户组织机构权限
         //功能代码逻辑...
@@ -265,7 +265,7 @@ var OrganizeAdminMethod = {
             width: 670,
             height: 600,
             iconCls: 'icon16_key', //cache: false,
-            href: "/FrameworkModules/PermissionSet/PermissionBacthSet",
+            href: "/Admin/FrameworkModules/PermissionSet/PermissionBacthSet/",
             onLoad: function () {
                 using('panel', function () {
                     top.$('#panelTarget').panel({ title: '组织机构列表', iconCls: 'icon-org', height: $(window).height() - 3 });
@@ -273,18 +273,18 @@ var OrganizeAdminMethod = {
 
                 userGrid = top.$('#leftnav').datagrid({
                     title: '用户列表',
-                    url: '/FrameworkModules/UserAdmin/GetUserListJson',
+                    url: '/Admin/FrameworkModules/UserAdmin/GetUserListJson/',
                     nowrap: false, //折行
                     //fit: true,
                     rownumbers: true, //行号
                     striped: true, //隔行变色
-                    idField: 'ID', //主键
+                    idField: 'id', //主键
                     singleSelect: true, //单选
                     frozenColumns: [[]],
                     columns: [
                         [
-                            { title: '登录名', field: 'USERNAME', width: 120, align: 'left' },
-                            { title: '用户名', field: 'REALNAME', width: 150, align: 'left' }
+                            { title: '登录名', field: 'username', width: 120, align: 'left' },
+                            { title: '用户名', field: 'realname', width: 150, align: 'left' }
                         ]
                     ],
                     onLoadSuccess: function (data) {
@@ -292,7 +292,7 @@ var OrganizeAdminMethod = {
                             cascadeCheck: false, //联动选中节点
                             checkbox: true,
                             lines: true,
-                            url: '/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson?isTree=1',
+                            url: '/Admin/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/?isTree=1',
                             onSelect: function (node) {
                                 top.$('#rightnav').tree('getChildren', node.target);
                             }
@@ -301,8 +301,8 @@ var OrganizeAdminMethod = {
                     },
                     onSelect: function (rowIndex, rowData) {
                         curResourceTargetResourceIds = [];
-                        var query = 'resourceCategory=PiUser&resourceId=' + rowData.ID + '&targetCategory=PiOrganize';
-                        $.ajaxtext('/FrameworkModules/PermissionSet/GetPermissionScopeTargetIds', query, function (data) {
+                        var query = 'resourceCategory=PIUSER&resourceId=' + rowData.id + '&targetCategory=PIORGANIZE';
+                        $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetPermissionScopeTargetIds/', query, function (data) {
                             var targetResourceTree = top.$('#rightnav');
                             targetResourceTree.tree('uncheckedAll');
                             if (data == '' || data.toString() == '[object XMLDocument]') {
@@ -338,10 +338,10 @@ var OrganizeAdminMethod = {
                     ++flagGrant;
                 }
 
-                var query = 'resourceId=' + top.$('#leftnav').datagrid('getSelected').ID
-                    + '&resourceCategory=PiUser&targetCategory=PiOrganize'
+                var query = 'resourceId=' + top.$('#leftnav').datagrid('getSelected').id
+                    + '&resourceCategory=PIUSER&targetCategory=PIORGANIZE'
                     + '&grantTargetIds=' + grantResourceIds + "&revokeTargetIds=" + revokeResourceIds;
-                $.ajaxjson('/FrameworkModules/PermissionSet/GrantRevokePermissionScopeTargets', query, function (d) {
+                $.ajaxjson('/Admin/FrameworkModules/PermissionSet/GrantRevokePermissionScopeTargets/', query, function (d) {
                     if (d.Data > 0) {
                         msg.ok('设置成功！');
                     } else {
@@ -360,7 +360,7 @@ var OrganizeAdminMethod = {
             width: 670,
             height: 600,
             iconCls: 'icon16_lightning', //cache: false,
-            href: "/FrameworkModules/PermissionSet/PermissionBacthSet",
+            href: "/Admin/FrameworkModules/PermissionSet/PermissionBacthSet/",
             onLoad: function () {
                 using('panel', function () {
                     top.$('#panelTarget').panel({ title: '组织机构列表', iconCls: 'icon-org', height: $(window).height() - 3 });
@@ -368,7 +368,7 @@ var OrganizeAdminMethod = {
 
                 userGrid = top.$('#leftnav').datagrid({
                     title: '角色列表',
-                    url: '/FrameworkModules/RoleAdmin/GetRoleList',
+                    url: '/Admin/FrameworkModules/RoleAdmin/GetRoleList/',
                     nowrap: false, //折行
                     //fit: true,
                     rownumbers: true, //行号
@@ -387,7 +387,7 @@ var OrganizeAdminMethod = {
                             cascadeCheck: false, //联动选中节点
                             checkbox: true,
                             lines: true,
-                            url: '/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson?isTree=1',
+                            url: '/Admin/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/?isTree=1',
                             onSelect: function (node) {
                                 top.$('#rightnav').tree('getChildren', node.target);
                             }
@@ -397,7 +397,7 @@ var OrganizeAdminMethod = {
                     onSelect: function (rowIndex, rowData) {
                         curResourceTargetResourceIds = [];
                         var query = 'resourceCategory=PiRole&resourceId=' + rowData.ID + '&targetCategory=PiOrganize';
-                        $.ajaxtext('/FrameworkModules/PermissionSet/GetPermissionScopeTargetIds', query, function (data) {
+                        $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetPermissionScopeTargetIds/', query, function (data) {
                             var targetResourceTree = top.$('#rightnav');
                             targetResourceTree.tree('uncheckedAll');
                             if (data == '' || data.toString() == '[object XMLDocument]') {
@@ -436,7 +436,7 @@ var OrganizeAdminMethod = {
                 var query = 'resourceId=' + top.$('#leftnav').datagrid('getSelected').ID
                     + '&resourceCategory=PiRole&targetCategory=PiOrganize'
                     + '&grantTargetIds=' + grantResourceIds + "&revokeTargetIds=" + revokeResourceIds;
-                $.ajaxjson('/FrameworkModules/PermissionSet/GrantRevokePermissionScopeTargets', query, function (d) {
+                $.ajaxjson('/Admin/FrameworkModules/PermissionSet/GrantRevokePermissionScopeTargets/', query, function (d) {
                     if (d.Data > 0) {
                         msg.ok('设置成功！');
                     } else {
@@ -453,10 +453,10 @@ var OrganizeAdminMethod = {
 var pubMethod = {
     bindCtrl: function (navId) {
         var treeData = navgrid.treegrid('getData');
-        treeData = JSON.stringify(treeData).replace(/Id/g, 'id').replace(/FullName/g, 'text');
+        treeData = JSON.stringify(treeData).replace(/id/g, 'id').replace(/fullname/g, 'text');
         treeData = '[{"id":0,"selected":true,"text":"请选择上级节点"},' + treeData.substr(1, treeData.length - 1);
 
-        top.$('#ParentId').combotree({
+        top.$('#parentid').combotree({
             data: JSON.parse(treeData),
             valueField: 'id',
             textField: 'text',
@@ -464,25 +464,25 @@ var pubMethod = {
             editable: false,
             lines: true,
             onSelect: function (node) {
-                var nodeId = top.$('#ParentId').combotree('getValue');
+                var nodeId = top.$('#parentid').combotree('getValue');
                 if (node.id == navId) {
-                    top.$('#ParentId').combotree('setValue', nodeId);
+                    top.$('#parentid').combotree('setValue', nodeId);
                     top.$.messager.alert('警告提示', '上级节点不能与当前所选相同！', 'warning');
                 }
             }
         }).combotree('setValue', 0);
 
-        top.$('#Code').focus();        
+        top.$('#code').focus();
         top.$('#uiform').validate({
             //此处加入验证
         });
     },
     bindComboGrid: function () {
-        top.$('#ManagerId,#AssistantManagerId').combogrid({
+        top.$('#managerid,#assistantmanagerid').combogrid({
             panelWidth: 320,
             idField: 'ID',
             textField: 'REALNAME',
-            url: '/FrameworkModules/UserAdmin/GetUserListByPage',
+            url: '/Admin/FrameworkModules/UserAdmin/GetUserListByPage/',
             sortName: 'SORTCODE',
             sortOrder: 'asc',
             showPageList: false,

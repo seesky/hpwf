@@ -246,3 +246,66 @@ def GetEntity(request):
     response = HttpResponse()
     response.content = entity.toJSON()
     return response
+
+@LoginAuthorize
+def Delete(request):
+    try:
+        key = request.POST['key']
+    except:
+        key = ''
+
+    returnValue = RoleService.SetDeleted(None, [key])
+
+    if returnValue:
+        response = HttpResponse()
+        response.content = json.dumps({'Success': True, 'Data': '1', 'Message': FrameworkMessage.MSG0013})
+        return response
+    else:
+        response = HttpResponse()
+        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
+        return response
+
+@LoginAuthorize
+def AddUserToRole(request):
+    try:
+        roleId = request.POST['roleId']
+        addUserIds = request.POST['addUserIds']
+    except:
+        roleId = None
+        addUserIds = None
+
+    response = HttpResponse()
+    if roleId and len(str(addUserIds).strip()) > 0:
+        returnValue = RoleService.AddUserToRole(CommonUtils.Current(response, request), roleId, str(addUserIds).split(','))
+        if returnValue > 0:
+            response.content = json.dumps({'Success': True, 'Data': '1', 'Message': '添加成功！'})
+            return response
+        else:
+            response.content = json.dumps({'Success': False, 'Data': '0', 'Message': '添加失败！'})
+            return response
+    else:
+        response = HttpResponse()
+        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': '无选择的用户！'})
+        return response
+
+@LoginAuthorize
+def RemoveUserFromRole(request):
+    try:
+        roleId = request.POST['roleId']
+        userId = request.POST['userId']
+    except:
+        roleId = None
+        userId = None
+
+    response = HttpResponse()
+    if not userId:
+        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': '无选择的用户！'})
+        return response
+    else:
+        returnValue = RoleService.RemoveUserFromRole(CommonUtils.Current(response, request), [userId], roleId)
+        if returnValue > 0:
+            response.content = json.dumps({'Success': True, 'Data': '1', 'Message': FrameworkMessage.MSG3010})
+            return response
+        else:
+            response.content = json.dumps({'Success': False, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
+            return response

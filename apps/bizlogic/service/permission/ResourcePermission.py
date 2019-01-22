@@ -13,6 +13,8 @@ from apps.utilities.message.PermissionScope import PermissionScope
 from apps.utilities.publiclibrary.StringHelper import StringHelper
 from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 
+import uuid
+
 from django.db.models import Q
 
 class ResourcePermission(object):
@@ -77,7 +79,10 @@ class ResourcePermission(object):
        Returns:
            returnValue(string[]): 目标资源主键数组
        """
-        permissionItemId = Pipermissionitem.objects.get(code=permissionItemCode).id
+        try:
+            permissionItemId = Pipermissionitem.objects.get(code=permissionItemCode).id
+        except Pipermissionitem.DoesNotExist as e:
+            permissionItemId = ''
         returnValue = Pipermissionscope.objects.filter(Q(resourcecategory=resourceCategory) & Q(resourceid=resourceId) & Q(permissionid=permissionItemId) & Q(targetcategory=targetCategory) & Q(deletemark=0) & Q(enabled=1)).values_list('targetid', flat=True)
         return returnValue
 
@@ -128,12 +133,12 @@ class ResourcePermission(object):
                 returnValue = returnValue + 1
         return returnValue
 
-    def GrantPermissionScopeTarget(self, resourceCategory, resourceIds, targetCategory, grantTargetId, permissionItemId):
+    def GrantPermissionScopeTarget(self, resourceCategory, resourceId, targetCategory, grantTargetId, permissionItemId):
         """
        授予资源的权限范围
        Args:
            resourceCategory (string): 资源分类
-           resourceIds (string): 资源主键
+           resourceId (string): 资源主键
            targetCategory (string): 目标类别
            grantTargetId (string): 目标主键数组
            permissionItemId (string): 权限主键
@@ -141,19 +146,20 @@ class ResourcePermission(object):
            returnValue(int): 影响的行数
        """
         returnValue = 0
-        for id in resourceIds:
+        for id in grantTargetId:
             resourcePermissionScope = Pipermissionscope()
+            resourcePermissionScope.id = uuid.uuid4()
             resourcePermissionScope.resourcecategory = resourceCategory
-            resourcePermissionScope.resourceid = id
+            resourcePermissionScope.resourceid = resourceId
             resourcePermissionScope.targetcategory = targetCategory
             resourcePermissionScope.permissionid = permissionItemId
-            resourcePermissionScope.targetid = grantTargetId
+            resourcePermissionScope.targetid = id
             resourcePermissionScope.enabled = 1
             resourcePermissionScope.deletemark = 0
 
             try:
-                Pipermissionscope.objects.get(Q(resourceid=id) & Q(resourcecategory=resourceCategory) & Q(
-                    targetcategory=targetCategory) & Q(targetid=grantTargetId) & Q(permissionid=permissionItemId) & Q(
+                Pipermissionscope.objects.get(Q(resourceid=resourceId) & Q(resourcecategory=resourceCategory) & Q(
+                    targetcategory=targetCategory) & Q(targetid=id) & Q(permissionid=permissionItemId) & Q(
                     enabled=1) & Q(deletemark=0))
             except Pipermissionscope.DoesNotExist as e:
                 resourcePermissionScope.save()
@@ -188,9 +194,9 @@ class ResourcePermission(object):
        Returns:
            returnValue(int): 影响的行数
        """
-        returnValue = Pipermissionscope.objects.filter(
-            Q(resourcecategory=resourceCategory) & Q(resourceid__in=resourceIds) & Q(targetcategory=targetCategory) & Q(
-                targetid=revokeTargetId) & Q(permissionid=permissionItemId))
+        returnValue,r = Pipermissionscope.objects.filter(
+            Q(resourcecategory=resourceCategory) & Q(resourceid=resourceIds) & Q(targetcategory=targetCategory) & Q(
+                targetid__in=revokeTargetId) & Q(permissionid=permissionItemId)).delete()
         return returnValue
 
     def ClearPermissionScopeTarget(self, resourceCategory, resourceId, targetCategory, permissionItemId):

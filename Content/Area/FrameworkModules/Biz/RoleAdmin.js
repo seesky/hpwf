@@ -174,7 +174,7 @@ var RoleAdminMethod = {
         if (row) {
             $.messager.confirm('询问提示', '确认要删除[' + row.REALNAME + ']角色吗?', function (data) {
                 if (data) {
-                    var parm = 'key=' + row.id;
+                    var parm = 'key=' + row.ID;
                     $.ajaxjson("/Admin/FrameworkModules/RoleAdmin/Delete/", parm, function (d) {
                         if (d.Data > 0) {
                             msg.ok('角色删除成功。');
@@ -205,11 +205,11 @@ var RoleAdminMethod = {
                         nowrap: false, //折行
                         rownumbers: true, //行号
                         striped: true, //隔行变色
-                        idField: 'ID', //主键
+                        idField: 'id', //主键
                         singleSelect: true, //单选
                         columns: [[
-                       { title: '登录名', field: 'USERNAME', width: 100 },
-                       { title: '用户名', field: 'REALNAME', width: 120 }
+                       { title: '登录名', field: 'username', width: 100 },
+                       { title: '用户名', field: 'realname', width: 120 }
                         ]],
                         pagination: false,
                         pageSize: 20,
@@ -235,14 +235,14 @@ var RoleAdminMethod = {
                             var hasUserName = false;
                             var users = top.$('#selectedUser').datagrid('getRows');
                             $.each(users, function (i, n) {
-                                if (n.USERNAME == _row.USERNAME) {
+                                if (n.username == _row.username) {
                                     hasUserName = true;
                                 }
                             });
                             if (!hasUserName) {
                                 top.$('#selectedUser').datagrid('appendRow', _row);
                                 //添加用户                               
-                                var query = 'roleId=' + currentRole.ID + '&addUserIds=' + _row.ID;
+                                var query = 'roleId=' + currentRole.ID + '&addUserIds=' + _row.id;
                                 $.ajaxjson('/Admin/FrameworkModules/RoleAdmin/AddUserToRole/', query, function (d) {
                                     if (d.Data != '1') {
                                         msg.warning(d.Message);
@@ -266,7 +266,7 @@ var RoleAdminMethod = {
                             var rIndex = top.$('#selectedUser').datagrid('getRowIndex', trow);
                             top.$('#selectedUser').datagrid('deleteRow', rIndex).datagrid('unselectAll');
                             //移除角色
-                            var query = 'roleId=' + currentRole.ID + '&userId=' + trow.ID;
+                            var query = 'roleId=' + currentRole.ID + '&userId=' + trow.id;
                             $.ajaxjson('/Admin/FrameworkModules/RoleAdmin/RemoveUserFromRole/', query, function (d) {
                                 if (d.Data == 1) {
                                     msg.ok(d.Message);                                    

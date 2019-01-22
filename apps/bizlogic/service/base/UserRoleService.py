@@ -3,6 +3,7 @@ __author__ = 'seesky@hstecs.com'
 __date__ = '2018/12/11 16:17'
 
 import uuid
+import datetime
 
 from django.db.models import Q
 
@@ -23,7 +24,7 @@ class UserRoleService(object):
         Returns:
             returnValue (Piuser[]): 用户列表
         """
-        returnValue = Piuser.objects.filter(Q(enabled=1) & Q(deletemark=0) & (Q(roleid=roleId) | Q(id__in=Piuserrole.objects.filter(Q(roleid=roleId) & Q(enabled=1) & Q(deletemark=0)).valus_list('userid', flat=True)))).order_by('sortcode')
+        returnValue = Piuser.objects.filter(Q(enabled=1) & Q(deletemark=0) & (Q(roleid=roleId) | Q(id__in=Piuserrole.objects.filter(Q(roleid=roleId) & Q(enabled=1) & Q(deletemark=0)).values_list('userid', flat=True)))).order_by('sortcode')
         return returnValue
 
     def GetListByRole(self, roleIds):
@@ -201,7 +202,7 @@ class UserRoleService(object):
         returnValue = q1.union(q2)
         return returnValue
 
-    def AddToRole(self, userId, roleId):
+    def AddToRole(userInfo, userId, roleId):
         """
         加入到角色
         Args:
@@ -213,13 +214,21 @@ class UserRoleService(object):
         returnValue = 0
         try:
             Piuserrole.objects.get(Q(userid=userId) & Q(roleid=roleId) & Q(enabled=1) & Q(deletemark=0))
-            return returnValue
+            return returnValue + 1
         except Piuserrole.DoesNotExist as e:
             userrole = Piuserrole()
+            userrole.id = uuid.uuid4()
             userrole.userid = userId
             userrole.roleid = roleId
+            userrole.allowedit = 1
+            userrole.allowdelete = 1
+            userrole.createon = datetime.datetime.now()
+            userrole.createby = userInfo.RealName
+            userrole.modifiedon = userrole.createon
+            userrole.modifiedby = userInfo.RealName
             userrole.enabled = 1
             userrole.deletemark = 0
+
             userrole.save()
             returnValue = 1
             return returnValue
@@ -230,14 +239,18 @@ class UserRoleService(object):
             returnValue = returnValue + UserRoleService.AddToRole(self, userId, roleid)
         return returnValue
 
-    def AddToRolesU(self, userIds, roleId):
+    def AddToRolesU(userInfo, userIds, roleId):
         returnValue = 0
         for userid in userIds:
-            returnValue = returnValue + UserRoleService.AddToRole(self, userid, roleId)
+            returnValue = returnValue + UserRoleService.AddToRole(userInfo, userid, roleId)
         return returnValue
 
-    def RemoveFormRole(self, userId, roleId):
-        return Piuserrole.objects.filter(Q(userid=userId) & Q(roleid=roleId)).delete()
+    def RemoveFormRole(userInfo, userId, roleId):
+        try:
+            Piuserrole.objects.filter(Q(userid=userId) & Q(roleid=roleId)).delete()
+            return 1
+        except:
+            return 0
 
     def RemoveFromRoleR(self, userId, roleIds):
         returnValue = 0
@@ -245,10 +258,10 @@ class UserRoleService(object):
             returnValue = returnValue + UserRoleService.RemoveFormRole(self, userId, roleid)
         return returnValue
 
-    def RemoveFromRoleU(self, userIds, roleId):
+    def RemoveFromRoleU(userInfo, userIds, roleId):
         returnValue = 0
         for userid in userIds:
-            returnValue = returnValue + UserRoleService.RemoveFormRole(self, userid, roleId)
+            returnValue = returnValue + UserRoleService.RemoveFormRole(userInfo, userid, roleId)
         return returnValue
 
     def ClearRoleUser(self, roleId):

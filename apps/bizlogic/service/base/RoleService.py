@@ -286,7 +286,7 @@ class RoleService(object):
         returnValue = UserRoleService.GetUserIds(self, roleId)
         return returnValue
 
-    def AddUserToRole(self, roleId, addUserIds):
+    def AddUserToRole(userInfo, roleId, addUserIds):
         """
         用户添加到角色
         Args:
@@ -295,10 +295,10 @@ class RoleService(object):
         Returns:
             returnValue (int): 影响行数
         """
-        returnValue = UserRoleService.AddToRolesU(self, addUserIds, roleId)
+        returnValue = UserRoleService.AddToRolesU(userInfo, addUserIds, roleId)
         return returnValue
 
-    def RemoveUserFromRole(self, userIds, roleId):
+    def RemoveUserFromRole(userInfo, userIds, roleId):
         """
        将用户从角色中移除
        Args:
@@ -307,7 +307,7 @@ class RoleService(object):
        Returns:
            returnValue (int): 影响行数
        """
-        returnValue = UserRoleService.RemoveFromRoleU(self, userIds, roleId)
+        returnValue = UserRoleService.RemoveFromRoleU(userInfo, userIds, roleId)
         return returnValue
 
     def ClearRoleUser(self, roleId):

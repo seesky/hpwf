@@ -133,7 +133,8 @@ class StaffService(object):
             returnCode = StatusCode.statusCodeDic['OKUpdate']
             returnMessage = FrameworkMessage.MSG0010
             return returnCode, returnMessage
-        except:
+        except Exception as e:
+            print(e)
             returnCode = StatusCode.statusCodeDic['Error']
             returnMessage = FrameworkMessage.MSG0001
             return returnCode, returnMessage

@@ -20,6 +20,9 @@ from apps.utilities.message.FrameworkMessage import FrameworkMessage
 import uuid
 import datetime
 from apps.bizlogic.service.base.LogOnService import LogOnService
+from apps.utilities.publiclibrary.SystemInfo import SystemInfo
+from apps.bizlogic.service.permission.ScopPermission import ScopPermission
+from apps.bizlogic.service.base.UserRoleService import UserRoleService
 
 def GenerateSplitTool():
     sbTool = ''
@@ -310,4 +313,45 @@ def SetUserDimission(request):
     else:
         response = HttpResponse()
         response.content = json.dumps({'Success': True, 'Data': '1', 'Message': FrameworkMessage.MSG3020})
+        return response
+
+@LoginAuthorize
+def GetUserListJson(request):
+    response = HttpResponse()
+    user = CommonUtils.Current(response, request)
+    if user.IsAdministrator or (not "Resource.ManagePermission") or (SystemInfo.EnableUserAuthorizationScope):
+        dtUser = UserSerivce.GetDT(None)
+    else:
+        dtUser = ScopPermission.GetUserDTByPermissionScope(None, user.Id, "Resource.ManagePermission")
+
+    userTmp = ''
+    for user in dtUser:
+        userTmp = userTmp + ', ' + user.toJSON()
+    userTmp = userTmp.strip(',')
+    returnValue = '[' + userTmp + ']'
+    response.content = returnValue
+    return response
+
+@LoginAuthorize
+def GetDTByRole(request):
+    try:
+        roleId = request.GET['roleId']
+    except:
+        roleId = ''
+
+    jsons = "[]"
+
+    if roleId:
+        roleDT = UserRoleService.GetDTByRole(None, roleId)
+        userTmp = ''
+        for user in roleDT:
+            userTmp = userTmp + ', ' + user.toJSON()
+        userTmp = userTmp.strip(',')
+        returnValue = '[' + userTmp + ']'
+        response = HttpResponse()
+        response.content = returnValue
+        return response
+    else:
+        response = HttpResponse()
+        response.content = jsons
         return response
