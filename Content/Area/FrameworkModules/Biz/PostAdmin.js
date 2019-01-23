@@ -1,4 +1,4 @@
-﻿var formUrl = "/Admin/FrameworkModules/PostAdmin/Form",
+﻿var formUrl = "/Admin/FrameworkModules/PostAdmin/Form/",
     controlRoleUrl = '/Admin/FrameworkModules/RoleAdmin/',
     controlPostUrl = '/Admin/FrameworkModules/PostAdmin/',
     firstCheckModule = '0',
@@ -119,16 +119,16 @@ var PostAdminMethod = {
                 height: 295,
                 iconCls: 'icon16_brick_add',
                 onLoad: function () {
-                    top.$("#Organize").attr("readOnly",true).css("background", "#dddddd"); ;  
-                    top.$('#Enabled').attr("checked", true);
-                    top.$('#Organize').val(orgSelected.text);
-                    top.$('#Description').val("");
-                    top.$('#Code').focus();
+                    top.$("#organize").attr("readOnly",true).css("background", "#dddddd"); ;
+                    top.$('#enabled').attr("checked", true);
+                    top.$('#organize').val(orgSelected.text);
+                    top.$('#description').val("");
+                    top.$('#code').focus();
                 },
                 submit: function() {
                     if (top.$('#uiform').validate().form()) {
                         var queryString = pageMethod.serializeJson(top.$('#uiform'));
-                        $.ajaxjson(controlPostUrl + 'SubmitForm?OrganizeId=' + orgSelected.id, queryString, function (d) {
+                        $.ajaxjson(controlPostUrl + 'SubmitForm/?OrganizeId=' + orgSelected.id, queryString, function (d) {
                             if (d.Success) {
                                 msg.ok(d.Message);
                                 addDialog.dialog('close');
@@ -139,7 +139,7 @@ var PostAdminMethod = {
                         });
                     } else {
                         msg.warning('请输入岗位名称。');
-                        top.$('#Code').focus();
+                        top.$('#code').focus();
                     }
                 }
             });
@@ -160,31 +160,31 @@ var PostAdminMethod = {
                 iconCls: 'icon16_brick_edit',
                 onLoad: function () {
                     //绑定各数据字典
-                    var parm = 'key=' + selectRow.ID;
-                    $.ajaxjson(controlRoleUrl + 'GetEntity', parm, function (data) {
+                    var parm = 'key=' + selectRow.id;
+                    $.ajaxjson(controlRoleUrl + 'GetEntity/', parm, function (data) {
                         if (data) {
-                            top.$('#Code').val(data.Code);
-                            top.$('#RealName').val(data.RealName);
-                            top.$('#Enabled').attr("checked", data.Enabled == "1");
-                            top.$('#Description').val(data.Description);
+                            top.$('#code').val(data.code);
+                            top.$('#realname').val(data.realname);
+                            top.$('#enabled').attr("checked", data.enabled == "1");
+                            top.$('#description').val(data.description);
                         }
 
-                        if (data.OrganizeId) {
-                            var parmOrganize = 'key=' + data.OrganizeId;
-                            $.ajaxjson('/FrameworkModules/OrganizeAdmin/GetEntity', parmOrganize, function (tmpOrgData) {
+                        if (data.organizeid) {
+                            var parmOrganize = 'key=' + data.organizeid;
+                            $.ajaxjson('/Admin/FrameworkModules/OrganizeAdmin/GetEntity/', parmOrganize, function (tmpOrgData) {
                                 if (tmpOrgData) {
-                                    top.$('#Organize').val(tmpOrgData.FullName);
+                                    top.$('#organize').val(tmpOrgData.fullname);
                                 }
                             });
                         }
                     });
-                    top.$("#Organize").attr("readOnly", true).css("background", "#dddddd"); ;
-                    top.$('#Code').focus();
+                    top.$("#organize").attr("readOnly", true).css("background", "#dddddd"); ;
+                    top.$('#code').focus();
                 },
                 submit: function () {
                     if (top.$('#uiform').validate().form()) {
                         var queryString = pageMethod.serializeJson(top.$('#uiform'));
-                        $.ajaxjson(controlPostUrl + 'SubmitForm?key=' + selectRow.ID, queryString, function (d) {
+                        $.ajaxjson(controlPostUrl + 'SubmitForm/?key=' + selectRow.id, queryString, function (d) {
                             if (d.Success) {
                                 msg.ok(d.Message);
                                 editDailog.dialog('close');
@@ -207,9 +207,9 @@ var PostAdminMethod = {
     DeletePost: function () { //删除岗位
         var selectRow = mygrid.getSelectedRow();
         if (selectRow) {
-            $.messager.confirm('询问提示', '确定要删除岗位【' + selectRow.REALNAME + '】吗？', function (data) {
+            $.messager.confirm('询问提示', '确定要删除岗位【' + selectRow.realname + '】吗？', function (data) {
                 if (data) {
-                    $.ajaxjson(controlPostUrl + 'Delete', 'key=' + selectRow.ID, function (d) {
+                    $.ajaxjson(controlPostUrl + 'Delete/', 'key=' + selectRow.id, function (d) {
                         if (d.Data > 0) {
                             msg.ok('所选岗位删除成功！');
                             mygrid.reload();
@@ -230,10 +230,10 @@ var PostAdminMethod = {
         var selectRow = mygrid.getSelectedRow();
         if (selectRow) {
             var rDialog = top.$.hDialog({
-                href: '/FrameworkModules/PermissionSet/RoleUserSet', width: 600, height: 500, title: '岗位用户关联', iconCls: 'icon16_key',
+                href: '/Admin/FrameworkModules/PermissionSet/RoleUserSet/', width: 600, height: 500, title: '岗位用户关联', iconCls: 'icon16_key',
                 onLoad: function () {
                     top.$('#rlayout').layout();
-                    top.$('#roleName').text(selectRow.REALNAME);
+                    top.$('#roleName').text(selectRow.realname);
                     top.$('#allUsers,#selectedUser').datagrid({
                         width: 255,
                         height: 350,
@@ -241,11 +241,11 @@ var PostAdminMethod = {
                         nowrap: false, //折行
                         rownumbers: true, //行号
                         striped: true, //隔行变色
-                        idField: 'ID', //主键
+                        idField: 'id', //主键
                         singleSelect: true, //单选
                         columns: [[
-                       { title: '登录名', field: 'USERNAME', width: 100 },
-                       { title: '用户名', field: 'REALNAME', width: 120 }
+                       { title: '登录名', field: 'username', width: 100 },
+                       { title: '用户名', field: 'realname', width: 120 }
                    ]],
                         pagination: false,
                         pageSize: 20,
@@ -253,14 +253,14 @@ var PostAdminMethod = {
                     });
 
                     top.$('#allUsers').datagrid({
-                        url: '/Admin/FrameworkModules/UserAdmin/GetUserListJson',
+                        url: '/Admin/FrameworkModules/UserAdmin/GetUserListJson/',
                         onDblClickRow: function (rowIndex, rowData) {
                             top.$('#aSelectUser').click();
                         }
                     });
 
                     top.$('#selectedUser').datagrid({
-                        url: '/Admin/FrameworkModules/UserAdmin/GetDTByRole?roleId=' + selectRow.ID,
+                        url: '/Admin/FrameworkModules/UserAdmin/GetDTByRole/?roleId=' + selectRow.id,
                         onDblClickRow: function (rowIndex, rowData) {
                             top.$('#aDeleteUser').click();
                         }
@@ -271,15 +271,15 @@ var PostAdminMethod = {
                             var hasUserName = false;
                             var users = top.$('#selectedUser').datagrid('getRows');
                             $.each(users, function (i, n) {
-                                if (n.USERNAME == _row.USERNAME) {
+                                if (n.username == _row.username) {
                                     hasUserName = true;
                                 }
                             });
                             if (!hasUserName) {
                                 top.$('#selectedUser').datagrid('appendRow', _row);
                                 //添加用户
-                                var query = 'roleId=' + selectRow.ID + '&addUserIds=' + _row.ID;
-                                $.ajaxjson('/FrameworkModules/RoleAdmin/AddUserToRole', query, function (d) {
+                                var query = 'roleId=' + selectRow.id + '&addUserIds=' + _row.id;
+                                $.ajaxjson('/Admin/FrameworkModules/RoleAdmin/AddUserToRole/', query, function (d) {
                                     if (d.Data != "1") {
                                         msg.ok('添加用户失败。');
                                     }
@@ -300,10 +300,13 @@ var PostAdminMethod = {
                             var rIndex = top.$('#selectedUser').datagrid('getRowIndex', trow);
                             top.$('#selectedUser').datagrid('deleteRow', rIndex).datagrid('unselectAll');
                             //移除岗位
-                            var query = 'roleId=' + selectRow.ID + '&userId=' + trow.ID;
-                            $.ajaxjson('/FrameworkModules/RoleAdmin/RemoveUserFromRole', query, function (d) {
-                                if (d != "1") {
+                            var query = 'roleId=' + selectRow.id + '&userId=' + trow.id;
+                            $.ajaxjson('/Admin/FrameworkModules/RoleAdmin/RemoveUserFromRole/', query, function (d) {
+                                if (d.Data != "1") {
                                     msg.ok('移除用户失败。');
+                                }else{
+                                    msg.ok('移除用户成功。');
+                                    mygrid.reload();
                                 }
                             });
                         } else {
@@ -326,24 +329,24 @@ var PostAdminMethod = {
         if (curPost) {
             var formDialog = top.$.hDialog({
                 title: '岗位权限设置', width: 660, height: 600, iconCls: 'icon16_lightning',
-                href: '/FrameworkModules/PermissionSet/RolePermissionSet',
+                href: '/Admin/FrameworkModules/PermissionSet/RolePermissionSet/',
                 onLoad: function () {
-                    top.$('#FormContent').layout('panel', 'center').panel({ title: '当前岗位：' + curPost.REALNAME });
+                    top.$('#FormContent').layout('panel', 'center').panel({ title: '当前岗位：' + curPost.realname });
                     //1、加载模块（菜单）列表
                     top.$('#tableModule').tree({
                         cascadeCheck: false, //联动选中节点
                         checkbox: true,
                         lines: true,
-                        url: '/FrameworkModules/ModuleAdmin/GetModuleTreeJson?isTree=1',
+                        url: '/Admin/FrameworkModules/ModuleAdmin/GetModuleTreeJson/?isTree=1',
                         onBeforeLoad: function (node, param) {
                             top.$.hLoading.show({ type: 'loading', msg: '加载中' });
                         },
                         onLoadSuccess: function (node, data) {
                             top.$.hLoading.hide();
                             var curPostModuleIds = [];
-                            var query = 'roleId=' + curPost.ID;
+                            var query = 'roleId=' + curPost.id;
                             //1.1、得到当前岗位可以访问的模块菜单主键列表
-                            $.ajaxtext('/FrameworkModules/PermissionSet/GetModuleByRoleId', query, function (d) {
+                            $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetModuleByRoleId/', query, function (d) {
                                 if (d != '' && d.toString() != '[object XMLDocument]') {
                                     curPostModuleIds = d.split(',');
                                 }
@@ -363,13 +366,13 @@ var PostAdminMethod = {
                         onCheck: function (node, checked) {
                             if (firstCheckModule == '0') {
                                 if (checked) { //授予当前岗位所选模块的访问权限                                           
-                                    $.ajaxjson('/FrameworkModules/PermissionSet/SetRoleModulePermission', 'roleId=' + curPost.ID + '&grantIds=' + node.id, function (d) {
+                                    $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRoleModulePermission/', 'roleId=' + curPost.id + '&grantIds=' + node.id, function (d) {
                                         if (d.Data != '1') {
                                             msg.warning('授予岗位模块访问权限失败！');
                                         }
                                     });
                                 } else { //回收当前岗位所选模块的访问权限
-                                    $.ajaxjson('/FrameworkModules/PermissionSet/SetRoleModulePermission', 'roleId=' + curPost.ID + '&revokeIds=' + node.id, function (d) {
+                                    $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRoleModulePermission/', 'roleId=' + curPost.id + '&revokeIds=' + node.id, function (d) {
                                         if (d.Data != '1') {
                                             msg.warning('收回岗位模块访问权限失败！');
                                         }
@@ -384,16 +387,16 @@ var PostAdminMethod = {
                         cascadeCheck: false, //联动选中节点
                         checkbox: true,
                         lines: true,
-                        url: '/FrameworkModules/PermissionItemAdmin/GetPermissionItemTreeJson?isTree=1',
+                        url: '/Admin/FrameworkModules/PermissionItemAdmin/GetPermissionItemTreeJson/?isTree=1',
                         onBeforeLoad: function (node, param) {
                             top.$.hLoading.show({ type: 'loading', msg: '加载中' });
                         },
                         onLoadSuccess: function (node, data) {
                             top.$.hLoading.hide();
                             var curPostPermissionItemIds = [];
-                            var query = 'roleId=' + curPost.ID;
+                            var query = 'roleId=' + curPost.id;
                             //2.1、得到当前岗位可以访问的操作权限主键列表
-                            $.ajaxtext('/FrameworkModules/PermissionSet/GetPermissionItemsByRoleId', query, function (d) {
+                            $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetPermissionItemsByRoleId/', query, function (d) {
                                 if (d != '' && d.toString() != '[object XMLDocument]') {
                                     curPostPermissionItemIds = d.split(',');
                                 }
@@ -413,13 +416,13 @@ var PostAdminMethod = {
                         onCheck: function (node, checked) {
                             if (firstCheckPermissionItem == '0') {
                                 if (checked) { //授予当前岗位所选操作权限
-                                    $.ajaxjson('/FrameworkModules/PermissionSet/SetRolePermissionItem', 'roleId=' + curPost.ID + '&grantIds=' + node.id, function (d) {
+                                    $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRolePermissionItem/', 'roleId=' + curPost.id + '&grantIds=' + node.id, function (d) {
                                         if (d.Data != '1') {
                                             msg.warning('授予岗位操作权限失败！');
                                         }
                                     });
                                 } else {  //回收当前岗位所选操作权限
-                                    $.ajaxjson('/FrameworkModules/PermissionSet/SetRolePermissionItem', 'roleId=' + curPost.ID + '&revokeIds=' + node.id, function (d) {
+                                    $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRolePermissionItem/', 'roleId=' + curPost.id + '&revokeIds=' + node.id, function (d) {
                                         if (d.Data != '1') {
                                             msg.warning('收回岗位操作权限失败！');
                                         }
@@ -448,13 +451,13 @@ var PostAdminMethod = {
                 max: false,
                 width: 300,
                 height: 500,
-                title: '移动岗位 ━ ' + row.REALNAME,
+                title: '移动岗位 ━ ' + row.realname,
                 iconCls: 'icon16_arrow_switch',
                 content: '<ul id="orgTree"></ul>',
                 submit: function () {
                     var node = top.$('#orgTree').tree('getSelected');
                     if (node) {
-                        $.ajaxjson(controlPostUrl + 'MoveTo', 'key=' + row.ID + '&organizeId=' + node.id, function (d) {
+                        $.ajaxjson(controlPostUrl + 'MoveTo/', 'key=' + row.id + '&organizeId=' + node.id, function (d) {
                             if (d.Data == '1') {
                                 msg.ok('移动成功！');
                                 mygrid.reload();
@@ -473,7 +476,7 @@ var PostAdminMethod = {
 
             top.$(ad).hLoading();           
             top.$('#orgTree').tree({
-                url: '/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson?isTree=1',
+                url: '/Admin/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/?isTree=1',
                 valuefield: 'id',
                 textField: 'text',
                 animate: true,

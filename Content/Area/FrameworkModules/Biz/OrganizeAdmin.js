@@ -373,13 +373,13 @@ var OrganizeAdminMethod = {
                     //fit: true,
                     rownumbers: true, //行号
                     striped: true, //隔行变色
-                    idField: 'ID', //主键
+                    idField: 'id', //主键
                     singleSelect: true, //单选
                     frozenColumns: [[]],
                     columns: [
                         [
-                            { title: '角色编码', field: 'CODE', width: 120, align: 'left' },
-                            { title: '角色名称', field: 'REALNAME', width: 150, align: 'left' }
+                            { title: '角色编码', field: 'code', width: 120, align: 'left' },
+                            { title: '角色名称', field: 'realname', width: 150, align: 'left' }
                         ]
                     ],
                     onLoadSuccess: function (data) {
@@ -396,7 +396,7 @@ var OrganizeAdminMethod = {
                     },
                     onSelect: function (rowIndex, rowData) {
                         curResourceTargetResourceIds = [];
-                        var query = 'resourceCategory=PiRole&resourceId=' + rowData.ID + '&targetCategory=PiOrganize';
+                        var query = 'resourceCategory=PIROLE&resourceId=' + rowData.id + '&targetCategory=PIORGANIZE';
                         $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetPermissionScopeTargetIds/', query, function (data) {
                             var targetResourceTree = top.$('#rightnav');
                             targetResourceTree.tree('uncheckedAll');
@@ -433,8 +433,8 @@ var OrganizeAdminMethod = {
                     ++flagGrant;
                 }
 
-                var query = 'resourceId=' + top.$('#leftnav').datagrid('getSelected').ID
-                    + '&resourceCategory=PiRole&targetCategory=PiOrganize'
+                var query = 'resourceId=' + top.$('#leftnav').datagrid('getSelected').id
+                    + '&resourceCategory=PIROLE&targetCategory=PIORGANIZE'
                     + '&grantTargetIds=' + grantResourceIds + "&revokeTargetIds=" + revokeResourceIds;
                 $.ajaxjson('/Admin/FrameworkModules/PermissionSet/GrantRevokePermissionScopeTargets/', query, function (d) {
                     if (d.Data > 0) {

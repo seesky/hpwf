@@ -95,9 +95,6 @@ def GetOrganizeTreeJson(request):
         isTree = False
 
 
-
-
-
     response = HttpResponse()
     dtOrganize = GetOrganizeScope(CommonUtils.Current(response, request), 'Resource.ManagePermission', False)
     dataTable = CommonUtils.CheckTreeParentId(dtOrganize, 'id', 'parentid')

@@ -19,6 +19,19 @@ class StringHelper(object):
             returnValue = returnValue.strip("\,")
             return  returnValue
 
+    def GetSpitString(sArrary, separativeSign):
+        rowCount = 0
+        returnValue = ''
+        for id in sArrary:
+            rowCount = rowCount + 1
+            returnValue = returnValue + id + separativeSign
+        if rowCount == 0:
+            returnValue = ''
+            return returnValue
+        else:
+            returnValue = returnValue.strip("\,")
+            return returnValue
+
 
     def RepeatString(self, targetString, repeatCount):
         """

@@ -99,7 +99,7 @@ def GetPermissionItemTreeJson(request):
     CommonUtils.CheckTreeParentId(dtPermissionItem, 'id', 'parentid')
     itemJson = "[" + GroupJsondata(dtPermissionItem, "#") + "]"
     if isTree:
-        response.content = itemJson.replace("fullname", "text")
+        response.content = itemJson.replace('fullname', "text")
         return response
     else:
         response.content = itemJson

@@ -76,7 +76,7 @@ class RoleService(object):
         Returns:
             returnValue (List): 角色列表
         """
-        returnValue = []
+        returnValue = None
         try:
             # for role in Pirole.objects.all():
             #     returnValue.append(role)
@@ -327,4 +327,14 @@ class RoleService(object):
         pass
 
     def MoveTo(self, id, targetOrganizedId):
-        pass
+        try:
+            role = Pirole.objects.get(id=id)
+        except Pirole.DoesNotExist as e:
+            return False
+
+        try:
+            role.organizeid = targetOrganizedId
+            role.save()
+            return True
+        except:
+            return False

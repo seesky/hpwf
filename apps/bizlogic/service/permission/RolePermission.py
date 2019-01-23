@@ -12,6 +12,8 @@ from apps.utilities.message.PermissionScope import PermissionScope
 from apps.bizlogic.service.base.UserRoleService import UserRoleService
 
 from django.db.models import Q
+import uuid
+import datetime
 
 class RolePermission(object):
 
@@ -23,7 +25,7 @@ class RolePermission(object):
       Returns:
           returnValue(string[]): 主键数组
       """
-        returnValue = Pipermission.objects.filter(Q(resourcecategory='PIROLE') & Q(deletemark=0) & Q(enabled=1) & Q(resourceid=roleId))
+        returnValue = Pipermission.objects.filter(Q(resourcecategory='PIROLE') & Q(deletemark=0) & Q(enabled=1) & Q(resourceid=roleId)).values_list('permissionid', flat=True)
         return returnValue
 
     def GetRoleIdsByPermissionItemId(self, permissionItemId):
@@ -37,7 +39,7 @@ class RolePermission(object):
         returnValue = Pipermission.objects.filter(Q(resourcecategory='PIROLE') & Q(deletemark=0) & Q(enabled=1) & Q(permissionid=permissionItemId))
         return returnValue
 
-    def GrantRolePermissions(self, roleIds, grantPermissionItemIds):
+    def GrantRolePermissions(userInfo, roleIds, grantPermissionItemIds):
         """
       批量授予角色的操作权限
       Args:
@@ -49,8 +51,7 @@ class RolePermission(object):
         returnValue = 0
         for roleid in roleIds:
             for pItemId in grantPermissionItemIds:
-                RolePermission.Grant(self, roleid, pItemId)
-                returnValue = returnValue + 1
+                returnValue = RolePermission.Grant(userInfo, roleid, pItemId)
         return returnValue
 
     def GrantRolePermission(self, roleName, permissionItemCode):
@@ -343,7 +344,7 @@ class RolePermission(object):
         returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIROLE') & Q(resourceid=roleId) & Q(targetcategory='PIMODULE') & Q(permissionid=Pipermissionitem.objects.get(code=permissionItemCode).id)).values_list('targetid', flat=True)
         return returnValue
 
-    def GrantRoleModuleScope(self, roleId, permissionItemCode, grantModuleIds):
+    def GrantRoleModuleScope(userInfo, roleId, permissionItemCode, grantModuleIds):
         """
           授予角色某个权限域的模块授权范围
           Args:
@@ -355,7 +356,7 @@ class RolePermission(object):
         """
         returnValue = 0
         for id in grantModuleIds:
-            RolePermission.GrantModule(self, roleId, permissionItemCode, id)
+            RolePermission.GrantModule(userInfo, roleId, permissionItemCode, id)
             returnValue = returnValue + 1
         return returnValue
 
@@ -375,7 +376,7 @@ class RolePermission(object):
             returnValue = returnValue + 1
         return returnValue
 
-    def Grant(self, roleId, permissionItemId):
+    def Grant(userInfo, roleId, permissionItemId):
         """
           授予指定角色指定的操作权限
           Args:
@@ -392,9 +393,15 @@ class RolePermission(object):
             return returnValue
         except Pipermission.DoesNotExist as e:
             resourcePermission = Pipermission()
+            resourcePermission.id = uuid.uuid4()
             resourcePermission.resourcecategory = 'PIROLE'
             resourcePermission.resourceid = roleId
             resourcePermission.permissionid = permissionItemId
+            resourcePermission.createon = datetime.datetime.now()
+            resourcePermission.createby = userInfo.RealName
+            resourcePermission.deletemark = 0
+            resourcePermission.modifiedon = resourcePermission.createon
+            resourcePermission.modifiedby = resourcePermission.createby
             resourcePermission.enabled = 1
             resourcePermission.save()
             returnValue = 1
@@ -409,7 +416,7 @@ class RolePermission(object):
           Returns:
               returnValue(string): 影响行数
         """
-        returnValue = Pipermission.objects.filter(Q(resourcecategory='PIROLE') & Q(resourceid=roleId) & Q(permissionid=permissionItemId)).delete()
+        returnValue,t = Pipermission.objects.filter(Q(resourcecategory='PIROLE') & Q(resourceid=roleId) & Q(permissionid=permissionItemId)).delete()
         return returnValue
 
     def GrantUser(self, roleId, permissionItemCode, grantUserId):
@@ -562,7 +569,7 @@ class RolePermission(object):
         returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIROLE') & Q(resourceid=roleId) & Q(targetcategory='PIPERMISSIONITEM') & Q(targetid=revokePermissionId) & Q(permissionid=Pipermissionitem.objects.get(code=permissionItemCode).id))
         return returnValue
 
-    def GrantModule(self, roleId, permissionItemCode, grantModuleId):
+    def GrantModule(userInfo, roleId, permissionItemCode, grantModuleId):
         """
           为了提高授权的运行速度
           Args:
@@ -573,13 +580,20 @@ class RolePermission(object):
               returnValue(string): 主键
         """
         resourcePermissionScopeEntity = Pipermissionscope()
-        resourcePermissionScopeEntity.permissionid = Pipermissionitem.objects.get(code=permissionItemCode)
+        resourcePermissionScopeEntity.id = uuid.uuid4()
+        resourcePermissionScopeEntity.permissionid = Pipermissionitem.objects.get(code=permissionItemCode).id
         resourcePermissionScopeEntity.resourceid = roleId
         resourcePermissionScopeEntity.resourcecategory = 'PIROLE'
         resourcePermissionScopeEntity.targetcategory = 'PIMODULE'
         resourcePermissionScopeEntity.targetid = grantModuleId
         resourcePermissionScopeEntity.enabled = 1
         resourcePermissionScopeEntity.deletemark = 0
+        resourcePermissionScopeEntity.createon = datetime.datetime.now()
+        resourcePermissionScopeEntity.createby = userInfo.RealName
+        resourcePermissionScopeEntity.createuserid = userInfo.Id
+        resourcePermissionScopeEntity.modifiedon = resourcePermissionScopeEntity.createon
+        resourcePermissionScopeEntity.modifiedby = userInfo.RealName
+        resourcePermissionScopeEntity.modifieduserid = userInfo.Id
         resourcePermissionScopeEntity.save()
         return resourcePermissionScopeEntity.id
 
@@ -593,6 +607,6 @@ class RolePermission(object):
           Returns:
               returnValue(string): 主键
         """
-        returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIROLE') & Q(resourceid=roleId) & Q(targetcategory='PIMODULE') & Q(targetid=revokeModuleId) & Q(Pipermissionitem.objects.get(code=permissionItemCode).id)).delete()
+        returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIROLE') & Q(resourceid=roleId) & Q(targetcategory='PIMODULE') & Q(targetid=revokeModuleId) & Q(permissionid=Pipermissionitem.objects.get(code=permissionItemCode).id)).delete()
         return returnValue
 

@@ -10,10 +10,12 @@ from apps.hadmin.MvcAppUtilties.PublicController import PublicController
 from apps.hadmin.MvcAppUtilties.AjaxOnly import AjaxOnly
 from apps.bizlogic.service.base.RoleService import RoleService
 from apps.utilities.publiclibrary.SearchFilter import SearchFilter
+from apps.utilities.publiclibrary.SystemInfo import SystemInfo
 import json
 from apps.hadmin.MvcAppUtilties.JsonHelper import DateEncoder
 from apps.bizlogic.service.base.ItemDetailsService import ItemDetailsService
 from apps.bizlogic.service.base.RoleService import RoleService
+from apps.bizlogic.service.permission.ScopPermission import ScopPermission
 from apps.bizlogic.models import Pirole
 import datetime
 from apps.utilities.message.StatusCode import StatusCode
@@ -309,3 +311,22 @@ def RemoveUserFromRole(request):
         else:
             response.content = json.dumps({'Success': False, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
             return response
+
+def GetRoleScope(userInfo, permissionItemScopeCode):
+    if userInfo.IsAdministrator or (not permissionItemScopeCode) or (not SystemInfo.EnableUserAuthorizationScope):
+        returnValue = RoleService.GetDT(None)
+    else:
+        returnValue = ScopPermission.GetRoleDTByPermissionScope(userInfo, permissionItemScopeCode)
+    return returnValue
+
+@LoginAuthorize
+def GetRoleList(request):
+    response = HttpResponse()
+    roleDT = GetRoleScope(CommonUtils.Current(response, request), "Resource.ManagePermission")
+    returnValue = '['
+    for role in roleDT:
+        returnValue = returnValue + role.toJSON() + ","
+    returnValue = returnValue.strip(",")
+    returnValue = returnValue + "]"
+    response.content = returnValue
+    return response

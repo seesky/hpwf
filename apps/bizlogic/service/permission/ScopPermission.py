@@ -54,7 +54,7 @@ class ScopPermission(object):
         returnValue = ScopPermission.GetUserIds(self, userId, permissionItemCode)
         return returnValue
 
-    def GetRoleDTByPermissionScope(self, userInfo, permissionItemCode):
+    def GetRoleDTByPermissionScope(userInfo, permissionItemCode):
         """
           按某个权限范围获取特定用户可访问的取角色列表
           Args:

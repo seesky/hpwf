@@ -77,8 +77,16 @@ urlpatterns = [
     url(r'^FrameworkModules/RoleAdmin/Delete/', RoleAdmin.Delete),
     url(r'^FrameworkModules/RoleAdmin/AddUserToRole/', RoleAdmin.AddUserToRole),
     url(r'^FrameworkModules/RoleAdmin/RemoveUserFromRole/', RoleAdmin.RemoveUserFromRole),
-
+    url(r'^FrameworkModules/RoleAdmin/GetRoleList/', RoleAdmin.GetRoleList),
+    #岗位管理
     url(r'^FrameworkModules/PostAdmin/Index/', PostAdmin.Index),
+    url(r'^FrameworkModules/PostAdmin/Form/', PostAdmin.Form),
+    url(r'^FrameworkModules/PostAdmin/SubmitForm/', PostAdmin.SubmitForm),
+    url(r'^FrameworkModules/PostAdmin/GetEntity/', PostAdmin.GetEntity),
+    url(r'^FrameworkModules/PostAdmin/Delete/', PostAdmin.Delete),
+    url(r'^FrameworkModules/PostAdmin/MoveTo/', PostAdmin.MoveTo),
+
+
     url(r'^FrameworkModules/ModuleAdmin/Index/', ModuleAdmin.Index),
     url(r'^FrameworkModules/ModuleAdmin/GetModuleTreeJson/', ModuleAdmin.GetModuleTreeJson),
     url(r'^FrameworkModules/ModuleAdmin/GetModuleByIds/', ModuleAdmin.GetModuleByIds),
@@ -108,6 +116,11 @@ urlpatterns = [
     url(r'^FrameworkModules/PermissionSet/PermissionBacthSet/', PermissionSet.PermissionBacthSet),
     url(r'^FrameworkModules/PermissionSet/GetPermissionScopeTargetIds/', PermissionSet.GetPermissionScopeTargetIds),
     url(r'^FrameworkModules/PermissionSet/GrantRevokePermissionScopeTargets/', PermissionSet.GrantRevokePermissionScopeTargets),
+    url(r'^FrameworkModules/PermissionSet/RolePermissionSet/', PermissionSet.RolePermissionSet),
+    url(r'^FrameworkModules/PermissionSet/GetModuleByRoleId/', PermissionSet.GetModuleByRoleId),
+    url(r'^FrameworkModules/PermissionSet/GetPermissionItemsByRoleId/', PermissionSet.GetPermissionItemsByRoleId),
+    url(r'^FrameworkModules/PermissionSet/SetRoleModulePermission/', PermissionSet.SetRoleModulePermission),
+    url(r'^FrameworkModules/PermissionSet/SetRolePermissionItem/', PermissionSet.SetRolePermissionItem),
 
     url(r'^FrameworkModules/Highcharts/Sample1/', Highcharts.Sample1),
     url(r'^FrameworkModules/Highcharts/Sample2/', Highcharts.Sample2),
