@@ -89,6 +89,6 @@ class StringHelper(object):
         if len(ids) == 0:
             returnValue = " NULL "
         else:
-            returnValue = returnValue[0, len(returnValue) - 3]
+            returnValue = baseStr[0: len(baseStr) - 3]
         return returnValue
 

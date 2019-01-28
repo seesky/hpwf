@@ -475,6 +475,16 @@ class Pimodule(models.Model):
     modifieduserid = models.CharField(db_column='MODIFIEDUSERID', max_length=50, blank=True, null=True)  # Field name made lowercase.
     modifiedby = models.CharField(db_column='MODIFIEDBY', max_length=50, blank=True, null=True)  # Field name made lowercase.
 
+    def loadJson(self, request):
+        for i in request.POST:
+           # self.(str(i.key).lower())
+            if hasattr(self, i.lower()):
+                if request.POST[i] == '':
+                    setattr(self, i.lower(), None)
+                else:
+                    setattr(self, i.lower(), request.POST[i])
+        return self
+
     def toJSON(self):
         fields = []
         for field in self._meta.fields:
@@ -608,6 +618,16 @@ class Pipermissionitem(models.Model):
     modifiedon = models.DateTimeField(db_column='MODIFIEDON')  # Field name made lowercase.
     modifieduserid = models.CharField(db_column='MODIFIEDUSERID', max_length=50, blank=True, null=True)  # Field name made lowercase.
     modifiedby = models.CharField(db_column='MODIFIEDBY', max_length=50, blank=True, null=True)  # Field name made lowercase.
+
+    def loadJson(self, request):
+        for i in request.POST:
+            # self.(str(i.key).lower())
+            if hasattr(self, i.lower()):
+                if request.POST[i] == '':
+                    setattr(self, i.lower(), None)
+                else:
+                    setattr(self, i.lower(), request.POST[i])
+        return self
 
     def toJSON(self):
         fields = []

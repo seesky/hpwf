@@ -10,12 +10,14 @@ from apps.bizlogic.models import Pipermissionitem
 from apps.bizlogic.models import Pimodule
 
 from apps.bizlogic.service.base.SequenceService import SequenceService
+from apps.bizlogic.service.base.PermissionItemService import PermissionItemService
 from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
 from apps.bizlogic.service.base.ModuleService import ModuleService
-
 from apps.utilities.message.PermissionScope import PermissionScope
 
+
 from django.db.models import Q
+import uuid,datetime
 
 class UserPermission(object):
 
@@ -41,7 +43,7 @@ class UserPermission(object):
         returnValue = Pipermission.objects.filter(Q(resourcecategory='PIUSER') & Q(deletemark=0) & Q(enabled=1) & Q(permissionid=permissionItemId)).values_list('resourceid', flat=True)
         return returnValue
 
-    def GrantUserPermissions(self, userIds, grantPermissionItemIds):
+    def GrantUserPermissions(userInfo, userIds, grantPermissionItemIds):
         """
           批量授予用户操作权限
           Args:
@@ -51,10 +53,12 @@ class UserPermission(object):
               returnValue(int): 影响行数
         """
         returnValue = 0
-        sequenceIds = SequenceService.GetBatchSequence(self, userIds.count() * grantPermissionItemIds.count())
-        for i in range(userIds.count()):
-            for j in range(grantPermissionItemIds.count()):
-                UserPermission.Grant(self, sequenceIds[i * grantPermissionItemIds.count() + j], userIds[i], grantPermissionItemIds[j])
+        #sequenceIds = SequenceService.GetBatchSequence(None, userIds.count() * grantPermissionItemIds.count())
+        for i in range(len(userIds)):
+            for j in range(len(grantPermissionItemIds)):
+                #UserPermission.Grant(userInfo, sequenceIds[i * grantPermissionItemIds.count() + j], userIds[i], grantPermissionItemIds[j])
+                UserPermission.Grant(userInfo, None, userIds[i],
+                                     grantPermissionItemIds[j])
                 returnValue = returnValue + 1
         return returnValue
 
@@ -82,7 +86,7 @@ class UserPermission(object):
               returnValue(int): 影响的行数
         """
         returnValue = 0
-        if userIds & revokePermissionItemIds:
+        if userIds and revokePermissionItemIds:
             for uid in userIds:
                 for rid in revokePermissionItemIds:
                     returnValue = returnValue + UserPermission.Revoke(self, uid, rid)
@@ -155,7 +159,10 @@ class UserPermission(object):
           Returns:
               returnValue(string[]): 用户主键数组
         """
-        returnValue = PermissionScopeService.GetUserIds(userId, permissionItemCode)
+        #returnValue = PermissionScopeService.GetUserIds(None, userId, permissionItemCode)
+        returnValue = UserPermission.GetUserIds(None, userId, permissionItemCode)
+
+
         return returnValue
 
     def GrantUserUserScope(self, userId, permissionScopeItemCode, grantUserIds):
@@ -365,10 +372,10 @@ class UserPermission(object):
           Returns:
               returnValue(Pimodule[]): 模块主键数组
         """
-        returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIMODULE') & Q(permissionid=Pipermissionitem.objects.filter(code=permissionItemCode).id)).values_list('id', flat=True)
+        returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIMODULE') & Q(permissionid__in=Pipermissionitem.objects.filter(code=permissionItemCode).values_list('id', flat=True))).values_list('targetid', flat=True)
         return returnValue
 
-    def GrantUserModuleScope(self, userId, permissionScopeItemCode, grantModuleIds):
+    def GrantUserModuleScope(userInfo, userId, permissionScopeItemCode, grantModuleIds):
         """
           授予用户某个权限域的模块授权范围
           Args:
@@ -380,7 +387,7 @@ class UserPermission(object):
         """
         returnValue = 0
         for id in grantModuleIds:
-            UserPermission.GrantModule(self, userId, permissionScopeItemCode, id)
+            UserPermission.GrantModule(userInfo, userId, permissionScopeItemCode, id)
             returnValue = returnValue + 1
         return returnValue
 
@@ -401,7 +408,7 @@ class UserPermission(object):
             returnValue = returnValue + 1
         return returnValue
 
-    def Grant(self, id, userId, permissionItemId):
+    def Grant(userInfo, sequence, userId, permissionItemId):
         """
           为了提高授权的运行速度
           Args:
@@ -412,9 +419,17 @@ class UserPermission(object):
               returnValue(string): 主键
         """
         resourcePermissionEntity = Pipermission()
+        resourcePermissionEntity.id = uuid.uuid4()
         resourcePermissionEntity.resourcecategory = 'PIUSER'
         resourcePermissionEntity.resourceid = userId
         resourcePermissionEntity.permissionid = permissionItemId
+        resourcePermissionEntity.createon = datetime.datetime.now()
+        resourcePermissionEntity.createby = userInfo.RealName
+        resourcePermissionEntity.createuserid = userInfo.Id
+        resourcePermissionEntity.modifiedon = resourcePermissionEntity.createon
+        resourcePermissionEntity.modifiedby = userInfo.RealName
+        resourcePermissionEntity.modifieduserid = userInfo.Id
+        resourcePermissionEntity.deletemark = 0
         resourcePermissionEntity.enabled = 1
 
         try:
@@ -433,7 +448,7 @@ class UserPermission(object):
           Returns:
               returnValue(string): 主键
         """
-        returnValue = Pipermission.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(permissionid=permissionItemId)).delete()
+        returnValue,v = Pipermission.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(permissionid=permissionItemId)).delete()
         return returnValue
 
     def GrantOrganize(self, userId, permissionItemCode, grantOrganizeId):
@@ -500,10 +515,11 @@ class UserPermission(object):
         """
         returnValue = ''
         try:
-            Pipermissionscope.objects.get(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIUSER') & Q(targetid=grantUserId) & Q(permissionid=permissionItemCode))
+            Pipermissionscope.objects.get(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIUSER') & Q(targetid=grantUserId) & Q(permissionid=Pipermissionitem.objects.get(code=permissionItemCode).id))
             return returnValue
         except Pipermissionscope.DoesNotExist as e:
             resourcePermissionScopeEntity = Pipermissionscope()
+            resourcePermissionScopeEntity.id = uuid.uuid4()
             resourcePermissionScopeEntity.permissionid = Pipermissionitem.objects.get(code=permissionItemCode).id
             resourcePermissionScopeEntity.resourcecategory = 'PIUSER'
             resourcePermissionScopeEntity.resourceid = userId
@@ -600,7 +616,7 @@ class UserPermission(object):
         returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIPERMISSIONITEM') & Q(targetid=revokePermissionId) & Q(permissionid=Pipermissionitem.objects.get(code=permissionItemCode).id))
         return returnValue
 
-    def GrantModule(self, userId, permissionItemCode, grantModuleId):
+    def GrantModule(userInfo, userId, permissionItemCode, grantModuleId):
         """
           为了提高授权的运行速度
           Args:
@@ -612,13 +628,22 @@ class UserPermission(object):
         """
         #TODO:这个地方的permissionid可能值不对，需要确认一下
         resourcePermissionScopeEntity = Pipermissionscope()
-        resourcePermissionScopeEntity.permissionid = Pipermissionitem.objects.get(code=permissionItemCode)
+        resourcePermissionScopeEntity.id = uuid.uuid4()
+        resourcePermissionScopeEntity.permissionid = Pipermissionitem.objects.get(code=permissionItemCode).id
         resourcePermissionScopeEntity.resourcecategory = 'PIUSER'
         resourcePermissionScopeEntity.resourceid = userId
         resourcePermissionScopeEntity.targetcategory = 'PIMODULE'
         resourcePermissionScopeEntity.targetid = grantModuleId
         resourcePermissionScopeEntity.enabled = 1
         resourcePermissionScopeEntity.deletemark = 0
+
+        resourcePermissionScopeEntity.createon = datetime.datetime.now()
+        resourcePermissionScopeEntity.createby = userInfo.RealName
+        resourcePermissionScopeEntity.createuserid = userInfo.Id
+        resourcePermissionScopeEntity.modifiedon = resourcePermissionScopeEntity.createon
+        resourcePermissionScopeEntity.modifiedby = userInfo.RealName
+        resourcePermissionScopeEntity.modifieduserid = userInfo.Id
+
         resourcePermissionScopeEntity.save()
         return resourcePermissionScopeEntity.id
 
@@ -632,6 +657,10 @@ class UserPermission(object):
           Returns:
               returnValue(string): 主键
         """
-        returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIMODULE') & Q(targetid=revokeModuleId) & Q(
-            (Pipermissionitem.objects.get(code=permissionItemCode).id))).delete()
+        returnValue = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIMODULE') & Q(targetid=revokeModuleId) & Q(permissionid__in=
+            Pipermissionitem.objects.filter(code=permissionItemCode).values_list('id', flat=True))).delete()
         return returnValue
+
+    def GetUserIds(userInfo, userId, permissionItemCode):
+        dataTable = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory='PIUSER') & Q(permissionid=PermissionItemService.GetIdByAdd(permissionItemCode))).values_list('targetid', flat=True)
+        return dataTable

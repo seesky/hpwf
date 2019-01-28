@@ -9,6 +9,7 @@ from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 import xlwt
 from io import BytesIO
 import datetime
+from django.template import loader ,Context
 
 @LoginAuthorize
 def GetCategory(request):
@@ -66,4 +67,13 @@ def ExportExcel(request):
     wb.save(output)
     output.seek(0)
     response.write(output.getvalue())
+    return response
+
+@LoginAuthorize
+def Search(request):
+    response = HttpResponse()
+    tmp = loader.get_template('Utility/Search.html')  # 加载模板
+    render_content = {}  # 将要渲染到模板的数据
+    new_body = tmp.render(render_content)  # 渲染模板
+    response.content = new_body  # 设置返回内容
     return response

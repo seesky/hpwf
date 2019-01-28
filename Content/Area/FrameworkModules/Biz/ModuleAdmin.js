@@ -1,6 +1,6 @@
 ﻿var moduleGrid,
     controlModuleUrl = '/Admin/FrameworkModules/ModuleAdmin/',
-    formUrl = "/Admin/FrameworkModules/ModuleAdmin/Form";
+    formUrl = "/Admin/FrameworkModules/ModuleAdmin/Form/";
 
 $(function () {	
 	pageSizeControl.init({gridId:'moduleGrid',gridType:'treegrid'});
@@ -180,10 +180,10 @@ var showIcon = function () {
                 top.$('#iconlist li').attr('style', 'float:left;border:1px solid #fff;margin:2px;width:16px;cursor:pointer').click(function () {
                     //var iconCls = top.$(this).find('span').attr('class').replace('icon ', '');
                     var iconCls = top.$(this).find('span').attr('class');
-                    top.$('#IconCss').val(iconCls);
-                    top.$('#IconUrl').val(top.$(this).attr('title'));
+                    top.$('#iconcss').val(iconCls);
+                    top.$('#iconurl').val(top.$(this).attr('title'));
                     //top.$('#smallIcon').attr('class', "icon " + iconCls);
-                    top.$('#smallIcon').attr('class', iconCls);
+                    top.$('#smallicon').attr('class', iconCls);
 
                     iconDialog.dialog('close');
                 }).hover(function () {
@@ -232,7 +232,7 @@ function getChildNodes(treeNodeId, result) {
 };
 
 var setTreeValue = function (id) {
-	top.$('#ParentId').combotree('setValue', id);
+	top.$('#parentid').combotree('setValue', id);
 };
 
 var crud = {
@@ -241,11 +241,11 @@ var crud = {
     },
     bindCtrl: function (navId) {
         var treeData = '';
-        $.ajaxtext(controlModuleUrl + 'GetModuleTreeJson', '', function (data) {
+        $.ajaxtext(controlModuleUrl + 'GetModuleTreeJson/', '', function (data) {
             if (data) {
-                treeData = data.replace(/Id/g, 'id').replace(/FullName/g, 'text');
+                treeData = data.replace(/id/g, 'id').replace(/fullname/g, 'text');
                 treeData = '[{"id":0,"selected":true,"text":"请选择父级模块（菜单）"},' + treeData.substr(1, treeData.length - 1);
-                top.$('#ParentId').combotree({
+                top.$('#parentid').combotree({
                     data: JSON.parse(treeData),
                     valueField: 'id',
                     textField: 'text',
@@ -253,9 +253,9 @@ var crud = {
                     editable: false,
                     lines: true,
                     onSelect: function (item) {
-                        var nodeId = top.$('#ParentId').combotree('getValue');
+                        var nodeId = top.$('#parentid').combotree('getValue');
                         if (item.id == navId) {
-                            top.$('#ParentId').combotree('setValue', nodeId);
+                            top.$('#parentid').combotree('setValue', nodeId);
                             top.$.messager.alert('警告提示', '上级模块不能与当前模块相同！', 'warning');
                         }
                     }
@@ -285,8 +285,8 @@ var crud = {
 
         showIcon(); //选取图标
         //top.$('#SortCode').numberspinner();
-        top.$('#Code').focus();
-        top.$('#Enabled,#AllowEdit,#AllowDelete').attr("checked", true);
+        top.$('#code').focus();
+        top.$('#enabled,#allowedit,#allowdelete').attr("checked", true);
         top.$('#uiform').validate({
             //此处加入验证
         });
@@ -303,9 +303,9 @@ var crud = {
             href: formUrl, title: '添加模块（菜单）', iconCls: 'icon16_tab_add', width: 500, height: 540,
             onLoad: function () {
                 crud.bindCtrl();
-                pageMethod.bindCategory('Category', 'ModuleCategory');
-                pageMethod.bindCategory('ModuleType', 'ModuleType');
-                top.$('#ModuleType').combobox('setValue', '2');
+                pageMethod.bindCategory('category', 'ModuleCategory');
+                pageMethod.bindCategory('moduletype', 'ModuleType');
+                top.$('#moduletype').combobox('setValue', '2');
                 if (treeSelected) {
                     setTimeout(function () { setTreeValue(treeSelected.id); }, 300);
                     //top.$('#ParentId').combotree('setValue', treeSelected.id);
@@ -314,12 +314,12 @@ var crud = {
             submit: function () {
                 if (top.$('#uiform').validate().form()) {
                     var queryString = pageMethod.serializeJson(top.$('#uiform'));
-                    $.ajaxjson(controlModuleUrl + 'SubmitForm', queryString, function (d) {
+                    $.ajaxjson(controlModuleUrl + 'SubmitForm/', queryString, function (d) {
                         if (d.Success) {
                             msg.ok(d.Message);
                             var tmpTree = $('#moduleTree');
-                            var iconCss = top.$('#IconCss').val();
-                            var treeText = top.$('#FullName').val();
+                            var iconCss = top.$('#iconcss').val();
+                            var treeText = top.$('#fullname').val();
                             if (iconCss) {
                                 iconCss = iconCss.replace('icon ', '');
                             } else {
@@ -361,22 +361,22 @@ var crud = {
                 href: formUrl, title: '修改模块（菜单）', iconCls: 'icon16_tab_edit', width: 500, height: 540,
                 onLoad: function () {
                     crud.bindCtrl(row.Id);
-                    pageMethod.bindCategory('Category', 'ModuleCategory');
-                    pageMethod.bindCategory('ModuleType', 'ModuleType');
+                    pageMethod.bindCategory('category', 'ModuleCategory');
+                    pageMethod.bindCategory('moduletype', 'ModuleType');
                     var parm = 'key=' + (row.Id || row.id); //(row.Id || row.id) 注意此处的用法很经典，其中一个为空就取另一个值。                   
-                    $.ajaxjson('/Admin/FrameworkModules/ModuleAdmin/GetEntity', parm, function (data) {
+                    $.ajaxjson('/Admin/FrameworkModules/ModuleAdmin/GetEntity/', parm, function (data) {
                         if (data) {
                             SetWebControls(data, true);
                         }
-                        originalParentId = data.ParentId; //缓存修改前父节点
-                        setTimeout(function () { setTreeValue(data.ParentId); }, 300);
+                        originalParentId = data.parentid; //缓存修改前父节点
+                        setTimeout(function () { setTreeValue(data.parentid); }, 300);
                     });
                     
                 },
                 submit: function () {
                     if (top.$('#uiform').validate().form()) {
                         //保存时判断当前节点所选的父节点，不能为当前节点的子节点，这样就乱套了....
-                        var treeParentId = top.$('#ParentId').combotree('tree'); // 得到树对象
+                        var treeParentId = top.$('#parentid').combotree('tree'); // 得到树对象
                         var node = treeParentId.tree('getSelected');
                         if (node) {
                             var nodeParentId = treeParentId.tree('find', (row.Id || row.id));
@@ -396,28 +396,28 @@ var crud = {
                             }
                         }
 
-                        var vcategory = top.$('#Category').combobox('getValue');
-                        var vparentid = top.$('#ParentId').combobox('getValue');
-                        var vmoduletype = top.$('#ModuleType').combobox('getValue');
+                        var vcategory = top.$('#category').combobox('getValue');
+                        var vparentid = top.$('#parentid').combobox('getValue');
+                        var vmoduletype = top.$('#moduletype').combobox('getValue');
                         if (!vmoduletype || vmoduletype == 'undefined') {
                             top.$.messager.alert('温馨提示', '请选择模块类型！', 'warning');
                             return;
                         }
 
                         var queryString = pageMethod.serializeJson(top.$('#uiform'));
-                        $.ajaxjson(controlModuleUrl + 'SubmitForm?key=' + (row.Id || row.id), queryString, function (d) {
+                        $.ajaxjson(controlModuleUrl + 'SubmitForm/?key=' + (row.Id || row.id), queryString, function (d) {
                             if (d.Success) {
                                 msg.ok(d.Message);
                                 var tmpTree = $('#moduleTree');
-                                var iconCss = top.$('#IconCss').val();
-                                var treeText = top.$('#FullName').val();
+                                var iconCss = top.$('#iconcss').val();
+                                var treeText = top.$('#fullname').val();
                                 if (iconCss) {
                                     iconCss = iconCss.replace('icon ', '');
                                 } else {
                                     iconCss = 'icon-note';
                                 }
                                 if (gridSelected) { //A、单击的是dataGrid进行修改
-                                    var curnode = tmpTree.tree('find', row.Id);
+                                    var curnode = tmpTree.tree('find', row.id);
                                     tmpTree.tree('update', {
                                         target: curnode.target,
                                         text: treeText,
@@ -427,12 +427,12 @@ var crud = {
                                     //1.1、判断左侧树的选择节点（即父节点）与当前保存的父节点不一样，则要做相应的移动处理。
                                     if (vparentid != '0' && treeSelected.id !== vparentid) {
                                         //移除当前父节点下移动的子节点
-                                        tmpTree.tree('remove', tmpTree.tree('find', row.Id).target);
+                                        tmpTree.tree('remove', tmpTree.tree('find', row.id).target);
                                         //修改的父节点树下增加节点
                                         tmpTree.tree('append', {
                                             parent: tmpTree.tree('find', vparentid).target,
                                             data: [{
-                                                id: row.Id,
+                                                id: row.id,
                                                 text: treeText,
                                                 iconCls: iconCss
                                             }]
@@ -456,7 +456,7 @@ var crud = {
                                             tmpTree.tree('append', {
                                                 parent: tmpTree.tree('find', vparentid).target,
                                                 data: [{
-                                                    id: row.Id,
+                                                    id: row.id,
                                                     text: treeText,
                                                     iconCls: iconCss
                                                 }]
@@ -487,15 +487,15 @@ var crud = {
                 msg.warning('该模块不允许被删除～！');
                 return false;
             }
-            var childs = moduleTree.getSelectedChildIds($('#moduleTree').tree('find', row.Id));
+            var childs = moduleTree.getSelectedChildIds($('#moduleTree').tree('find', row.id));
             if (childs && childs.length > 0) {
                 $.messager.alert('警告提示', '当前模块有子模块数据，不能删除。<br> 请先删除子模块数据!', 'warning');
                 return false;
             }
-            var query = 'key=' + row.Id;
+            var query = 'key=' + row.id;
             $.messager.confirm('询问提示', '确认要删除选中的模块（菜单）吗？', function (data) {
                 if (data) {
-                    $.ajaxjson(controlModuleUrl + 'Delete', query, function (d) {
+                    $.ajaxjson(controlModuleUrl + 'Delete/', query, function (d) {
                         if (d.Success) {
                             msg.ok(d.Message);
                             //重新加载
@@ -527,24 +527,24 @@ var crud = {
         var setDialog = top.$.hDialog({
             title: '用户模块（菜单）权限批量设置',
             width: 670, height: 600, iconCls: 'icon16_user_gladiator', //cache: false,
-            href: "/Admin/FrameworkModules/PermissionSet/PermissionBacthSet",
+            href: "/Admin/FrameworkModules/PermissionSet/PermissionBacthSet/",
             onLoad: function () {
                 using('panel', function () {
                     top.$('#panelTarget').panel({ title: '模块（菜单）', iconCls: 'icon-org', height: $(window).height() - 3 });
                 });
                 userGrid = top.$('#leftnav').datagrid({
                     title: '所有用户',
-                    url: '/Admin/FrameworkModules/UserAdmin/GetUserListJson',
+                    url: '/Admin/FrameworkModules/UserAdmin/GetUserListJson/',
                     nowrap: false, //折行
                     //fit: true,
                     rownumbers: true, //行号
                     striped: true, //隔行变色
-                    idField: 'ID', //主键
+                    idField: 'id', //主键
                     singleSelect: true, //单选
                     frozenColumns: [[]],
                     columns: [[
-                        { title: '登录名', field: 'USERNAME', width: 120, align: 'left' },
-                        { title: '用户名', field: 'REALNAME', width: 150, align: 'left' }
+                        { title: '登录名', field: 'username', width: 120, align: 'left' },
+                        { title: '用户名', field: 'realname', width: 150, align: 'left' }
                     ]],
                     onLoadSuccess: function (data) {
                         top.$('#rightnav').hLoading();
@@ -563,7 +563,7 @@ var crud = {
                     },
                     onSelect: function (rowIndex, rowData) {
                         curUserModuleIds = [];
-                        var query = 'userId=' + rowData.ID;
+                        var query = 'userId=' + rowData.id;
                         $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetModuleByUserId/', query, function (data) {
                             var moduelTree = top.$('#rightnav');
                             moduelTree.tree('uncheckedAll');
@@ -600,7 +600,7 @@ var crud = {
                     ++flagGrant;
                 }
 
-                var query = 'userId=' + top.$('#leftnav').datagrid('getSelected').ID + '&grantIds=' + grantModuleIds + "&revokeIds=" + revokeModuleIds;
+                var query = 'userId=' + top.$('#leftnav').datagrid('getSelected').id + '&grantIds=' + grantModuleIds + "&revokeIds=" + revokeModuleIds;
                 $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetUserModulePermission/', query, function (d) {
                     if (d.Data > 0) {
                         msg.ok('设置成功！');
@@ -631,12 +631,12 @@ var crud = {
                     //fit: true,
                     rownumbers: true, //行号
                     striped: true, //隔行变色
-                    idField: 'ID', //主键
+                    idField: 'id', //主键
                     singleSelect: true, //单选
                     frozenColumns: [[]],
                     columns: [[
-                        { title: '角色编码', field: 'CODE', width: 120, align: 'left' },
-                        { title: '角色名称', field: 'REALNAME', width: 150, align: 'left' }
+                        { title: '角色编码', field: 'code', width: 120, align: 'left' },
+                        { title: '角色名称', field: 'realname', width: 150, align: 'left' }
                     ]],
                     onLoadSuccess: function (data) {
                         top.$('#rightnav').hLoading();
@@ -655,7 +655,7 @@ var crud = {
                     },
                     onSelect: function (rowIndex, rowData) {
                         curRoleModuleIds = [];
-                        var query = 'roleId=' + rowData.ID;
+                        var query = 'roleId=' + rowData.id;
                         $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetModuleByRoleId/', query, function (data) {
                             var moduelTree = top.$('#rightnav');
                             moduelTree.tree('uncheckedAll');
@@ -691,8 +691,8 @@ var crud = {
                     }
                     ++flagGrant;
                 }
-                var query = 'roleId=' + top.$('#leftnav').datagrid('getSelected').ID + '&grantIds=' + grantModuleIds + "&revokeIds=" + revokeModuleIds;
-                $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRoleModulePermission', query, function (d) {
+                var query = 'roleId=' + top.$('#leftnav').datagrid('getSelected').id + '&grantIds=' + grantModuleIds + "&revokeIds=" + revokeModuleIds;
+                $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRoleModulePermission/', query, function (d) {
                     if (d.Data > 0) {
                         msg.ok('设置成功！');
                     }

@@ -152,13 +152,14 @@ class RoleService(object):
         Returns:
             returnValue (List): 用户列表
         """
-        returnValue = []
-        for id in ids:
-            try:
-                role = Pirole.objects.get(id=id)
-                returnValue.append(role)
-            except Pirole.DoesNotExist:
-                continue
+        # returnValue = []
+        # for id in ids:
+        #     try:
+        #         role = Pirole.objects.get(id=id)
+        #         returnValue.append(role)
+        #     except Pirole.DoesNotExist:
+        #         continue
+        returnValue = Pirole.objects.filter(Q(id__in=ids) & Q(deletemark=0))
         return returnValue
 
     def GetDTByValues(self, valueDic):

@@ -1,0 +1,32 @@
+﻿<form id="uiform">
+    <table class="grid">
+        <tr><td align="right">模块编码：</td><td><input type="text" style="width:300px;" id="code" name="code" class="txt03 required" /></td></tr>
+        <tr><td align="right">模块名称：</td><td><input type="text" style="width:300px;" id="fullname" name="fullname" class="txt03 required" /></td></tr>
+        <tr><td align="right">分类：</td><td><input type="text"  style="width:300px;" id="category" name="category" class="txt03 required" /></td></tr>
+        <tr><td align="right">上级菜单：</td><td><input type="text" style="width:300px;" id="parentid" name="parentid" class="txt03" /></td></tr>
+        <tr><td align="right">链接地址：</td><td><input type="text" style="width:300px;" id="navigateurl" name="navigateurl" class="txt03" /></td></tr>
+        <tr><td align="right"  style="background-color:#CDC673;">MVC链接地址：</td><td><input type="text" style="width:300px;" id="mvcnavigateurl" name="mvcnavigateurl" class="txt03" /></td></tr>
+        <tr><td align="right">图标：</td><td><span id="smallIcon" class="icon icon16_note">&nbsp;&nbsp;</span><input type="text" style="width:240px;" value="icon-note" id="iconcss" name="iconcss" class="txt03" />&nbsp;<a id="selecticon" ref="javascript:;" plain="true" class="easyui-linkbutton" icon="icon16_find" title="选择图标"></a></td></tr>
+        <tr><td align="right" style="background-color:#337fb2;">程序集名称：</td><td><input type="text" style="width:300px;" id="assemblyname" name="assemblyname" class="txt03" /></td></tr>
+        <tr><td align="right" style="background-color:#337fb2;">窗体名称：</td><td><input type="text" style="width:300px;" id="formname" name="formname" class="txt03" /></td></tr>
+        <tr>
+            <td align="right">模块类型：</td>
+            <td>
+                <input type="text" id="moduletype" name="moduletype" style="width:300px;" class="txt03 required">
+            </td>
+        </tr>       
+        <tr>
+            <td align="right">选项：</td>
+            <td>
+                <input type="checkbox" class="txt03" name="enabled" id="enabled" /><label>有效</label>
+                <input type="checkbox" class="txt03" name="ispublic" id="ispublic" /><label>公共</label>
+                <input type="checkbox" class="txt03" name="expand" id="expand" /><label>展开</label>
+                <input type="checkbox" class="txt03" name="allowedit" id="allowedit" /><label>允许编辑</label>
+                <input type="checkbox" class="txt03" name="allowdelete" id="allowdelete" /><label>允许删除</label>
+                <input type="checkbox" class="txt03" name="ismenu" id="ismenu" /><label>菜单</label>
+            </td>
+        </tr>        
+       <tr><td align="right">描述：</td><td><textarea style="width:320px;height:50px;" class="txt03" name="description" id="description" ></textarea></td></tr>
+    </table>
+    <input type="hidden"  style="width:300px;" id="iconurl" name="iconurl" />
+</form>

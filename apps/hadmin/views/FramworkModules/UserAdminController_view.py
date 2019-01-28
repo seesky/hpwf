@@ -312,7 +312,7 @@ def SetUserDimission(request):
         return response
     else:
         response = HttpResponse()
-        response.content = json.dumps({'Success': True, 'Data': '1', 'Message': FrameworkMessage.MSG3020})
+        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
         return response
 
 @LoginAuthorize
@@ -354,4 +354,30 @@ def GetDTByRole(request):
     else:
         response = HttpResponse()
         response.content = jsons
+        return response
+
+def RemoveRoleByUserId(request):
+    try:
+        userId = request.POST['userId']
+    except:
+        userId = None
+
+    try:
+        removeRoleIds = request.POST['targetIds']
+    except:
+        removeRoleIds = None
+
+    if removeRoleIds and len(removeRoleIds) > 0 and userId:
+        returnValue = UserRoleService.RemoveUserFromRole(None, userId, removeRoleIds)
+        if returnValue > 0:
+            response = HttpResponse()
+            response.content = json.dumps({'Success': True, 'Data': '1', 'Message': FrameworkMessage.MSG3010})
+            return response
+        else:
+            response = HttpResponse()
+            response.content = json.dumps({'Success': True, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
+            return response
+    else:
+        response = HttpResponse()
+        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
         return response

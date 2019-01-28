@@ -1,0 +1,17 @@
+﻿<form id="uiform">
+    <table class="grid">
+        <tr><td align="right">编码：</td><td><input type="text" style="width:280px;" id="code" name="code" class="txt03 required" /></td></tr>
+        <tr><td align="right">名称：</td><td><input type="text" style="width:280px;" id="fullname" name="fullname" class="txt03 required" /></td></tr>
+        <tr><td align="right">上级权限：</td><td><input type="text" style="width:280px;" id="parentid" name="parentid" class="txt03" /></td></tr>
+        <tr><td align="right">JS事件：</td><td><input type="text" style="width:280px;" id="jsevent" name="jsevent" class="txt03" /></td></tr>
+        <tr><td align="right">选项：</td><td>
+            <input type="checkbox" class="txt03" name="enabled" id="enabled" /><label>有效</label>
+            <input type="checkbox" class="txt03" name="issplit" id="issplit" /><label>分割</label>
+            <input type="checkbox" class="txt03" name="allowedit" id="allowedit" /><label>允许编辑</label>
+            <input type="checkbox" class="txt03" name="allowdelete" id="allowdelete" /><label>允许删除</label>
+            <input type="checkbox" class="txt03" name="isscope" id="isscope" /><label>权限域</label>
+            <input type="checkbox" class="txt03" name="ispublic" id="ispublic" /><label>公共</label>
+        </td></tr>
+       <tr><td align="right">描述：</td><td><textarea style="width:350px;height:30px;" class="txt03" name="description" id="description" ></textarea></td></tr>
+    </table>
+</form>

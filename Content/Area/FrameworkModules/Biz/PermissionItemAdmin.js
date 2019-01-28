@@ -1,5 +1,5 @@
 ﻿var controlPermissionItemUrl = '/Admin/FrameworkModules/PermissionItemAdmin/',
-    formUrl = "/Admin/FrameworkModules/PermissionItemAdmin/Form",
+    formUrl = "/Admin/FrameworkModules/PermissionItemAdmin/Form/",
     navgrid;
 
 $(function () {
@@ -127,11 +127,13 @@ var mygrid = {
         });
     },
     reload: function (treeNode) {
+
+
         if (treeNode) {
             var keys = permissionItemTree.getSelectedChildIds(treeNode);
             if (keys !== '') {
                 navgrid.treegrid({
-                    url: controlPermissionItemUrl + "?action=GetPermissionItemByIds",
+                    url: controlPermissionItemUrl + "GetPermissionItemByIds/",
                     queryParams: { permissionItemIds: keys }
                 });
             }
@@ -147,7 +149,7 @@ var imgcheckbox = function(cellvalue, options, rowObject) {
 };
 
 var setTreeValue = function (id) {
-	top.$('#ParentId').combotree('setValue', id);
+	top.$('#parentid').combotree('setValue', id);
 };
 
 var crud = {
@@ -172,7 +174,7 @@ var crud = {
             },
             submit: function () {
                 if (top.$('#uiform').validate().form()) {
-                    var treeParentId = top.$('#ParentId').combotree('tree'); // 得到树对象
+                    var treeParentId = top.$('#parentid').combotree('tree'); // 得到树对象
                     var node = treeParentId.tree('getSelected');
                     if (node && node.id != 0) {
 
@@ -182,11 +184,11 @@ var crud = {
                         $.ajaxjson(controlPermissionItemUrl, param, function (d) {
                         */
                         var queryString = pageMethod.serializeJson(top.$('#uiform'));
-                        $.ajaxjson(controlPermissionItemUrl + 'SubmitForm', queryString, function (d) {
+                        $.ajaxjson(controlPermissionItemUrl + 'SubmitForm/', queryString, function (d) {
                             if (d.Success) {
                                 msg.ok(d.Message);
                                 var tmpTree = $('#permissionItemTree');
-                                var treeText = top.$('#FullName').val();
+                                var treeText = top.$('#fullname').val();
                                 if (treeSelected) {
                                     tmpTree.tree('append', {
                                         parent: treeSelected.target,
@@ -225,19 +227,19 @@ var crud = {
                 onLoad: function () {
                     pubMethod.bindCtrl();
                     var parm = 'key=' + (row.Id || row.id);
-                    $.ajaxjson('/Admin/FrameworkModules/PermissionItemAdmin/GetEntity', parm, function (data) {
+                    $.ajaxjson('/Admin/FrameworkModules/PermissionItemAdmin/GetEntity/', parm, function (data) {
                         if (data) {
                             SetWebControls(data, true);
                         }
                         setTimeout(function () {
-                            setTreeValue(data.ParentId);
+                            setTreeValue(data.parentid);
                          }, 300);
                     });
                 },
                 submit: function () {
                     if (top.$('#uiform').validate().form()) {
                         //保存时判断当前节点所选的父节点，不能为当前节点的子节点，这样就乱套了....
-                        var treeParentId = top.$('#ParentId').combotree('tree'); // 得到树对象
+                        var treeParentId = top.$('#parentid').combotree('tree'); // 得到树对象
                         var node = treeParentId.tree('getSelected');
                         if (node && node.id != 0) {
                             var nodeParentId = treeParentId.tree('find', (row.Id || row.id));
@@ -261,18 +263,18 @@ var crud = {
                             top.$.messager.alert('温馨提示', '请至少选择一个父节点元素！', 'warning');
                             return;
                         }
-                        var vparentid = top.$('#ParentId').combobox('getValue');
+                        var vparentid = top.$('#parentid').combobox('getValue');
                         var queryString = pageMethod.serializeJson(top.$('#uiform'));
-                        $.ajaxjson(controlPermissionItemUrl + 'SubmitForm?key=' + (row.Id || row.id), queryString, function (d) {
+                        $.ajaxjson(controlPermissionItemUrl + 'SubmitForm/?key=' + (row.Id || row.id), queryString, function (d) {
                             if (d.Success) {
                                 msg.ok(d.Message);
                                 var tmpTree = $('#permissionItemTree');
-                                var treeText = top.$('#FullName').val();
+                                var treeText = top.$('#fullname').val();
 
                                 //TODO:这儿还要判断下改变父节点的情况。
 
                                 if (gridSelected) { //A、单击的是dataGrid进行修改
-                                    var curnode = tmpTree.tree('find', row.Id);
+                                    var curnode = tmpTree.tree('find', row.id);
                                     tmpTree.tree('update', {
                                         target: curnode.target,
                                         text: treeText
@@ -287,7 +289,7 @@ var crud = {
                                         tmpTree.tree('append', {
                                             parent: tmpTree.tree('find', vparentid).target,
                                             data: [{
-                                                id: row.Id,
+                                                id: row.id,
                                                 text: treeText
                                             }]
                                         });
@@ -309,7 +311,7 @@ var crud = {
                                             tmpTree.tree('append', {
                                                 parent: tmpTree.tree('find', vparentid).target,
                                                 data: [{
-                                                    id: row.Id,
+                                                    id: row.id,
                                                     text: treeText
                                                 }]
                                             });
@@ -336,20 +338,20 @@ var crud = {
         var treeSelected = permissionItemTree.selected();
         if (row != null) {
             //var childs = $('#permissionitemGrid').treegrid('getChildren', row.Id);
-            var childs = permissionItemTree.getSelectedChildIds($('#permissionItemTree').tree('find', row.Id));
+            var childs = permissionItemTree.getSelectedChildIds($('#permissionItemTree').tree('find', row.id));
             if (childs && childs.length > 0) {
                 $.messager.alert('警告提示', '当前所选有子操作权限项数据，不能删除。<br> 请先删除子操作权限项数据!', 'warning');
                 return false;
             }
-            var query = 'key=' + row.Id;
+            var query = 'key=' + row.id;
             $.messager.confirm('询问提示', '确认要删除选中的操作权限项吗？', function (data) {
                 if (data) {
-                    $.ajaxjson(controlPermissionItemUrl + 'Delete', query, function (d) {
+                    $.ajaxjson(controlPermissionItemUrl + 'Delete/', query, function (d) {
                         if (d.Success) {
                             msg.ok(d.Message);
                             //重新加载
                             var tmpTree = $('#permissionItemTree');
-                            var curnode = tmpTree.tree('find', row.Id);
+                            var curnode = tmpTree.tree('find', row.id);
                             if (curnode) {
                                 tmpTree.tree('remove', curnode.target);
                             }
@@ -377,7 +379,7 @@ var crud = {
         if (row != null) {
             //保存时判断当前节点所选的父节点，不能为当前节点的子节点，这样就乱套了....
             var tmpTree = $('#permissionItemTree');
-            var curNode = tmpTree.tree('find', row.Id);
+            var curNode = tmpTree.tree('find', row.id);
             if (curNode) {
                 var children = tmpTree.tree('getChildren', curNode.target);
                 if (children && children.length > 0) {
@@ -390,14 +392,14 @@ var crud = {
                 max: false,
                 width: 350,
                 height: 500,
-                title: '移动操作权限项 ━ ' + row.FullName,
+                title: '移动操作权限项 ━ ' + row.fullname,
                 iconCls: 'icon16_arrow_switch',
                 content: '<ul id="tempTree"></ul>',
                 submit: function () {
                     var node = top.$('#tempTree').tree('getSelected');
                     if (node) {
-                        $.ajaxtext(controlPermissionItemUrl + 'MoveTo', 'key=' + row.Id + '&parentId=' + node.id, function (d) {
-                            if (d > 0) {
+                        $.ajaxjson(controlPermissionItemUrl + 'MoveTo/', 'key=' + row.id + '&parentId=' + node.id, function (d) {
+                            if (d.Data == '1') {
                                 msg.ok('移动成功！');
                                 //tree与datagrid同步处理：判断左侧树的选择节点（即父节点）与当前保存的父节点不一样，则要做相应的移动处理。
                                 if (treeSelected.id !== node.id) {
@@ -407,7 +409,7 @@ var crud = {
                                     tmpTree.tree('append', {
                                         parent: tmpTree.tree('find', node.id).target,
                                         data: [{
-                                            id: row.Id,
+                                            id: row.id,
                                             text: curNode.text
                                         }]
                                     });
@@ -457,24 +459,24 @@ var crud = {
         var setDialog = top.$.hDialog({
             title: '用户操作权限批量设置',
             width: 670, height: 600, iconCls: 'icon16_view_bandwidth_usage', //cache: false,
-            href: "/FrameworkModules/PermissionSet/PermissionBacthSet",
+            href: "/Admin/FrameworkModules/PermissionSet/PermissionBacthSet/",
             onLoad: function () {
                 using('panel', function () {
                     top.$('#panelTarget').panel({ title: '操作权限项', iconCls: 'icon-org', height: $(window).height() - 3 });
                 });
                 userGrid = top.$('#leftnav').datagrid({
                     title: '所有用户',
-                    url: '/FrameworkModules/UserAdmin/GetUserListJson',
+                    url: '/Admin/FrameworkModules/UserAdmin/GetUserListJson/',
                     nowrap: false, //折行
                     //fit: true,
                     rownumbers: true, //行号
                     striped: true, //隔行变色
-                    idField: 'ID', //主键
+                    idField: 'id', //主键
                     singleSelect: true, //单选
                     frozenColumns: [[]],
                     columns: [[
-                        { title: '登录名', field: 'USERNAME', width: 120, align: 'left' },
-                        { title: '用户名', field: 'REALNAME', width: 150, align: 'left' }
+                        { title: '登录名', field: 'username', width: 120, align: 'left' },
+                        { title: '用户名', field: 'realname', width: 150, align: 'left' }
                     ]],
                     onLoadSuccess: function (data) {
                         top.$('#rightnav').tree({
@@ -490,8 +492,8 @@ var crud = {
                     },
                     onSelect: function (rowIndex, rowData) {
                         curUserPermissionItemIds = [];
-                        var query = 'userId=' + rowData.ID;
-                        $.ajaxtext('/FrameworkModules/PermissionSet/GetPermissionItemsByUserId/', query, function (data) {
+                        var query = 'userId=' + rowData.id;
+                        $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetPermissionItemsByUserId/', query, function (data) {
                             var permissionItemTree = top.$('#rightnav');
                             permissionItemTree.tree('uncheckedAll');
                             if (data == '' || data.toString() == '[object XMLDocument]') {
@@ -528,8 +530,8 @@ var crud = {
                     ++flagGrant;
                 }
 
-                var query = 'userId=' + top.$('#leftnav').datagrid('getSelected').ID + '&grantIds=' + grantPemissionItemIds + "&revokeIds=" + revokePemissionItemIds;
-                $.ajaxjson('/FrameworkModules/PermissionSet/SetUserPermissionItem/', query, function (d) {
+                var query = 'userId=' + top.$('#leftnav').datagrid('getSelected').id + '&grantIds=' + grantPemissionItemIds + "&revokeIds=" + revokePemissionItemIds;
+                $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetUserPermissionItem/', query, function (d) {
                     if (d.Data > 0) {
                         msg.ok('设置成功！');
                     }
@@ -547,24 +549,24 @@ var crud = {
         var setDialog = top.$.hDialog({
             title: '角色操作权限批量设置',
             width: 670, height: 600, iconCls: 'icon16_key', //cache: false,
-            href: "/FrameworkModules/PermissionSet/PermissionBacthSet/",
+            href: "/Admin/FrameworkModules/PermissionSet/PermissionBacthSet/",
             onLoad: function () {
                 using('panel', function () {
                     top.$('#panelTarget').panel({ title: '操作权限项', iconCls: 'icon-org', height: $(window).height() - 3 });
                 });
                 roleGrid = top.$('#leftnav').datagrid({
                     title: '所有角色',
-                    url: '/FrameworkModules/RoleAdmin/GetRoleList/',
+                    url: '/Admin/FrameworkModules/RoleAdmin/GetRoleList/',
                     nowrap: false, //折行
                     //fit: true,
                     rownumbers: true, //行号
                     striped: true, //隔行变色
-                    idField: 'ID', //主键
+                    idField: 'id', //主键
                     singleSelect: true, //单选
                     frozenColumns: [[]],
                     columns: [[
-                        { title: '角色编码', field: 'CODE', width: 120, align: 'left' },
-                        { title: '角色名称', field: 'REALNAME', width: 150, align: 'left' }
+                        { title: '角色编码', field: 'code', width: 120, align: 'left' },
+                        { title: '角色名称', field: 'realname', width: 150, align: 'left' }
                     ]],
                     onLoadSuccess: function (data) {
                         top.$('#rightnav').tree({
@@ -580,8 +582,8 @@ var crud = {
                     },
                     onSelect: function (rowIndex, rowData) {
                         curRolePermissionItemIds = '';
-                        var query = 'roleId=' + rowData.ID;
-                        $.ajaxtext('/FrameworkModules/PermissionSet/GetPermissionItemsByRoleId/', query, function (data) {
+                        var query = 'roleId=' + rowData.id;
+                        $.ajaxtext('/Admin/FrameworkModules/PermissionSet/GetPermissionItemsByRoleId/', query, function (data) {
                             var permissionItemTree = top.$('#rightnav');
                             permissionItemTree.tree('uncheckedAll');
                             if (data == '' || data.toString() == '[object XMLDocument]') {
@@ -618,8 +620,8 @@ var crud = {
                     ++flagGrant;
                 }
 
-                var query = 'roleId=' + top.$('#leftnav').datagrid('getSelected').ID + '&grantIds=' + grantIds + "&revokeIds=" + revokeIds;
-                $.ajaxjson('/FrameworkModules/PermissionSet/SetRolePermissionItem/', query, function (d) {
+                var query = 'roleId=' + top.$('#leftnav').datagrid('getSelected').id + '&grantIds=' + grantIds + "&revokeIds=" + revokeIds;
+                $.ajaxjson('/Admin/FrameworkModules/PermissionSet/SetRolePermissionItem/', query, function (d) {
                     if (d.Data > 0) {
                         msg.ok('设置成功！');
                     }
@@ -639,9 +641,9 @@ var pubMethod = {
 		var parm = 'isTree=1';
 		$.ajaxtext(controlPermissionItemUrl + 'GetPermissionItemTreeJson/', parm, function (data) {
 			if (data) {
-				treeData = data.replace(/Id/g, 'id').replace(/FullName/g, 'text');
+				treeData = data.replace(/id/g, 'id').replace(/fullname/g, 'text');
 				treeData = '[{"id":0,"selected":true,"text":"请选择父级操作权限项"},' + treeData.substr(1, treeData.length - 1);
-				top.$('#ParentId').combotree({
+				top.$('#parentid').combotree({
 					data: JSON.parse(treeData),
 					valueField: 'id',
 					textField: 'text',
@@ -649,9 +651,9 @@ var pubMethod = {
 					editable: false,
 					lines: true,
 					onSelect: function (item) {
-						var nodeId = top.$('#ParentId').combotree('getValue');
+						var nodeId = top.$('#parentid').combotree('getValue');
 						if (item.id == navId) {
-							top.$('#ParentId').combotree('setValue', nodeId);
+							top.$('#parentid').combotree('setValue', nodeId);
 							top.$.messager.alert('警告提示', '上级操作权限不能与当前所选相同！', 'warning');
 						}
 					}
@@ -680,10 +682,10 @@ var pubMethod = {
             }
         }).combotree('setValue', 0);
 		*/
-        top.$('#Code').focus();
-        top.$('#Enabled').attr("checked", true);
-        top.$('#AllowEdit').attr("checked", true);
-        top.$('#AllowDelete').attr("checked", true);
+        top.$('#code').focus();
+        top.$('#enabled').attr("checked", true);
+        top.$('#allowedit').attr("checked", true);
+        top.$('#allowdelete').attr("checked", true);
         top.$('#uiform').validate({
             //此处加入验证
         });

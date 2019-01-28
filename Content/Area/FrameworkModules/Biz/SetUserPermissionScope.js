@@ -34,8 +34,8 @@ UserPermissionScope.prototype = {
         top.$('#FormContent').layout('panel', 'center').panel({ title: '当前用户：' + _this.obj.REALNAME });
         top.$('#txt_ResourceId').val(_this.obj.ID);
         top.$('#tableRole,#tableUser').datagrid({
-            idField: 'ID',
-            sortName: 'SORTCODE',
+            idField: 'id',
+            sortName: 'sortcode',
             sortOrder: 'asc',
             nowrap: false, //折行                   
             rownumbers: false, //行号
@@ -73,11 +73,11 @@ UserPermissionScope.prototype = {
         //1、加载用户列表
        
         top.$('#tableUser').datagrid({
-            url: '/FrameworkModules/UserAdmin/GetUserListJson',
+            url: '/Admin/FrameworkModules/UserAdmin/GetUserListJson/',
             columns: [[
-               { title: 'Id', field: 'ID', width: 30, align: 'left', checkbox: true },
-               { title: '登录名', field: 'USERNAME', width: 130, align: 'left' },
-               { title: '名称', field: 'REALNAME', width: 150, align: 'left' }
+               { title: 'Id', field: 'id', width: 30, align: 'left', checkbox: true },
+               { title: '登录名', field: 'username', width: 130, align: 'left' },
+               { title: '名称', field: 'realname', width: 150, align: 'left' }
             ]],
             onLoadSuccess: function (data) {
                 _this.bindUser();
@@ -86,11 +86,11 @@ UserPermissionScope.prototype = {
 
         //2、加载角色列表
         top.$('#tableRole').datagrid({
-            url: '/FrameworkModules/RoleAdmin/GetRoleList',
+            url: '/Admin/FrameworkModules/RoleAdmin/GetRoleList/',
             columns: [[
-                { title: 'Id', field: 'ID', width: 30, align: 'left', checkbox: true },
-                { title: '角色编码', field: 'CODE', width: 150 },
-                { title: '角色名称', field: 'REALNAME', width: 190 }
+                { title: 'Id', field: 'id', width: 30, align: 'left', checkbox: true },
+                { title: '角色编码', field: 'code', width: 150 },
+                { title: '角色名称', field: 'realname', width: 190 }
             ]],
             onLoadSuccess: function (data) {
                 _this.bindRole();
@@ -108,14 +108,14 @@ UserPermissionScope.prototype = {
 
         //3、加载组织机构列表
         top.$('#tableOrganize').tree({
-            url: '/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson?isTree=1',
+            url: '/Admin/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/?isTree=1',
             onLoadSuccess: function (data) {
                 _this.bindOrganize();
             }
         });
         //4、加载模块（菜单）列表
         top.$('#tableModule').tree({
-            url: '/FrameworkModules/ModuleAdmin/GetModuleTreeJson?isTree=1',
+            url: '/Admin/FrameworkModules/ModuleAdmin/GetModuleTreeJson/?isTree=1',
             onLoadSuccess: function (data) {
                 _this.bindModule();
             }
@@ -123,7 +123,7 @@ UserPermissionScope.prototype = {
 
         //5、加载操作（功能）权限列表
         top.$('#tablePermissionItem').tree({
-            url: '/FrameworkModules/PermissionItemAdmin/GetPermissionItemTreeJson?isTree=1',
+            url: '/Admin/FrameworkModules/PermissionItemAdmin/GetPermissionItemTreeJson/?isTree=1',
             onLoadSuccess: function (data) {
                 _this.bindPermissionItem();
             }
@@ -161,8 +161,8 @@ UserPermissionScope.prototype = {
         }).menu('show', { left: e.pageX, top: e.pageY });
     },
     bindUser: function () {
-        var query = 'userId=' + this.obj.ID;
-        $.ajaxjson('/FrameworkModules/ResourcePermission/GetScopeUserIdsByUserId', query, function (arr) {
+        var query = 'userId=' + (this.obj.ID || this.obj.id);
+        $.ajaxjson('/Admin/FrameworkModules/ResourcePermission/GetScopeUserIdsByUserId/', query, function (arr) {
             if (arr.length > 0) {
                 var tmpGrd = top.$('#tableUser');
                 $.each(arr, function (i, val) {
@@ -172,8 +172,8 @@ UserPermissionScope.prototype = {
         });
     },
     bindRole: function () {
-        var query = 'userId=' + this.obj.ID;
-        $.ajaxjson('/FrameworkModules/ResourcePermission/GetScopeRoleIdsByUserId', query, function (arr) {
+        var query = 'userId=' + (this.obj.ID || this.obj.id);
+        $.ajaxjson('/Admin/FrameworkModules/ResourcePermission/GetScopeRoleIdsByUserId/', query, function (arr) {
             if (arr.length > 0) {
                 var tmpGrd = top.$('#tableRole');
                 $.each(arr, function (i, val) {
@@ -183,8 +183,8 @@ UserPermissionScope.prototype = {
         });
     },
     bindOrganize:function() {
-        var query = 'userId=' + this.obj.ID;
-        $.ajaxjson('/FrameworkModules/ResourcePermission/GetScopeOrganizeIdsByUserId', query, function (arr) {
+        var query = 'userId=' + (this.obj.ID || this.obj.id);
+        $.ajaxjson('/Admin/FrameworkModules/ResourcePermission/GetScopeOrganizeIdsByUserId/', query, function (arr) {
             if (arr.length > 0) {
                 var tmpTree = top.$('#tableOrganize');
                 tmpTree.tree('uncheckedAll');
@@ -196,8 +196,8 @@ UserPermissionScope.prototype = {
         });
     },
     bindModule: function () {
-        var query = 'userId=' + this.obj.ID;
-        $.ajaxjson('/FrameworkModules/ResourcePermission/GetScopeModuleIdsByUserId', query, function (arr) {
+        var query = 'userId=' + (this.obj.ID || this.obj.id);
+        $.ajaxjson('/Admin/FrameworkModules/ResourcePermission/GetScopeModuleIdsByUserId/', query, function (arr) {
             if (arr.length > 0) {
                 var tmpTree = top.$('#tableModule');
                 tmpTree.tree('uncheckedAll');
@@ -209,8 +209,8 @@ UserPermissionScope.prototype = {
         });
     },
     bindPermissionItem: function () {
-        var query = 'userId=' + this.obj.ID;
-        $.ajaxjson('/FrameworkModules/ResourcePermission/GetScopePermissionItemIdsByUserId', query, function (arr) {
+        var query = 'userId=' + (this.obj.ID || this.obj.id);
+        $.ajaxjson('/Admin/FrameworkModules/ResourcePermission/GetScopePermissionItemIdsByUserId/', query, function (arr) {
             if (arr.length > 0) {
                 var tmpTree = top.$('#tablePermissionItem');
                 tmpTree.tree('uncheckedAll');
@@ -225,7 +225,7 @@ UserPermissionScope.prototype = {
         var checkedItems = top.$('#' + dgName).datagrid('getChecked');
         var ids = [];
         $.each(checkedItems, function(index, item) {
-            ids.push(item.ID);
+            ids.push(item.id);
         });
         return ids.join(',');
     },
@@ -303,8 +303,8 @@ UserPermissionScope.prototype = {
     saveUserScope: function () {
         var _this = this;
         var uIds = _this.getDgChecks('tableUser');
-        var query = 'targetUserId=' + this.obj.ID + "&userIds=" + uIds;
-        $.ajaxjson('/FrameworkModules/ResourcePermission/SaveUserUserScope', query, function (d) {
+        var query = 'targetUserId=' + (this.obj.ID || this.obj.id) + "&userIds=" + uIds;
+        $.ajaxjson('/Admin/FrameworkModules/ResourcePermission/SaveUserUserScope/', query, function (d) {
             if (d.Data > 0) {
                 msg.ok(d.Message);
             } else {
@@ -315,8 +315,8 @@ UserPermissionScope.prototype = {
     saveRoleScope: function () {
         var _this = this;
         var rIds = _this.getDgChecks('tableRole');
-        var query = 'targetUserId=' + this.obj.ID + "&roleIds=" + rIds;
-        $.ajaxjson('/FrameworkModules/ResourcePermission/SaveUserRoleScope', query, function (d) {
+        var query = 'targetUserId=' + (this.obj.ID || this.obj.id) + "&roleIds=" + rIds;
+        $.ajaxjson('sss/Admin/FrameworkModules/ResourcePermission/SaveUserRoleScope/', query, function (d) {
             if (d.Data > 0) {
                 msg.ok(d.Message);
             } else {
@@ -327,8 +327,8 @@ UserPermissionScope.prototype = {
     saveOrganizeScope: function () {
         var _this = this;
         var orgIds = _this.getTvChecks('tableOrganize');
-        var query = 'targetUserId=' + this.obj.ID + "&organizeIds=" + orgIds;
-        $.ajaxjson('/FrameworkModules/ResourcePermission/SaveOrganizeScope', query, function (d) {
+        var query = 'targetUserId=' + (this.obj.ID || this.obj.id)+ "&organizeIds=" + orgIds;
+        $.ajaxjson('sss/Admin/FrameworkModules/ResourcePermission/SaveOrganizeScope/', query, function (d) {
             if (d.Data > 0) {
                 msg.ok(d.Message);
             } else {
@@ -339,8 +339,8 @@ UserPermissionScope.prototype = {
     saveModuleScope: function () {
         var _this = this;
         var mIds = _this.getTvChecks('tableModule');
-        var query = 'targetUserId=' + this.obj.ID + "&moduleIds=" + mIds;
-        $.ajaxjson('/FrameworkModules/ResourcePermission/SaveModuleScope', query, function (d) {
+        var query = 'targetUserId=' + (this.obj.ID || this.obj.id) + "&moduleIds=" + mIds;
+        $.ajaxjson('sss/Admin/FrameworkModules/ResourcePermission/SaveModuleScope/', query, function (d) {
             if (d.Data > 0) {
                 msg.ok(d.Message);
             } else {
@@ -351,8 +351,8 @@ UserPermissionScope.prototype = {
     savePermissionItem: function () {
         var _this = this;
         var pIds = _this.getTvChecks('tablePermissionItem');
-        var query = 'targetUserId=' + this.obj.ID + "&permissionItemIds=" + pIds;
-        $.ajaxjson('/FrameworkModules/ResourcePermission/SavePermissionItemScope', query, function (d) {
+        var query = 'targetUserId=' + (this.obj.ID || this.obj.id) + "&permissionItemIds=" + pIds;
+        $.ajaxjson('sss/Admin/FrameworkModules/ResourcePermission/SavePermissionItemScope/', query, function (d) {
             if (d.Data > 0) {
                 msg.ok(d.Message);
             } else {

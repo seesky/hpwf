@@ -25,7 +25,7 @@ def GenerateSplitTool():
 
 def BuildToolBarButton(response, request):
     sb = ''
-    linkbtnTemplate = "<a id=\"a_{0}\" class=\"easyui-linkbutton\" style=\"float:left\"  plain=\"true\" href=\"javascript:;\" icon=\"{1}\"  {2} title=\"{3}\">{4}</a>"
+    linkbtnTemplate = "<a id=\"btn{0}\" class=\"easyui-linkbutton\" style=\"float:left\"  plain=\"true\" href=\"javascript:;\" icon=\"{1}\"  {2} title=\"{3}\">{4}</a>"
     sb = sb + "<a id=\"a_refresh\" class=\"easyui-linkbutton\" style=\"float:left\"  plain=\"true\" href=\"javascript:;\" icon=\"icon16_arrow_refresh\"  title=\"重新加载\">刷新</a> "
     sb = sb + "<div class='datagrid-btn-separator'></div> "
     sb = sb + linkbtnTemplate.format("UserPermission", "icon16_key", "" if PublicController.IsAuthorized(response, request, "UserPermissionAdmin.UserPermission") else "disabled=\"True\"", "用户权限设置", "用户权限")

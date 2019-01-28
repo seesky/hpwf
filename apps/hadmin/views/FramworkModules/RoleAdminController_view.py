@@ -21,6 +21,7 @@ import datetime
 from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
 import uuid
+from apps.bizlogic.service.base.UserRoleService import UserRoleService
 
 def BuildToolBarButton(response, request):
     sb = ''
@@ -330,3 +331,27 @@ def GetRoleList(request):
     returnValue = returnValue + "]"
     response.content = returnValue
     return response
+
+def GetRoleListByUserId(request):
+    try:
+        userId = request.GET['userId']
+    except:
+        userId = None
+
+    response = HttpResponse()
+    if userId:
+        roleIds = UserRoleService.GetUserRoleIds(None, userId)
+
+    jsons = '[]'
+    if roleIds and len(roleIds) > 0:
+        roleDT = RoleService.GetDTByIds(None, roleIds)
+        returnValue = '['
+        for role in roleDT:
+            returnValue = returnValue + role.toJSON() + ","
+        returnValue = returnValue.strip(",")
+        returnValue = returnValue + "]"
+        response.content = returnValue
+        return response
+    else:
+        response.content = jsons
+        return response

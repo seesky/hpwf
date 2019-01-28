@@ -104,7 +104,7 @@ class UserRoleService(object):
         Returns:
             returnValue (string[]): 角色主键列表
         """
-        returnValue = Piuserrole.objects.filter(userid=userId).values_list('id', flat=True)
+        returnValue = Piuserrole.objects.filter(Q(userid=userId) & Q(deletemark=0) & Q(enabled=1)).values_list('roleid', flat=True)
         return returnValue
 
     def GetAllUserRoleIds(self, userId):
@@ -118,7 +118,7 @@ class UserRoleService(object):
         returnValue = Piuserrole.objects.filter(userid=userId).values_list('id', flat=True)
         return returnValue
 
-    def AddUserToRole(self, userId, addRoleIds):
+    def AddUserToRole(userInfo, userId, addRoleIds):
         """
        用户添加到角色
        Args:
@@ -129,14 +129,22 @@ class UserRoleService(object):
        """
         try:
             Piuserrole.objects.get(Q(userid=userId) & Q(roleid=addRoleIds) & Q(enabled=1) & Q(deletemark=0))
+            return False
         except Piuserrole.DoesNotExist as e:
             userrole = Piuserrole()
+            userrole.id = uuid.uuid4()
             userrole.userid = userId
             userrole.roleid = addRoleIds
             userrole.enabled = 1
             userrole.deletemark = 0
+            userrole.createon = datetime.datetime.now()
+            userrole.createby = userInfo.RealName
+            userrole.createuserid = userInfo.Id
+            userrole.modifiedon = datetime.datetime.now()
+            userrole.modifiedby = userInfo.RealName
+            userrole.modifieduserid = userInfo.Id
             userrole.save()
-            return userrole.id
+            return True
 
     def RemoveUserFromRole(self, userId, removeRoleIds):
         """
@@ -147,7 +155,7 @@ class UserRoleService(object):
        Returns:
            returnValue (int): 影响行数
        """
-        returnValue = Piuserrole.objects.filter(Q(userId=userId) & Q(roleid=removeRoleIds)).delete()
+        returnValue,v = Piuserrole.objects.filter(Q(userid=userId) & Q(roleid=removeRoleIds)).delete()
         return returnValue
 
 

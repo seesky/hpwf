@@ -22,6 +22,7 @@ import apps.hadmin.views.FramworkModules.SequenceAdminController_view as Sequenc
 import apps.hadmin.views.FramworkModules.TableFieldAdminController_view as TableFieldAdmin
 import apps.hadmin.views.FramworkModules.UtilityController_view as Utility
 import apps.hadmin.views.FramworkModules.PermissionSetController_view as PermissionSet
+import apps.hadmin.views.FramworkModules.ResourcePermissionController_view as ResourcePermission
 import apps.hadmin.views.FramworkModules.HighchartsController_view as Highcharts
 
 
@@ -35,6 +36,7 @@ urlpatterns = [
     #
     url(r'^FrameworkModules/Utility/GetCategory/', Utility.GetCategory),
     url(r'^FrameworkModules/Utility/ExportExcel/', Utility.ExportExcel),
+    url(r'^FrameworkModules/Utility/Search/', Utility.Search),
     #用户管理
     url(r'^FrameworkModules/UserAdmin/Index/', UserAdminController.Index),
     url(r'^FrameworkModules/UserAdmin/GetUserPageDTByDepartmentId/', UserAdminController.GetUserPageDTByDepartmentId),
@@ -48,6 +50,7 @@ urlpatterns = [
     url(r'^FrameworkModules/UserAdmin/SetUserDimission/', UserAdminController.SetUserDimission),
     url(r'^FrameworkModules/UserAdmin/GetUserListJson/', UserAdminController.GetUserListJson),
     url(r'^FrameworkModules/UserAdmin/GetDTByRole/', UserAdminController.GetDTByRole),
+    url(r'^FrameworkModules/UserAdmin/RemoveRoleByUserId/', UserAdminController.RemoveRoleByUserId),
     #组织机构管理
     url(r'^FrameworkModules/OrganizeAdmin/Index/', OrganizeAdmin.Index),
     url(r'^FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/', OrganizeAdmin.GetOrganizeTreeJson),
@@ -78,6 +81,7 @@ urlpatterns = [
     url(r'^FrameworkModules/RoleAdmin/AddUserToRole/', RoleAdmin.AddUserToRole),
     url(r'^FrameworkModules/RoleAdmin/RemoveUserFromRole/', RoleAdmin.RemoveUserFromRole),
     url(r'^FrameworkModules/RoleAdmin/GetRoleList/', RoleAdmin.GetRoleList),
+    url(r'^FrameworkModules/RoleAdmin/GetRoleListByUserId/', RoleAdmin.GetRoleListByUserId),
     #岗位管理
     url(r'^FrameworkModules/PostAdmin/Index/', PostAdmin.Index),
     url(r'^FrameworkModules/PostAdmin/Form/', PostAdmin.Form),
@@ -85,14 +89,25 @@ urlpatterns = [
     url(r'^FrameworkModules/PostAdmin/GetEntity/', PostAdmin.GetEntity),
     url(r'^FrameworkModules/PostAdmin/Delete/', PostAdmin.Delete),
     url(r'^FrameworkModules/PostAdmin/MoveTo/', PostAdmin.MoveTo),
-
-
+    #模块管理
     url(r'^FrameworkModules/ModuleAdmin/Index/', ModuleAdmin.Index),
     url(r'^FrameworkModules/ModuleAdmin/GetModuleTreeJson/', ModuleAdmin.GetModuleTreeJson),
     url(r'^FrameworkModules/ModuleAdmin/GetModuleByIds/', ModuleAdmin.GetModuleByIds),
+    url(r'^FrameworkModules/ModuleAdmin/Form/', ModuleAdmin.Form),
+    url(r'^FrameworkModules/ModuleAdmin/SubmitForm/', ModuleAdmin.SubmitForm),
+    url(r'^FrameworkModules/ModuleAdmin/GetEntity/', ModuleAdmin.GetEntity),
+    url(r'^FrameworkModules/ModuleAdmin/Delete/', ModuleAdmin.Delete),
+    #操作权限管理
     url(r'^FrameworkModules/PermissionItemAdmin/Index/', PermissionItem.Index),
     url(r'^FrameworkModules/PermissionItemAdmin/GetPermissionItemTreeJson/', PermissionItem.GetPermissionItemTreeJson),
     url(r'^FrameworkModules/PermissionItemAdmin/GetPermissionItemByIds/', PermissionItem.GetPermissionItemByIds),
+    url(r'^FrameworkModules/PermissionItemAdmin/Form/', PermissionItem.Form),
+    url(r'^FrameworkModules/PermissionItemAdmin/SubmitForm/', PermissionItem.SubmitForm),
+    url(r'^FrameworkModules/PermissionItemAdmin/GetEntity/', PermissionItem.GetEntity),
+    url(r'^FrameworkModules/PermissionItemAdmin/Delete/', PermissionItem.Delete),
+    url(r'^FrameworkModules/PermissionItemAdmin/MoveTo/', PermissionItem.MoveTo),
+
+
     url(r'^FrameworkModules/UserPermissionAdmin/Index/', UserPermission.Index),
     url(r'^FrameworkModules/RolePermissionAdmin/Index/', RolePermission.Index),
     url(r'^FrameworkModules/MessageAdmin/Index/', MessageAdmin.Index),
@@ -121,6 +136,27 @@ urlpatterns = [
     url(r'^FrameworkModules/PermissionSet/GetPermissionItemsByRoleId/', PermissionSet.GetPermissionItemsByRoleId),
     url(r'^FrameworkModules/PermissionSet/SetRoleModulePermission/', PermissionSet.SetRoleModulePermission),
     url(r'^FrameworkModules/PermissionSet/SetRolePermissionItem/', PermissionSet.SetRolePermissionItem),
+    url(r'^FrameworkModules/PermissionSet/GetModuleByUserId/', PermissionSet.GetModuleByUserId),
+    url(r'^FrameworkModules/PermissionSet/SetUserModulePermission/', PermissionSet.SetUserModulePermission),
+    url(r'^FrameworkModules/PermissionSet/GetPermissionItemsByUserId/', PermissionSet.GetPermissionItemsByUserId),
+    url(r'^FrameworkModules/PermissionSet/SetUserPermissionItem/', PermissionSet.SetUserPermissionItem),
+    url(r'^FrameworkModules/PermissionSet/UserPermissionSet/', PermissionSet.UserPermissionSet),
+    url(r'^FrameworkModules/PermissionSet/GetUserRoleIds/', PermissionSet.GetUserRoleIds),
+    url(r'^FrameworkModules/PermissionSet/AddUserToRole/', PermissionSet.AddUserToRole),
+    url(r'^FrameworkModules/PermissionSet/RemoveUserFromRole/', PermissionSet.RemoveUserFromRole),
+    url(r'^FrameworkModules/PermissionSet/UserRoleSet/', PermissionSet.UserRoleSet),
+    url(r'^FrameworkModules/PermissionSet/UserRoleBatchSet/', PermissionSet.UserRoleBatchSet),
+    url(r'^FrameworkModules/PermissionSet/UserPermissionBatchSet/', PermissionSet.UserPermissionBatchSet),
+    url(r'^FrameworkModules/PermissionSet/PermissionScopForm/', PermissionSet.PermissionScopForm),
+    #授权范围管理
+    url(r'^FrameworkModules/ResourcePermission/GetScopeUserIdsByUserId/', ResourcePermission.GetScopeUserIdsByUserId),
+    url(r'^FrameworkModules/ResourcePermission/GetScopeRoleIdsByUserId/', ResourcePermission.GetScopeRoleIdsByUserId),
+    url(r'^FrameworkModules/ResourcePermission/GetScopeModuleIdsByUserId/', ResourcePermission.GetScopeModuleIdsByUserId),
+    url(r'^FrameworkModules/ResourcePermission/GetScopePermissionItemIdsByUserId/', ResourcePermission.GetScopePermissionItemIdsByUserId),
+    url(r'^FrameworkModules/ResourcePermission/GetScopeOrganizeIdsByUserId/',
+        ResourcePermission.GetScopeOrganizeIdsByUserId),
+    url(r'^FrameworkModules/ResourcePermission/SaveUserUserScope/',
+        ResourcePermission.SaveUserUserScope),
 
     url(r'^FrameworkModules/Highcharts/Sample1/', Highcharts.Sample1),
     url(r'^FrameworkModules/Highcharts/Sample2/', Highcharts.Sample2),

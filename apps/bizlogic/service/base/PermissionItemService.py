@@ -33,9 +33,6 @@ class PermissionItemService(object):
             returnValue (string): 权限项主键
         """
         try:
-            permissionItemEntity.id = uuid.uuid1()
-            permissionItemEntity.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            permissionItemEntity.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             permissionItemEntity.save()
             returnCode = StatusCode.statusCodeDic['OKAdd']
             returnMessage = FrameworkMessage.MSG0009
@@ -398,19 +395,21 @@ class PermissionItemService(object):
         #判断当前判断的权限是否存在，否则很容易出现前台设置了权限，后台没此项权限
         #需要自动的能把前台判断过的权限，都记录到后台来
 
-        Pipermissionitem.objects.get_or_create(defaults={'deletemark':'0', 'enabled':'1', 'code': permissionItemCode},
-                                                      code=permissionItemCode,
-                                                      fullname = permissionItemCode if permissionItemName else permissionItemName,
-                                                      categorycode = "Application",
-                                                      parentid = None,
-                                                      isscope = 0,
-                                                      ispublic = 0,
-                                                      allowdelete = 1,
-                                                      allowedit = 1,
-                                                      enabled = 1,
-                                                      deletemark = 0,
-                                                      moduleid = None
-                                                      )
+        # Pipermissionitem.objects.get_or_create(defaults={'deletemark':'0', 'enabled':'1', 'code': permissionItemCode},
+        #                                               code=permissionItemCode,
+        #                                               fullname = permissionItemCode if permissionItemName else permissionItemName,
+        #                                               categorycode = "Application",
+        #                                               parentid = None,
+        #                                               isscope = 0,
+        #                                               ispublic = 0,
+        #                                               allowdelete = 1,
+        #                                               allowedit = 1,
+        #                                               enabled = 1,
+        #                                               deletemark = 0,
+        #                                               moduleid = None
+        #                                               )
+        fullname = permissionItemCode if not permissionItemName else permissionItemName
+        Pipermissionitem.objects.get_or_create(defaults={'code':permissionItemCode, 'fullname':fullname, 'categorycode':"Application", 'parentid':None, 'isscope': 0, 'ispublic' : 0, 'allowdelete' : 1, 'allowedit' : 1, 'enabled' : 1, 'deletemark' : 0, 'moduleid':None}, deletemark=0, enabled=1, code=permissionItemCode)
 
         item = Pipermissionitem.objects.get(Q(code=permissionItemCode) & Q(deletemark=0) & Q(enabled=1))
         return item.id

@@ -24,7 +24,7 @@ var search = {
     go: function (gridId) {
         gridid = gridId;
         var sDialog = top.$.hDialog({
-            href: '/Utility/Search?n=' + Math.random(),
+            href: '/Admin/FrameworkModules/Utility/Search/?n=' + Math.random(),
             title: '高级查询', iconCls: 'icon16_molecule', width: 500, height: 400,
             cache: false, closable: true,
             toolbar: [

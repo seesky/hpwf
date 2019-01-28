@@ -101,23 +101,30 @@ class ModuleService(object):
             returnMessage: 状态信息
             returnValue: 主键
         """
-        try:
-            moduleEntity.save()
-            returnCode = StatusCode.statusCodeDic['OKAdd']
-            returnMessage = FrameworkMessage.MSG0009
-            returnValue = moduleEntity.id
-            return returnCode, returnMessage, returnValue
-        except DatabaseError as e:
-            print(e)
-            returnCode = StatusCode.statusCodeDic['DbError']
-            returnMessage = FrameworkMessage.MSG0001
+        if len(moduleEntity.code) > 0 & ModuleService.Exists(self, moduleEntity):
+            try:
+
+                moduleEntity.save()
+                returnCode = StatusCode.statusCodeDic['OKAdd']
+                returnMessage = FrameworkMessage.MSG0009
+                returnValue = moduleEntity.id
+                return returnCode, returnMessage, returnValue
+            except DatabaseError as e:
+                print(e)
+                returnCode = StatusCode.statusCodeDic['DbError']
+                returnMessage = FrameworkMessage.MSG0001
+                returnValue = None
+                return returnCode, returnMessage, returnValue
+            except TransactionManagementError as e:
+                print(e)
+                returnCode = StatusCode.statusCodeDic['DbError']
+                returnMessage = FrameworkMessage.MSG0001
+                returnValue = None
+                return returnCode, returnMessage, returnValue
+        else:
+            returnCode = StatusCode.statusCodeDic['ErrorCodeExist']
             returnValue = None
-            return returnCode, returnMessage, returnValue
-        except TransactionManagementError as e:
-            print(e)
-            returnCode = StatusCode.statusCodeDic['DbError']
             returnMessage = FrameworkMessage.MSG0001
-            returnValue = None
             return returnCode, returnMessage, returnValue
 
     def Update(self, moduleEntity):
@@ -129,17 +136,27 @@ class ModuleService(object):
             returnCode: 状态码
             returnValue: 主键
         """
-        returnValue = 0
-        if len(moduleEntity.code) > 0 & ModuleService.Exists(self, moduleEntity):
-            statusCode = StatusCode.statusCodeDic['ErrorCodeExist']  #17
-        else:
-            try:
-                moduleEntity.save()
-                returnValue = statusCode = 1
-                return statusCode,returnValue
-            except:
-                returnValue = statusCode = 0
-                return statusCode, returnValue
+        # returnValue = 0
+        # if len(moduleEntity.code) > 0 & ModuleService.Exists(self, moduleEntity):
+        #     statusCode = StatusCode.statusCodeDic['ErrorCodeExist']  #17
+        # else:
+        #     try:
+        #         moduleEntity.save()
+        #         returnValue = statusCode = 1
+        #         return statusCode,returnValue
+        #     except:
+        #         returnValue = statusCode = 0
+        #         return statusCode, returnValue
+        try:
+            moduleEntity.save()
+            returnCode = StatusCode.statusCodeDic['OKUpdate']
+            returnMessage = FrameworkMessage.MSG0010
+            return returnCode, returnMessage
+        except:
+            returnCode = StatusCode.statusCodeDic['OKUpdate']
+            returnMessage = FrameworkMessage.MSG0010
+            return returnCode, returnMessage
+
 
 
     def GetDTByParent(self, parentId):
@@ -328,7 +345,7 @@ class ModuleService(object):
 
     def Exists(self, entity):
         try:
-            Pimodule.objects.get(Q(deletemark=0) & Q(code=entity.code) & Q(fullname=entity.fullname))
+            Pimodule.objects.get(Q(deletemark=0) & Q(code=entity.code) & Q(fullname=entity.fullname) & Q(id=entity.id))
             return True
         except Pimodule.DoesNotExist as e:
             return False
