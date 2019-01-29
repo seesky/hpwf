@@ -225,7 +225,7 @@ UserPermissionScope.prototype = {
         var checkedItems = top.$('#' + dgName).datagrid('getChecked');
         var ids = [];
         $.each(checkedItems, function(index, item) {
-            ids.push(item.id);
+            ids.push(item.id || item.ID);
         });
         return ids.join(',');
     },
@@ -316,7 +316,7 @@ UserPermissionScope.prototype = {
         var _this = this;
         var rIds = _this.getDgChecks('tableRole');
         var query = 'targetUserId=' + (this.obj.ID || this.obj.id) + "&roleIds=" + rIds;
-        $.ajaxjson('sss/Admin/FrameworkModules/ResourcePermission/SaveUserRoleScope/', query, function (d) {
+        $.ajaxjson('/Admin/FrameworkModules/ResourcePermission/SaveUserRoleScope/', query, function (d) {
             if (d.Data > 0) {
                 msg.ok(d.Message);
             } else {
@@ -328,7 +328,7 @@ UserPermissionScope.prototype = {
         var _this = this;
         var orgIds = _this.getTvChecks('tableOrganize');
         var query = 'targetUserId=' + (this.obj.ID || this.obj.id)+ "&organizeIds=" + orgIds;
-        $.ajaxjson('sss/Admin/FrameworkModules/ResourcePermission/SaveOrganizeScope/', query, function (d) {
+        $.ajaxjson('/Admin/FrameworkModules/ResourcePermission/SaveOrganizeScope/', query, function (d) {
             if (d.Data > 0) {
                 msg.ok(d.Message);
             } else {
@@ -340,7 +340,7 @@ UserPermissionScope.prototype = {
         var _this = this;
         var mIds = _this.getTvChecks('tableModule');
         var query = 'targetUserId=' + (this.obj.ID || this.obj.id) + "&moduleIds=" + mIds;
-        $.ajaxjson('sss/Admin/FrameworkModules/ResourcePermission/SaveModuleScope/', query, function (d) {
+        $.ajaxjson('/Admin/FrameworkModules/ResourcePermission/SaveModuleScope/', query, function (d) {
             if (d.Data > 0) {
                 msg.ok(d.Message);
             } else {
@@ -352,7 +352,7 @@ UserPermissionScope.prototype = {
         var _this = this;
         var pIds = _this.getTvChecks('tablePermissionItem');
         var query = 'targetUserId=' + (this.obj.ID || this.obj.id) + "&permissionItemIds=" + pIds;
-        $.ajaxjson('sss/Admin/FrameworkModules/ResourcePermission/SavePermissionItemScope/', query, function (d) {
+        $.ajaxjson('/Admin/FrameworkModules/ResourcePermission/SavePermissionItemScope/', query, function (d) {
             if (d.Data > 0) {
                 msg.ok(d.Message);
             } else {
