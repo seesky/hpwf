@@ -206,7 +206,7 @@ class UserRoleService(object):
             returnValue (int): 用户主键列表
         """
         q1 = Piuser.objects.filter(Q(roleid=roleId) & Q(deletemark=0) & Q(enabled=1)).values_list('id', flat=True)
-        q2 = Piuserrole.objects.filter(Q(roleid=roleId) & Q(userid__in=Piuser.objects.filter(deletemark=0).values_list('id', flat=True)) & Q(deletemark=0))
+        q2 = Piuserrole.objects.filter(Q(roleid=roleId) & Q(userid__in=Piuser.objects.filter(deletemark=0).values_list('id', flat=True)) & Q(deletemark=0)).values_list('userid', flat=True)
         returnValue = q1.union(q2)
         return returnValue
 

@@ -13,6 +13,7 @@ from apps.bizlogic.service.base.PermissionItemService import PermissionItemServi
 from apps.bizlogic.service.permission.UserPermission import UserPermission
 from apps.bizlogic.service.base.UserRoleService import UserRoleService
 from apps.bizlogic.service.permission.ModulePermission import ModulePermission
+from apps.bizlogic.service.base.RoleService import RoleService
 from apps.utilities.publiclibrary.StringHelper import StringHelper
 import json
 
@@ -37,6 +38,15 @@ def PermissionBacthSet(request):
 def RolePermissionSet(request):
     response = HttpResponse()
     tmp = loader.get_template('PermissionSet/RolePermissionSet.html')  # 加载模板
+    render_content = {}  # 将要渲染到模板的数据
+    new_body = tmp.render(render_content)  # 渲染模板
+    response.content = new_body  # 设置返回内容
+    return response
+
+@LoginAuthorize
+def RoleUserBatchSet(request):
+    response = HttpResponse()
+    tmp = loader.get_template('PermissionSet/RoleUserBatchSet.html')  # 加载模板
     render_content = {}  # 将要渲染到模板的数据
     new_body = tmp.render(render_content)  # 渲染模板
     response.content = new_body  # 设置返回内容
@@ -74,6 +84,26 @@ def UserPermissionBatchSet(request):
 def UserRoleBatchSet(request):
     response = HttpResponse()
     tmp = loader.get_template('PermissionSet/UserRoleBatchSet.html')  # 加载模板
+    render_content = {}  # 将要渲染到模板的数据
+    new_body = tmp.render(render_content)  # 渲染模板
+    response.content = new_body  # 设置返回内容
+    return response
+
+
+@LoginAuthorize
+def RolePermissionBatchSet(request):
+    response = HttpResponse()
+    tmp = loader.get_template('PermissionSet/RolePermissionBatchSet.html')  # 加载模板
+    render_content = {}  # 将要渲染到模板的数据
+    new_body = tmp.render(render_content)  # 渲染模板
+    response.content = new_body  # 设置返回内容
+    return response
+
+
+@LoginAuthorize
+def PermissionScopForm(request):
+    response = HttpResponse()
+    tmp = loader.get_template('PermissionSet/PermissionScopForm.html')  # 加载模板
     render_content = {}  # 将要渲染到模板的数据
     new_body = tmp.render(render_content)  # 渲染模板
     response.content = new_body  # 设置返回内容
@@ -151,7 +181,7 @@ def GetModuleByRoleId(request):
 
     if roleId:
         moduleIds = RolePermission.GetScopeModuleIdsByRoleId(None, roleId, "Resource.AccessPermission")
-        returnValue = StringHelper.ArrayToList(None, moduleIds, ',')
+        returnValue = StringHelper.GetSpitString(moduleIds, ',')
         response = HttpResponse()
         response.content = returnValue
         return response
@@ -442,11 +472,10 @@ def AddUserToRole(request):
     response = HttpResponse()
     returnValue = UserRoleService.AddUserToRole(CommonUtils.Current(response, request), userId, targetIds)
     if returnValue:
-        successFlag = 1
-        response.content = json.dumps({'Success': True, 'Data': '1', 'Message': '操作成功！'})
+        response.content = json.dumps({'Success': True, 'Data': '1', 'Message': '添加成功！'})
         return response
     else:
-        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': '操作失败！'})
+        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': '添加失败！'})
         return response
 
 @LoginAuthorize
@@ -478,3 +507,63 @@ def PermissionScopForm(request):
     new_body = tmp.render(render_content)  # 渲染模板
     response.content = new_body  # 设置返回内容
     return response
+
+@LoginAuthorize
+def GetRoleUserIds(request):
+    try:
+        roleId = request.POST['roleId']
+    except:
+        roleId = None
+
+    dtScope = RoleService.GetRoleUserIds(None, roleId)
+
+    returnValue = StringHelper.GetSpitString(dtScope, ',')
+
+    response = HttpResponse()
+    response.content = returnValue
+    return response
+
+@LoginAuthorize
+def AddRoleUser(request):
+    try:
+        roleId = request.POST['roleId']
+    except:
+        userId = None
+    try:
+        targetIds = request.POST['targetIds']
+    except:
+        targetIds = None
+    returnValue = 0
+    response = HttpResponse()
+    for id in str(targetIds).split(','):
+        UserRoleService.AddUserToRole(CommonUtils.Current(response, request), id, roleId)
+        returnValue = returnValue + 1
+
+    if returnValue > 0:
+        response.content = json.dumps({'Success': True, 'Data': '1', 'Message': '添加成功！'})
+        return response
+    else:
+        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': '添加失败！'})
+        return response
+
+@LoginAuthorize
+def RemoveRoleUser(request):
+    try:
+        roleId = request.POST['roleId']
+    except:
+        roleId = None
+
+    try:
+        targetIds = request.POST['targetIds']
+    except:
+        targetIds = None
+    response = HttpResponse()
+    for id in str(targetIds).split(','):
+        returnValue = UserRoleService.RemoveUserFromRole(None, id, roleId)
+    if returnValue > 0:
+        successFlag = 1
+        response.content = json.dumps({'Success': True, 'Data': '1', 'Message': '操作成功！'})
+        return response
+    else:
+        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': '操作失败！'})
+        return response
