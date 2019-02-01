@@ -603,7 +603,6 @@ class RolePermission(object):
         """
 
         returnValue,v = Pipermissionscope.objects.filter(Q(resourcecategory='PIROLE') & Q(resourceid=roleId) & Q(targetcategory='PIPERMISSIONITEM') & Q(targetid=revokePermissionId) & Q(permissionid=Pipermissionitem.objects.get(code=permissionItemCode).id)).delete()
-
         return returnValue
 
     def GrantModule(userInfo, roleId, permissionItemCode, grantModuleId):
