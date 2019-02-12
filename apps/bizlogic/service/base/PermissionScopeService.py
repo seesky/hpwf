@@ -130,8 +130,10 @@ class PermissionScopeService(object):
         """
         ids = PermissionScopeService.GetTreeResourceScopeIds(self, managerUserId, 'PIORGANIZE', permissionItemCode, False)
 
-        if ids & ids.count() > 0:
+        if ids and len(ids) > 0:
             return  Piorganize.objects.filter(Q(id__in=ids) & Q(enabled=1) & Q(deletemark=0))
+        else:
+            return None
 
     def GetOrganizeIds(self, managerUserId, permissionItemCode):
         """

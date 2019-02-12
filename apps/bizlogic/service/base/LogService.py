@@ -122,7 +122,7 @@ class LogService(object):
             id (string): 主键
         Returns:
         """
-        returnValue = Cilog.objects.filter(id=id).delete()
+        returnValue,v = Cilog.objects.filter(id=id).delete()
         return returnValue
 
     def BatchDelete(self, ids):

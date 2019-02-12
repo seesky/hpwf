@@ -137,7 +137,8 @@ class UserSerivce(object):
         Returns:
             returnValue (Paginator): 用户分页列表
         """
-        countSqlQuery =' SELECT * FROM ' +  Piuser._meta.db_table + ' WHERE '
+        #countSqlQuery =' SELECT * FROM ' +  Piuser._meta.db_table + ' WHERE '
+        countSqlQuery = 'SELECT PIUSER.* ,PIUSERLOGON.FIRSTVISIT,PIUSERLOGON.PREVIOUSVISIT,PIUSERLOGON.LASTVISIT,PIUSERLOGON.IPADDRESS,PIUSERLOGON.MACADDRESS,PIUSERLOGON.LOGONCOUNT,PIUSERLOGON.USERONLINE FROM PIUSER LEFT OUTER JOIN PIUSERLOGON ON PIUSER.ID = PIUSERLOGON.ID  WHERE '
 
         whereConditional = Piuser._meta.db_table + '.DELETEMARK' + ' = 0 ' \
             + " AND " + Piuser._meta.db_table + '.ENABLED' + ' = 1 ' \

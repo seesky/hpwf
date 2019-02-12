@@ -14,6 +14,7 @@ from apps.utilities.publiclibrary.SystemInfo import SystemInfo
 from apps.bizlogic.service.base.UserOrganizeSerivce import UserOrganizeService
 from apps.bizlogic.service.base.ModuleService import ModuleService
 from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
+import uuid,datetime
 
 class PermissionService(object):
 
@@ -70,7 +71,7 @@ class PermissionService(object):
                 return False
 
             role = Pipermission.objects.filter(Q(resourcecategory='PIROLE') & Q(enabled=1) & Q(resourceid=roleId) & Q(permissionid=permissionItemId))
-            return role.count() > 0
+            return len(role) > 0
 
     def IsAdministrator(entity):
         """
@@ -168,10 +169,10 @@ class PermissionService(object):
         return returnValue
 
     def CheckUserOrganizePermission(self, userId, permissionItemId, organizeIds):
-        if organizeIds.count() == 0:
+        if len(organizeIds) == 0:
             return False
         returnValue = Pipermission.objects.filter(Q(resourcecategory='PIORGANIZE') & Q(resourceid__in=organizeIds) & Q(enabled=1) & Q(deletemark=0) & Q(permissionid=permissionItemId))
-        return returnValue > 0
+        return len(returnValue) > 0
 
     def CheckUserRolePermission(self, userId, permissionItemId):
         '''
@@ -196,7 +197,7 @@ class PermissionService(object):
         returnValue = Pipermission.objects.filter(Q(resourcecategory='PIROLE') & Q(enabled=1) & Q(deletemark=0) & Q(permissionid=permissionItemId) \
                                                   & Q(resourceid__in=Piuser.objects.filter(id=userId).values_list('roleid', flat=True).union(Piuserrole.objects.filter(Q(userid=userId) & Q(enabled=1) & Q(deletemark=0)).values_list('roleid',flat=True))))
 
-        return returnValue.count() > 0
+        return len(returnValue) > 0
 
     def CheckUserPermission(self, userId, permissionItemId):
         return PermissionService.CheckResourcePermission(self, 'PIUSER', userId, permissionItemId)
@@ -212,7 +213,7 @@ class PermissionService(object):
             returnValue(True or False): 是否有权限
         """
         returnValue = Pipermission.objects.filter(Q(resourcecategory=resourceCategory) & Q(enabled=1) & Q(deletemark=0) & Q(resourceid=resourceId) & Q(permissionid=permissionItemId))
-        return returnValue.count() > 0
+        return len(returnValue) > 0
 
     def CheckPermissionByUser(self, userId, permissionItemCode, permissionItemName = None):
         """
@@ -227,18 +228,33 @@ class PermissionService(object):
         #若不存在就需要自动能增加一个操作权限项
         permissionItemEntity = None
         try:
-            permissionItemEntity = Pipermissionitem.objects.get(Q(code=permissionItemCode) & Q(fullname=permissionItemName))
+
+            permissionItemEntity = Pipermissionitem.objects.get(Q(code=permissionItemCode))
         except Pipermissionitem.DoesNotExist as e:
+            if not permissionItemName:
+                permissionItemName = permissionItemCode
             permissionItemEntity = Pipermissionitem()
+            permissionItemEntity.id = uuid.uuid4()
             permissionItemEntity.code = permissionItemCode
             permissionItemEntity.fullname = permissionItemName
+            permissionItemEntity.categorycode = "Application"
+            permissionItemEntity.parentid = None
+            permissionItemEntity.moduleid = None
+            permissionItemEntity.isscope = 0
+            permissionItemEntity.ispublic = 0
+            permissionItemEntity.allowdelete = 1
+            permissionItemEntity.allowedit = 1
+            permissionItemEntity.enabled = 1
+            permissionItemEntity.deletemark = 0
+            permissionItemEntity.createon = datetime.datetime.now()
+            permissionItemEntity.modifiedon = permissionItemEntity.createon
             permissionItemEntity.save()
             # 没有找到相应的权限
             return False
 
         #先判断用户类别
         user = Piuser.objects.get(id = userId)
-        if PermissionService.IsAdministrator(self, user):
+        if PermissionService.IsAdministrator(user):
             return True
 
         returnValue = False

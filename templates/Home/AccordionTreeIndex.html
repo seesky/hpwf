@@ -95,8 +95,8 @@
                 $.messager.confirm('系统提示', '您确定要退出本次登录吗?', function (r) {
                     if (r) {
                         window.setTimeout(function () {
-                            getAjax("/login/outlogin", "", function (data) {
-                                window.location.href = '../Admin/Index';
+                            getAjax("/Admin/OutLogin/", "", function (data) {
+                                window.location.href = '/Admin/Index/';
                             })
                         }, 200);
                     }

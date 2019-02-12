@@ -1,7 +1,5 @@
-﻿@{
-    ViewBag.Title = "日志－访问情况按用户查询";
-    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
-}
+﻿{% extends "Shared/_LayoutIndex.html" %}
+{% block content %}
 
 <div class="searchArea">
     操作用户：<input type="text" name="opuser" id="txtOpuser" class="txt03" style="width: 120px;"/>&nbsp;
@@ -11,7 +9,9 @@
 </div>  
 <div id="toolbar">
 <div>
-    @Html.Raw(@ViewBag.ToolButton)  
+    {% autoescape off %}
+        {{ ToolButton }}
+        {% endautoescape %}
     <div style="float: left;" class='datagrid-btn-separator'></div>  
     <a id="btnClose" href="javascript:;" plain="true" class="easyui-linkbutton" icon="icon16_door_out" title="离开">离开</a> 
 </div>
@@ -20,7 +20,7 @@
 <table id="list"></table>    
 
 <!--<script type="text/javascript" src="~/Areas/FrameworkModules/Biz/LogAdmin.js?v=30"></script>-->
-<script type="text/javascript" src="~/Content/Scripts/Business/exportutil.js"></script>
+<script type="text/javascript" src="/Content/Scripts/Business/exportutil.js"></script>
 <script type="text/javascript">
     var grd;
     $(function () {
@@ -41,13 +41,13 @@
     var mygrid = {
         databind: function (size) {
             grd = $('#list').datagrid({
-                url: '/FrameworkModules/LogAdmin/GetPageListLogByUser',
+                url: '/Admin/FrameworkModules/LogAdmin/GetPageListLogByUser/',
                 toolbar: '#toolbar',
                 width: size.width,
                 height: size.height - 5,
                 idField: 'ID',
                 sortName: 'CREATEON',
-                sortOrder: 'desc',
+                sortOrder: 'DESC',
                 striped: true,
                 pagination: true,
                 singleSelect: false,
@@ -84,7 +84,7 @@
         var opIpaddress = $('#txtIpAddress').val();
         var ruleArr = [];
         if (opUser !== '')
-            ruleArr.push({ "field": "USERREALNAME", "op": "eq", "data": escape(opUser) });
+            ruleArr.push({ "field": "USERREALNAME", "op": "eq", "data": opUser });
         if (dtOpstart !== '')
             ruleArr.push({ "field": "CREATEON", "op": "ge", "data": dtOpstart });
         if (dtOpend !== '')
@@ -127,7 +127,7 @@
     //清空全部日志数据
     var ClearLog = function () {
         if (confirm('确定清空所有日志数据吗？')) {
-            $.ajaxjson('/FrameworkModules/LogAdmin/DeleteAll', "", function (data) {
+            $.ajaxjson('/Admin/FrameworkModules/LogAdmin/DeleteAll/', "", function (data) {
                 if (d.Data > 0) {
                     msg.ok('清空日志成功。');
                     mygrid.reload();
@@ -150,7 +150,7 @@
         if (keys.length > 0) {
             $.messager.confirm('询问提示', '确认删除所选日志记录吗？', function (data) {
                 if (data) {
-                    $.ajaxjson('/FrameworkModules/LogAdmin/Delete', "keys=" + keys.join(','), function (d) {
+                    $.ajaxjson('/Admin/FrameworkModules/LogAdmin/Delete/', "keys=" + keys.join(','), function (d) {
                         if (d.Data > 0) {
                             msg.ok('所选日志删除成功。');
                             //mygrid.reload();
@@ -181,3 +181,4 @@
     editFormHtml += '<tr><td>描述：</td><td colspan="3"><textarea  id="txtDescription" style="width:500px; height:150px;" name="Description" class="txt03" /></td></tr>';
     editFormHtml += '</table></form>';
 </script>
+{% endblock %}

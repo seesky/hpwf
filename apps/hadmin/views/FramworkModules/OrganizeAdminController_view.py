@@ -36,11 +36,11 @@ def GetOrganizeScope(userInfo, permissionItemScopeCode, isInnerOrganize):
     Returns:
     """
     if userInfo.IsAdministrator or (not permissionItemScopeCode) or (not SystemInfo.EnableUserAuthorizationScope):
-        dataTable = OrganizeService.GetDT(object)
+        dataTable = OrganizeService.GetDT(None)
     else:
         dataTable = ScopPermission.GetOrganizeDTByPermissionScope(None, userInfo, userInfo.Id, permissionItemScopeCode)
 
-    if isInnerOrganize:
+    if isInnerOrganize and dataTable:
         dataTable = dataTable.filter(Q(isinnerorganize='1')).order_by('sortcode')
     return dataTable
 
@@ -97,13 +97,18 @@ def GetOrganizeTreeJson(request):
 
     response = HttpResponse()
     dtOrganize = GetOrganizeScope(CommonUtils.Current(response, request), 'Resource.ManagePermission', False)
-    dataTable = CommonUtils.CheckTreeParentId(dtOrganize, 'id', 'parentid')
-    organizeJson = "[" + GroupJsondata(dtOrganize, "#") + "]"
+    if dtOrganize:
+        dataTable = CommonUtils.CheckTreeParentId(dtOrganize, 'id', 'parentid')
+        organizeJson = "[" + GroupJsondata(dtOrganize, "#") + "]"
 
-    if isTree:
-        response.content = organizeJson.replace("fullname", "text")
-        return response
+        if isTree:
+            response.content = organizeJson.replace("fullname", "text")
+            return response
+        else:
+            response.content = organizeJson
+            return response
     else:
+        organizeJson = "[]"
         response.content = organizeJson
         return response
 

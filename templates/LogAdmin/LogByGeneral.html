@@ -1,7 +1,5 @@
-﻿@{
-    ViewBag.Title = "日志－用户访问情况";
-    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
-}
+﻿{% extends "Shared/_LayoutIndex.html" %}
+{% block content %}
 
 <div class="searchArea">
     <a id="btnRefreash" href="javascript:;" plain="true" style="float: left;" class="easyui-linkbutton" icon="icon16_arrow_refresh" title="重新加载">刷新</a>
@@ -11,7 +9,7 @@
 </div>  
 <!--用于数据显示-->    
 <table id="list"></table>    
-<script type="text/javascript" src="~/Content/Scripts/Business/exportutil.js"></script>
+<script type="text/javascript" src="/Content/Scripts/Business/exportutil.js"></script>
 <script type="text/javascript">
     var grd;
     $(function () {
@@ -27,7 +25,7 @@
     var mygrid = {
         databind: function (size) {
             grd = $('#list').datagrid({
-                url: '/FrameworkModules/LogAdmin/GetPageListLogByGeneral',
+                url: '/Admin/FrameworkModules/LogAdmin/GetPageListLogByGeneral/',
                 toolbar: '#toolbar',
                 width: size.width,
                 height: size.height - 5,
@@ -87,3 +85,4 @@
         currTopTab.tabs('close', currtabTitle);
     };
 </script>
+{% endblock %}

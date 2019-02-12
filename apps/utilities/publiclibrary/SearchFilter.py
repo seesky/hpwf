@@ -25,7 +25,8 @@ class SearchFilter(object):
             grouptype = ''
             grouptype,list = SearchFilter.GetSearchList(filter)
             if urlDecode:
-                urllib.parse.urlencode(SearchFilter.ToSql(list, grouptype))
+                returnSql = SearchFilter.ToSql(list, grouptype)
+                returnSql = urllib.parse.unquote(returnSql)
             else:
                 returnSql = SearchFilter.ToSql(list, grouptype)
         return returnSql
@@ -61,7 +62,7 @@ class SearchFilter(object):
         Returns:
             returnValue (string): 字段值字符串
         """
-        sb = ''
+        sb = ""
         for result in list:
             sb = sb + " " + grouptype + " "
             if result.searchOper == "eq":

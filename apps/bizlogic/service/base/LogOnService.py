@@ -534,7 +534,11 @@ class LogOnService(object):
             else:
             #最后一次登录时间
                 if createOpenId:
-                    Piuserlogon.objects.filter(Q(id=userLogOnEntity.id)).update(previousvisit=F('lastvisit'), useronline=1, lastvisit=datetime.datetime.now(), logoncount=F('logoncount')+1)
+                    Piuserlogon.objects.filter(Q(id=userLogOnEntity.id)).update(previousvisit=F('lastvisit'), useronline=1, lastvisit=datetime.datetime.now(), logoncount=F('logoncount')+1, openid=uuid.uuid1())
+                else:
+                    Piuserlogon.objects.filter(Q(id=userLogOnEntity.id)).update(previousvisit=F('lastvisit'), useronline=1,
+                                                                            lastvisit=datetime.datetime.now(),
+                                                                            logoncount=F('logoncount') + 1)
         else:
             if createOpenId:
                 result = uuid.uuid1()

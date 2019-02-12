@@ -14,6 +14,7 @@ from apps.utilities.message.FrameworkMessage import FrameworkMessage
 from apps.bizlogic.service.permission.ModulePermission import ModulePermission
 from apps.bizlogic.service.base.PermissionItemService import PermissionItemService
 from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
+from itertools import chain
 
 class ModuleService(object):
     def GetDT(self):
@@ -367,7 +368,9 @@ class ModuleService(object):
             permissionItemCode = 'Resource.AccessPermission'
             otherModuleIds = PermissionScopeService.GetResourceScopeIds(self, userId, 'PIMODULE', permissionItemCode)
 
-        return openModuleIds.union(otherModuleIds)
+        #returnValue = openModuleIds.union(otherModuleIds)
+        returnValue = chain(openModuleIds, otherModuleIds)
+        return returnValue
 
 
     def GetDTByUser(self, userId):

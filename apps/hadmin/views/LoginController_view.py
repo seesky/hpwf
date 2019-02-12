@@ -70,3 +70,11 @@ def CheckLogin(request):
             print(e)
 
         return HttpResponse(Msg)
+
+def OutLogin(request):
+    response = HttpResponse()
+    LogOnService.OnExit(None, CommonUtils.Current(response, request).Id)
+    CommonUtils.EmptyCurrent(response)
+    request.session.flush()
+    response.content = '1'
+    return response

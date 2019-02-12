@@ -36,6 +36,14 @@ class CommonUtils(object):
         except Exception as e:
             print(e)
 
+    def EmptyCurrent(response):
+        try:
+            if ParameterService.GetServiceConfig('LoginProvider') == 'Cookie':
+                response.delete_cookie(ParameterService.GetServiceConfig('LoginProvider'))
+            else:
+                pass
+        except Exception as e:
+            print(e)
 
     def Current(response, request):
         if ParameterService.GetServiceConfig('LoginProvider') == 'Cookie':
@@ -73,7 +81,7 @@ class CommonUtils(object):
         if vUser:
                 tmpTheme = ParameterService.GetParameter('User', vUser.Id, 'WebTheme')
         if not tmpTheme:
-            tmpTheme = 'default '
+            tmpTheme = 'default'
 
         request.session['theme'] = tmpTheme
         response.set_signed_cookie('theme', tmpTheme,
