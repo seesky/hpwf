@@ -16,6 +16,11 @@ from apps.bizlogic.service.base.ItemsService import ItemsService
 from apps.bizlogic.service.base.ItemDetailsService import ItemDetailsService
 from django.db.models import Q
 from apps.bizlogic.service.base.ParameterService import ParameterService
+from apps.bizlogic.models import Ciparameter
+import uuid,datetime
+from apps.utilities.message.StatusCode import StatusCode
+from apps.utilities.message.FrameworkMessage import FrameworkMessage
+
 
 
 def BuildToolBarButton(response, request):
@@ -91,3 +96,104 @@ def GridPageListJson(request):
 
     response.content = returnValue
     return response
+
+@LoginAuthorize
+def Form(request):
+    response = HttpResponse()
+    tmp = loader.get_template('ParameterAdmin/Form.html')  # 加载模板
+    render_content = {}  # 将要渲染到模板的数据
+    new_body = tmp.render(render_content)  # 渲染模板
+    response.content = new_body  # 设置返回内容
+    return response
+
+@LoginAuthorize
+def GetEntity(request):
+    try:
+        key = request.POST['key']
+    except:
+        key = None
+    entity = ParameterService.GetEntity(None, key)
+    response = HttpResponse()
+    response.content = entity.toJSON()
+    return response
+
+@LoginAuthorize
+def SubmitForm(request):
+    try:
+        IsOk = '1'
+        try:
+            key = request.GET['key']
+        except:
+            key = None
+
+        response = HttpResponse()
+
+        curUser = CommonUtils.Current(response, request)
+
+        if not key:
+            parameter = Ciparameter()
+            parameter = parameter.loadJson(request)
+
+            parameter.id = uuid.uuid4()
+            parameter.deletemark = 0
+            parameter.createon = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            parameter.createby = curUser.RealName
+            parameter.createuserid = curUser.Id
+            parameter.modifiedon = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            parameter.modifiedby = curUser.RealName
+            parameter.enabled = 1
+
+            returnCode, returnMessage, returnValue = ParameterService.Add(None, parameter)
+
+
+            if returnCode == StatusCode.statusCodeDic['OKAdd']:
+                response.content = json.dumps({'Success':True, 'Data':IsOk, 'Message':returnMessage})
+                return response
+            elif returnCode == StatusCode.statusCodeDic['ErrorCodeExist']:
+                response.content = json.dumps({'Success': False, 'Data': '0', 'Message': '编码或名称重复'})
+                return response
+            else:
+                response.content = json.dumps({'Success': False, 'Data': '0', 'Message': returnMessage})
+                return response
+        else:
+            parameter = ParameterService.GetEntity(None, key)
+            if parameter:
+                parameter = parameter.loadJson(request)
+            else:
+                response.content = json.dumps({'Success': False, 'Data': '0', 'Message': "修改失败！"})
+                return response
+
+            if curUser:
+                response.modifiedby = curUser.RealName
+                response.modifieduserid = curUser.Id
+                response.modifiedon = datetime.datetime.now()
+                returnCode, returnMessage = ParameterService.Update(None, parameter)
+                if returnCode == StatusCode.statusCodeDic['OKUpdate']:
+                    response.content = json.dumps({'Success': True, 'Data': IsOk, 'Message': returnMessage})
+                    return response
+                else:
+                    response.content = json.dumps({'Success': False, 'Data': '0', 'Message': returnMessage})
+                    return response
+    except Exception as e:
+        print(e)
+        response = HttpResponse()
+        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
+        return response
+
+@LoginAuthorize
+def Delete(request):
+    try:
+        key = request.POST['key']
+    except:
+        key = ''
+
+    returnValue = ParameterService.SetDeleted(None, key)
+
+    if returnValue > 0:
+        response = HttpResponse()
+        response.content = json.dumps({'Success': True, 'Data': '1', 'Message': FrameworkMessage.MSG0013})
+        return response
+    else:
+        response = HttpResponse()
+        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
+        return response

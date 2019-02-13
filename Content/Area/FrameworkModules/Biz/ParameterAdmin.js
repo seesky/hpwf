@@ -111,7 +111,7 @@ var ParameterAdmin = {
                 title: '修改系统参数', width: 295, height: 338, href: formUrl, iconCls: 'icon16_cog_edit',
                 onLoad: function () {
                     var parm = 'key=' + curParameter.ID;
-                    $.ajaxjson("/Admin/FrameworkModules/ParameterAdmin/GetEntity", parm, function (data) {
+                    $.ajaxjson("/Admin/FrameworkModules/ParameterAdmin/GetEntity/", parm, function (data) {
                         if (data) {
                             SetWebControls(data, true);
                         }

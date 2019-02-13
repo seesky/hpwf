@@ -8,6 +8,10 @@ from django.db.models import Q
 from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 from django.core.paginator import Paginator
 import os
+from apps.utilities.message.StatusCode import StatusCode
+from apps.utilities.message.FrameworkMessage import FrameworkMessage
+from django.db.utils import DatabaseError
+from django.db.transaction import TransactionManagementError
 
 class ParameterService(object):
 
@@ -49,8 +53,11 @@ class ParameterService(object):
         Returns:
             returnValue (Ciparameter): 配置实体
         """
-        returnValue = Ciparameter.objects.get(id=id)
-        return returnValue
+        try:
+            returnValue = Ciparameter.objects.get(id=id)
+            return returnValue
+        except Ciparameter.DoesNotExist:
+            return None
 
     def SetParameter(self, categoryKey, parameterId, parameterCode, parameterContent, allowEdit=0, allowDelete=0):
         """
@@ -235,3 +242,52 @@ class ParameterService(object):
             return True
         except Ciparameter.DoesNotExist as e:
             return False
+
+    def Add(self, parameterEntity):
+        """
+        添加模块菜单
+        Args:
+            parameterEntity (Ciparameter): 参数实体
+        Returns:
+            returnCode: 状态码
+            returnMessage: 状态信息
+            returnValue: 主键
+        """
+
+        try:
+            parameterEntity.save()
+            returnCode = StatusCode.statusCodeDic['OKAdd']
+            returnMessage = FrameworkMessage.MSG0009
+            returnValue = parameterEntity.id
+            return returnCode, returnMessage, returnValue
+        except DatabaseError as e:
+            print(e)
+            returnCode = StatusCode.statusCodeDic['DbError']
+            returnMessage = FrameworkMessage.MSG0001
+            returnValue = None
+            return returnCode, returnMessage, returnValue
+        except TransactionManagementError as e:
+            print(e)
+            returnCode = StatusCode.statusCodeDic['DbError']
+            returnMessage = FrameworkMessage.MSG0001
+            returnValue = None
+            return returnCode, returnMessage, returnValue
+
+    def Update(self, parameterEntity):
+        """
+        更新模块菜单
+        Args:
+            parameterEntity (Ciparameter): 模块实体
+        Returns:
+            returnCode: 状态码
+            returnValue: 主键
+        """
+        try:
+            parameterEntity.save()
+            returnCode = StatusCode.statusCodeDic['OKUpdate']
+            returnMessage = FrameworkMessage.MSG0010
+            return returnCode, returnMessage
+        except:
+            returnCode = StatusCode.statusCodeDic['OKUpdate']
+            returnMessage = FrameworkMessage.MSG0010
+            return returnCode, returnMessage

@@ -19,7 +19,7 @@
         <script type="text/javascript" src="/Content/Scripts/jQuery.cookie.js" ></script>
         <script type="text/javascript" src="/Content/Scripts/csrf.js"></script>
     </head>
-<body class="easyui-layout" style="overflow-y: hidden;" fit="true" scroll="no" oncontextmenu="return false" ondragstart="return false" oncopy="document.selection.empty()" onbeforecopy="return false">
+<body class="easyui-layout" style="overflow-y: hidden;" fit="true" scroll="no" oncontextmenu="return false" ondragstart="return false" oncopy="document.selection.empty()" onbeforecopy="return false" onbeforeunload="checkLeave()">
     <div id="loading" style="position: fixed;top: -50%;left: -50%;width: 200%;height: 200%;background: #fff;z-index: 100;overflow: hidden;">
         <img src="/Content/Images/ajax-loader.gif" style="position: absolute;top: 0;left: 0;right: 0;bottom: 0;margin: auto;" />
     </div>
@@ -107,6 +107,14 @@
                 $('#loading').fadeOut();
             });
         });
+
+        function checkLeave(){
+            event.returnValue = "确定离开当前页面吗？您还没有退出登录！"
+        }
+
+
+
+
     </script>
     <script type="text/javascript" src="/Content/Scripts/layer/layer.js"></script>
     <script type="text/javascript" src="/Content/Scripts/hpwf-index.js?v=30"></script>
@@ -165,6 +173,7 @@
                 });
             });
         }
+
     </script>
 </body>
     
