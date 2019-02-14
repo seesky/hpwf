@@ -89,7 +89,7 @@ def GridPageListJson(request):
     response = HttpResponse()
 
     recordCount = 0
-    dtRole = RoleService.GetDtByPage(None, rows, SearchFilter.TransfromFilterToSql(filter, False), sort + ' ' + order)
+    dtRole = RoleService.GetDtByPage(CommonUtils.Current(response, request), rows, SearchFilter.TransfromFilterToSql(filter, False), sort + ' ' + order)
     recordCount = dtRole.count
     pageValue = dtRole.page(page)
 
@@ -135,7 +135,7 @@ def GetRoleListByOrganize(request):
     writeJson = "[]"
     tempJson = "["
     if organizeId:
-        roles = RoleService.GetDTByOrganize(None, organizeId, True)
+        roles = RoleService.GetDTByOrganize(CommonUtils.Current(response, request), organizeId, True)
         for role in roles:
             tempJson = tempJson + str(role.toJSON()) + ","
         tempJson = tempJson.strip(",")
@@ -209,7 +209,7 @@ def SubmitForm(request):
             role.modifiedby = curUser.RealName
             role.enabled = 1
 
-            returnCode, returnMessage, returnValue = RoleService.Add(None, role)
+            returnCode, returnMessage, returnValue = RoleService.Add(curUser, role)
 
 
             if returnCode == StatusCode.statusCodeDic['OKAdd']:
@@ -219,14 +219,14 @@ def SubmitForm(request):
                 response.content = json.dumps({'Success': False, 'Data': '0', 'Message': returnMessage})
                 return response
         else:
-            role = RoleService.GetEntity(None, key)
+            role = RoleService.GetEntity(curUser, key)
             if role:
                 role = role.loadJson(request)
 
             if curUser:
                 role.modifiedby = curUser.RealName
                 role.modifieduserid = curUser.Id
-                returnCode, returnMessage = RoleService.Update(None, role)
+                returnCode, returnMessage = RoleService.Update(curUser, role)
                 if returnCode == StatusCode.statusCodeDic['OKUpdate']:
                     response.content = json.dumps({'Success': True, 'Data': IsOk, 'Message': returnMessage})
                     return response
@@ -245,7 +245,7 @@ def GetEntity(request):
         key = request.POST['key']
     except:
         key = None
-    entity = RoleService.GetEntity(None, key)
+    entity = RoleService.GetEntity(CommonUtils.Current(HttpResponse(), request), key)
     response = HttpResponse()
     response.content = entity.toJSON()
     return response
@@ -257,7 +257,7 @@ def Delete(request):
     except:
         key = ''
 
-    returnValue = RoleService.SetDeleted(None, [key])
+    returnValue = RoleService.SetDeleted(CommonUtils.Current(HttpResponse(), request), [key])
 
     if returnValue:
         response = HttpResponse()
@@ -315,7 +315,7 @@ def RemoveUserFromRole(request):
 
 def GetRoleScope(userInfo, permissionItemScopeCode):
     if userInfo.IsAdministrator or (not permissionItemScopeCode) or (not SystemInfo.EnableUserAuthorizationScope):
-        returnValue = RoleService.GetDT(None)
+        returnValue = RoleService.GetDT(userInfo)
     else:
         returnValue = ScopPermission.GetRoleDTByPermissionScope(userInfo, permissionItemScopeCode)
     return returnValue
@@ -344,7 +344,7 @@ def GetRoleListByUserId(request):
 
     jsons = '[]'
     if roleIds and len(roleIds) > 0:
-        roleDT = RoleService.GetDTByIds(None, roleIds)
+        roleDT = RoleService.GetDTByIds(CommonUtils.Current(response, request), roleIds)
         returnValue = '['
         for role in roleDT:
             returnValue = returnValue + role.toJSON() + ","

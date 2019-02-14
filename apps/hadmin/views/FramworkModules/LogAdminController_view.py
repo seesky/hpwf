@@ -215,7 +215,7 @@ def GetPageListLogByGeneral(request):
     if not whereStatement:
         whereStatement = ' 1 = 1'
 
-    dtLogByGeneral = UserSerivce.GetDTByPage(None, SearchFilter.TransfromFilterToSql(filter, False), '', '', rows, sort + ' ' + order)
+    dtLogByGeneral = UserSerivce.GetDTByPage(CommonUtils.Current(response, request), SearchFilter.TransfromFilterToSql(filter, False), '', '', rows, sort + ' ' + order)
 
     recordCount = dtLogByGeneral.count
     pageValue = dtLogByGeneral.page(page)

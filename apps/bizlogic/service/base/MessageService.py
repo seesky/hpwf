@@ -155,7 +155,7 @@ class MessageService(object):
         MessageService.BatchSends(response, request, receiverIds, organizeIds, roleIds, messageEntity)
 
     def BatchSends(response, request, receiverIds, organizeIds, roleIds, messageEntity):
-        receiverIds = UserSerivce.GetUserIdsByOrganizeIdsAndRoleIds(receiverIds, organizeIds, roleIds)
+        receiverIds = UserSerivce.GetUserIdsByOrganizeIdsAndRoleIds(None, receiverIds, organizeIds, roleIds)
         returnValue = MessageService.Sends(response, request, messageEntity, receiverIds)
         return returnValue
 

@@ -219,6 +219,16 @@ class Ciitemdetails(models.Model):
         import json
         return json.dumps(d)
 
+    def loadJson(self, request):
+        for i in request.POST:
+           # self.(str(i.key).lower())
+            if hasattr(self, i.lower()):
+                if request.POST[i] == '':
+                    setattr(self, i.lower(), None)
+                else:
+                    setattr(self, i.lower(), request.POST[i])
+        return self
+
     class Meta:
         managed = True
         db_table = 'ciitemdetails'
@@ -265,6 +275,16 @@ class Ciitems(models.Model):
 
         import json
         return json.dumps(d)
+
+    def loadJson(self, request):
+        for i in request.POST:
+           # self.(str(i.key).lower())
+            if hasattr(self, i.lower()):
+                if request.POST[i] == '':
+                    setattr(self, i.lower(), None)
+                else:
+                    setattr(self, i.lower(), request.POST[i])
+        return self
 
     class Meta:
         managed = True

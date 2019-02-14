@@ -52,7 +52,7 @@ def Index(request):
 
 def GetModuleScope(response, request, permissionItemScopeCode):
     vUser = CommonUtils.Current(response, request)
-    if vUser.IsAdministrator or (not permissionItemScopeCode) or SystemInfo.EnableUserAuthorizationScope:
+    if vUser.IsAdministrator or (not permissionItemScopeCode) or (not SystemInfo.EnableUserAuthorizationScope):
         dtModule = ModuleService.GetDT(None)
         return dtModule
     else:

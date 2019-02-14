@@ -26,6 +26,8 @@ from apps.bizlogic.service.base.OrganizeService import OrganizeService
 from apps.bizlogic.service.permission.UserPermission import UserPermission
 from apps.bizlogic.service.base.PermissionItemService import PermissionItemService
 from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
+from apps.bizlogic.service.base.LogService import LogService
+import sys
 
 class UserSerivce(object):
     """
@@ -50,7 +52,7 @@ class UserSerivce(object):
         except Piuser.DoesNotExist:
             return False
 
-    def AddUser(self, userEntity):
+    def AddUser(userInfo, userEntity):
         """
         添加用户
         Args:
@@ -58,6 +60,8 @@ class UserSerivce(object):
         Returns:
             returnValue: 用户主键
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_AddUser, userEntity.id)
         try:
             userEntity.save()
             returnCode = StatusCode.statusCodeDic['OKAdd']
@@ -77,7 +81,7 @@ class UserSerivce(object):
             returnValue = None
             return returnCode, returnMessage, returnValue
 
-    def GetEntity(id):
+    def GetEntity(userInfo, id):
         """
         获取用户实体
         Args:
@@ -85,6 +89,8 @@ class UserSerivce(object):
         Returns:
             returnValue (Piuser or None): 用户实体
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetEntity, id)
         try:
             user = Piuser.objects.get(id=id)
             return user
@@ -92,7 +98,7 @@ class UserSerivce(object):
             return None
 
 
-    def GetEntityByUserName(self, userName):
+    def GetEntityByUserName(userInfo, userName):
         """
         根据用户名获取用户实体
         Args:
@@ -100,6 +106,8 @@ class UserSerivce(object):
         Returns:
             returnValue (Piuser or None): 用户实体
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetEntityByUserName, userName)
         try:
             user = Piuser.objects.get(username=userName)
             return user
@@ -107,13 +115,15 @@ class UserSerivce(object):
             return None
 
 
-    def GetDT(self):
+    def GetDT(userInfo):
         """
         获取用户列表
         Args:
         Returns:
             returnValue (List): 用户列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetDT, '')
         returnValue = []
         try:
             for user in Piuser.objects.filter(deletemark=0).order_by('sortcode'):
@@ -125,7 +135,7 @@ class UserSerivce(object):
             return returnValue
 
 
-    def GetDTByPage(self, searchValue, departmentId, roleId, pageSize=50, order=None):
+    def GetDTByPage(userInfo, searchValue, departmentId, roleId, pageSize=50, order=None):
         """
         分页查询
         Args:
@@ -137,6 +147,9 @@ class UserSerivce(object):
         Returns:
             returnValue (Paginator): 用户分页列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetDTByPage, '')
+
         #countSqlQuery =' SELECT * FROM ' +  Piuser._meta.db_table + ' WHERE '
         countSqlQuery = 'SELECT PIUSER.* ,PIUSERLOGON.FIRSTVISIT,PIUSERLOGON.PREVIOUSVISIT,PIUSERLOGON.LASTVISIT,PIUSERLOGON.IPADDRESS,PIUSERLOGON.MACADDRESS,PIUSERLOGON.LOGONCOUNT,PIUSERLOGON.USERONLINE FROM PIUSER LEFT OUTER JOIN PIUSERLOGON ON PIUSER.ID = PIUSERLOGON.ID  WHERE '
 
@@ -145,13 +158,13 @@ class UserSerivce(object):
             + " AND " + Piuser._meta.db_table + '.ISVISIBLE' + ' = 1 '
 
         if departmentId:
-            organizeIds = OrganizeService.GetChildrensById(self, departmentId)
+            organizeIds = OrganizeService.GetChildrensById(None, departmentId)
             if len(organizeIds) != 0:
-                whereConditional = whereConditional + " AND (" +  Piuser._meta.db_table + '.COMPANYID IN (' + StringHelper.ArrayToList(self,organizeIds,"\'") + ')' \
-                    + " OR " + Piuser._meta.db_table + '.SUBCOMPANYID IN (' + StringHelper.ArrayToList(self,organizeIds,"\'") + ')' \
-                    + " OR " + Piuser._meta.db_table + '.DEPARTMENTID IN (' + StringHelper.ArrayToList(self,organizeIds,"\'") + ')' \
-                    + " OR " + Piuser._meta.db_table + '.SUBDEPARTMENTID IN (' + StringHelper.ArrayToList(self,organizeIds,"\'") + ')' \
-                    + " OR " + Piuser._meta.db_table + '.WORKGROUPID IN (' + StringHelper.ArrayToList(self,organizeIds,"\'") + '))'
+                whereConditional = whereConditional + " AND (" +  Piuser._meta.db_table + '.COMPANYID IN (' + StringHelper.ArrayToList(None,organizeIds,"\'") + ')' \
+                    + " OR " + Piuser._meta.db_table + '.SUBCOMPANYID IN (' + StringHelper.ArrayToList(None,organizeIds,"\'") + ')' \
+                    + " OR " + Piuser._meta.db_table + '.DEPARTMENTID IN (' + StringHelper.ArrayToList(None,organizeIds,"\'") + ')' \
+                    + " OR " + Piuser._meta.db_table + '.SUBDEPARTMENTID IN (' + StringHelper.ArrayToList(None,organizeIds,"\'") + ')' \
+                    + " OR " + Piuser._meta.db_table + '.WORKGROUPID IN (' + StringHelper.ArrayToList(None,organizeIds,"\'") + '))'
 
         if roleId:
             whereConditional = whereConditional + ' AND ( ' + Piuser._meta.db_table + '.ID IN' \
@@ -167,17 +180,19 @@ class UserSerivce(object):
             whereConditional = whereConditional + " ORDER BY " + order
 
         countSqlQuery = countSqlQuery + ' ' + whereConditional
-        userList = DbCommonLibaray.executeQuery(self, countSqlQuery)
+        userList = DbCommonLibaray.executeQuery(None, countSqlQuery)
         returnValue = Paginator(userList, pageSize)
         return returnValue
 
-    def GetList(self):
+    def GetList(userInfo):
         """
         获取用户列表
         Args:
         Returns:
             returnValue (List): 用户列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetList, '')
         returnValue = []
         try:
             for user in Piuser.objects.all():
@@ -189,7 +204,7 @@ class UserSerivce(object):
             return returnValue
 
 
-    def GetDTByIds(self, ids):
+    def GetDTByIds(userInfo, ids):
         """
          按主键获取用户列表
         Args:
@@ -197,6 +212,8 @@ class UserSerivce(object):
         Returns:
             returnValue (List): 用户列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetDTByIds, str(ids))
         returnValue = []
         for id in ids:
             try:
@@ -206,7 +223,7 @@ class UserSerivce(object):
                 continue
         return returnValue
 
-    def GetListByIds(self, ids):
+    def GetListByIds(userInfo, ids):
         """
         按主键获取用户列表
         Args:
@@ -214,6 +231,8 @@ class UserSerivce(object):
         Returns:
             returnValue (List): 用户列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetDTByIds, str(ids))
         returnValue = []
         for id in ids:
             try:
@@ -223,7 +242,7 @@ class UserSerivce(object):
                 continue
         return returnValue
 
-    def UpdateUser(self, userEntity):
+    def UpdateUser(userInfo, userEntity):
         """
         更新用户
         Args:
@@ -232,6 +251,8 @@ class UserSerivce(object):
             returnValue (string): 状态码
             returnMessage (string): 状态信息
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_UpdateUser, userEntity.id)
         try:
             userEntity.save()
             returnCode = StatusCode.statusCodeDic['OKUpdate']
@@ -242,7 +263,7 @@ class UserSerivce(object):
             returnMessage = FrameworkMessage.MSG0001
             return returnCode, returnMessage
 
-    def GetSearchConditional(self, permissionScopeCode, search, roleIds, enabled, auditStates, departmentId):
+    def GetSearchConditional(userInfo, permissionScopeCode, search, roleIds, enabled, auditStates, departmentId):
         """
         获取SQL查询串
         Args:
@@ -255,6 +276,9 @@ class UserSerivce(object):
         Returns:
             returnValue (int): SQL组合查询串
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_UpdateUser, '')
+
         #easyui search
         whereConditional = 'piuser.DELETEMARK = 0 AND piuser.ISVISIBLE = 1 '
         if enabled:
@@ -269,13 +293,13 @@ class UserSerivce(object):
                 + ' OR piuser.DESCRIPTION LIKE \'' + search + '\')'
 
         if departmentId:
-            organizeIds = OrganizeService.GetChildrensById(self, departmentId)
+            organizeIds = OrganizeService.GetChildrensById(None, departmentId)
             if len(organizeIds) > 0:
-                whereConditional = whereConditional + ' AND (piuser.COMPANYID IN (' + StringHelper.ArrayToList(self, organizeIds, '\'') + ')' \
-                    + ' OR piuser.COMPANYID IN (' + StringHelper.ArrayToList(self, organizeIds, '\'') + ')' \
-                    + ' OR piuser.DEPARTMENTID IN (' + StringHelper.ArrayToList(self, organizeIds, '\'') + ')' \
-                    + ' OR piuser.SUBDEPARTMENTID IN (' + StringHelper.ArrayToList(self, organizeIds, '\'') + ')' \
-                    + ' OR piuser.WORKGROUPID IN (' + StringHelper.ArrayToList(self, organizeIds, '\'') + '))'
+                whereConditional = whereConditional + ' AND (piuser.COMPANYID IN (' + StringHelper.ArrayToList(None, organizeIds, '\'') + ')' \
+                    + ' OR piuser.COMPANYID IN (' + StringHelper.ArrayToList(None, organizeIds, '\'') + ')' \
+                    + ' OR piuser.DEPARTMENTID IN (' + StringHelper.ArrayToList(None, organizeIds, '\'') + ')' \
+                    + ' OR piuser.SUBDEPARTMENTID IN (' + StringHelper.ArrayToList(None, organizeIds, '\'') + ')' \
+                    + ' OR piuser.WORKGROUPID IN (' + StringHelper.ArrayToList(None, organizeIds, '\'') + '))'
 
                 whereConditional = whereConditional + ' OR piuser.ID IN (' \
                     + ' SELECT ID' \
@@ -292,7 +316,7 @@ class UserSerivce(object):
             whereConditional = whereConditional + ' AND (piuser.AUDITSTATUS=\'' + auditStates + '\')'
 
         if roleIds:
-            roles = StringHelper.ArrayToList(self, roleIds, '\'')
+            roles = StringHelper.ArrayToList(None, roleIds, '\'')
             whereConditional = whereConditional + ' AND (piuser.ID IN ( SELECT USERID FROM piuserrole WHERE ROLEID IN (' + roles + ')))'
 
         return whereConditional
@@ -311,15 +335,16 @@ class UserSerivce(object):
         Returns:
             returnValue (List): 用户列表
         """
+
         userList = []
         sqlQuery = 'select piuser.*,piuserlogon.FIRSTVISIT,piuserlogon.PREVIOUSVISIT,piuserlogon.LASTVISIT,piuserlogon.IPADDRESS,piuserlogon.MACADDRESS,piuserlogon.LOGONCOUNT,piuserlogon.USERONLINE,piuserlogon.CHECKIPADDRESS,piuserlogon.MULTIUSERLOGIN FROM PIUSER LEFT OUTER JOIN PIUSERLOGON ON PIUSER.ID = PIUSERLOGON.ID '
-        whereConditional = UserSerivce.GetSearchConditional(self,permissionScopeCode, search, roleIds, enabled, audiStates, departmentId)
+        whereConditional = UserSerivce.GetSearchConditional(None,permissionScopeCode, search, roleIds, enabled, audiStates, departmentId)
         sqlQuery = sqlQuery + " WHERE " + whereConditional
         sqlQuery = sqlQuery + " ORDER BY piuser.SORTCODE"
-        userList = DbCommonLibaray.executeQuery(self, sqlQuery)
+        userList = DbCommonLibaray.executeQuery(None, sqlQuery)
         return userList
 
-    def Search(self, searchValue, auditStatus, roleIds):
+    def Search(userInfo, searchValue, auditStatus, roleIds):
         """
         查询用户
         Args:
@@ -329,7 +354,9 @@ class UserSerivce(object):
         Returns:
             returnValue (int): 影响行数
         """
-        returnValue = UserSerivce.Searchs(self, '', searchValue, roleIds, None,   auditStatus, '')
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_Search, '')
+        returnValue = UserSerivce.Searchs(userInfo, '', searchValue, roleIds, None,   auditStatus, '')
         return returnValue
 
 
@@ -343,6 +370,7 @@ class UserSerivce(object):
         Returns:
             returnValue (int): 影响行数
         """
+
         returnValue = Piuser.objects.filter(id__in=ids).update(auditstatus = auditStates)
         if auditStates == AuditStatus.AuditPass:
             returnValue = Piuser.objects.filter(id__in=ids).update(enable=1)
@@ -350,7 +378,7 @@ class UserSerivce(object):
             returnValue = Piuser.objects.filter(id__in=ids).update(enable=0)
         return returnValue
 
-    def Delete(self, id):
+    def Delete(userInfo, id):
         """
         单个删除用户
         Args:
@@ -358,6 +386,8 @@ class UserSerivce(object):
         Returns:
             returnValue (True or False): 删除结果
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_Delete, id)
         try:
             #已删除用户Piuser表中的DELETEMARK设置为1
             try:
@@ -369,13 +399,13 @@ class UserSerivce(object):
             #用户已经被删除的员工的UserId设置为Null
             Pistaff.objects.filter(userid__in=Piuser.objects.filter(deletemark=1)).update(userid=None)
             # 清除用户的操作权限
-            UserPermission.ClearUserPermissionByUserId(self, id)
+            UserPermission.ClearUserPermissionByUserId(None, id)
             return True
         except Exception as e:
             return False
 
 
-    def BatchDelete(self, ids):
+    def BatchDelete(userInfo, ids):
         """
         单个删除用户
         Args:
@@ -384,6 +414,10 @@ class UserSerivce(object):
             returnValue (True or False): 删除结果
         """
         # 已删除用户Piuser表中的DELETEMARK设置为1
+
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_BatchDelete, str(ids))
+
         try:
             user = Piuser.objects.filter(id__in=ids)
             if len(user) == 0:
@@ -395,11 +429,11 @@ class UserSerivce(object):
         Pistaff.objects.filter(userid__in=Piuser.objects.filter(id__in=ids)).update(userid=None)
         # 清除用户的操作权限
         for id in ids:
-            UserPermission.ClearUserPermissionByUserId(self, id)
+            UserPermission.ClearUserPermissionByUserId(None, id)
         return True
 
 
-    def SetDeleted(self, ids):
+    def SetDeleted(userInfo, ids):
         """
         批量打删除标志
         Args:
@@ -407,6 +441,8 @@ class UserSerivce(object):
         Returns:
             returnValue (True or False): 影响行数
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_SetDeleted, str(ids))
         try:
             user = Piuser.objects.filter(id__in=ids)
             if len(user) == 0:
@@ -416,10 +452,10 @@ class UserSerivce(object):
             return False
         # 清除用户的操作权限
         for id in ids:
-            UserPermission.ClearUserPermissionByUserId(self, id)
+            UserPermission.ClearUserPermissionByUserId(None, id)
         return True
 
-    def BatchSave(self, dataTable):
+    def BatchSave(userInfo, dataTable):
         """
         批量保存
         Args:
@@ -427,6 +463,8 @@ class UserSerivce(object):
         Returns:
             returnValue (True or False): 保存结果
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_BatchSave, str(dataTable))
         try:
             for user in dataTable:
                 user.save()
@@ -434,7 +472,7 @@ class UserSerivce(object):
         except:
             return False
 
-    def GetCompanyUser(self, user):
+    def GetCompanyUser(userInfo, user):
         """
         得到当前用户所在公司的用户列表
         Args:
@@ -442,10 +480,12 @@ class UserSerivce(object):
         Returns:
             returnValue (Piuser[]): 用户列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetCompanyUser, user)
         returnValue = Piuser.objects.filter(Q(companyname=user.companyname) & Q(deletemark=0) & Q(enabled=1) & Q(isvisible=1)).order_by('sortcode')
         return returnValue
 
-    def GetDepartmentUser(self, user):
+    def GetDepartmentUser(userInfo, user):
         """
         得到当前用户所在部门的用户列表
         Args:
@@ -453,13 +493,16 @@ class UserSerivce(object):
         Returns:
             returnValue (Piuser[]): 用户列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetDepartmentUser, user)
         returnValue = Piuser.objects.filter(
             Q(companyname=user.companyname) & Q(deletemark=0) & Q(departmentname=user.departmentname) & Q(enabled=1) & Q(isvisible=1)).order_by('sortcode')
         return returnValue
 
-    def GetDTByOrganizes(self, organizeIds):
-
-        organizeList = StringHelper.ArrayToList(self, organizeIds,'\'')
+    def GetDTByOrganizes(userInfo, organizeIds):
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetDTByOrganizes, organizeIds)
+        organizeList = StringHelper.ArrayToList(None, organizeIds,'\'')
 
         sqlQuery = " SELECT * " \
             + " FROM " + Piuser._meta.db_table \
@@ -476,9 +519,9 @@ class UserSerivce(object):
             + "       OR " + Piuserorganize._meta.db_table + ".companyid IN (" + organizeList + "))) " \
             + " ORDER BY " + Piuser._meta.db_table + ".sortcode";
 
-        return DbCommonLibaray.executeQuery(self, sqlQuery)
+        return DbCommonLibaray.executeQuery(None, sqlQuery)
 
-    def GetDataTableByDepartment(self, departmentId):
+    def GetDataTableByDepartment(userInfo, departmentId):
         """
         得到指定组织包含的用户列表
         Args:
@@ -487,6 +530,9 @@ class UserSerivce(object):
         Returns:
             returnValue (List[Dic[Piuser]]): 用户列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetDataTableByDepartment, departmentId)
+
         sqlQuery = " SELECT " + Piuser._meta.db_table + ".*  FROM " + Piuser._meta.db_table \
         + " WHERE (" + Piuser._meta.db_table + ".deletemark = 0 " \
         + " AND " + Piuser._meta.db_table + ".enabled = 1 ) "
@@ -499,11 +545,11 @@ class UserSerivce(object):
             + "  WHERE (" + Piuserorganize._meta.db_table + ".deletemark = 0 ) " \
             + "       AND (" + Piuserorganize._meta.db_table + ".departmentid = '" + departmentId + "'))) "; \
 
-        returnValue = DbCommonLibaray.executeQuery(self, sqlQuery)
+        returnValue = DbCommonLibaray.executeQuery(None, sqlQuery)
         return returnValue
 
 
-    def GetDepartmentUsers(self, departmentId, containChildren):
+    def GetDepartmentUsers(userInfo, departmentId, containChildren):
         """
         得到指定部门包含的用户列表
         Args:
@@ -512,20 +558,24 @@ class UserSerivce(object):
         Returns:
             returnValue (List[Dic[Piuser]]): 用户列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetDepartmentUsers,
+                            departmentId + '/' + containChildren)
+
         returnValue = []
         if not departmentId:
             returnValue = Piuser.objects.filter(Q(deletemark=0)).order_by('sortcode')
         elif containChildren:
 
-            organizeIds = OrganizeService.GetChildrensIdByCode(self, Piorganize.objects.get(id = departmentId).code)
-            returnValue = UserSerivce.GetDTByOrganizes(self, organizeIds)
+            organizeIds = OrganizeService.GetChildrensIdByCode(None, Piorganize.objects.get(id = departmentId).code)
+            returnValue = UserSerivce.GetDTByOrganizes(None, organizeIds)
         else:
-            returnValue = UserSerivce.GetDataTableByDepartment(self, departmentId)
+            returnValue = UserSerivce.GetDataTableByDepartment(None, departmentId)
 
         return returnValue
 
 
-    def GetListByDepartment(self, departmentId, containChildren):
+    def GetListByDepartment(userInfo, departmentId, containChildren):
         """
         得到指定组织包含的用户列表
         Args:
@@ -534,6 +584,10 @@ class UserSerivce(object):
         Returns:
             returnValue (List[Dic[Piuser]]): 用户列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetListByDepartment,
+                            departmentId + '/' + containChildren)
+
         sqlQuery = " SELECT " + Piuser._meta.db_table + ".*  FROM " + Piuser._meta.db_table \
                    + " WHERE (" + Piuser._meta.db_table + ".deletemark = 0 " \
                    + " AND " + Piuser._meta.db_table + ".enabled = 1 ) "
@@ -545,10 +599,14 @@ class UserSerivce(object):
                        + "   FROM " + Piuserorganize._meta.db_table \
                        + "  WHERE (" + Piuserorganize._meta.db_table + ".deletemark = 0 ) " \
                        + "       AND (" + Piuserorganize._meta.db_table + ".departmentid = '" + departmentId + "'))) "; \
-        returnValue = DbCommonLibaray.executeQuery(self, sqlQuery)
+        returnValue = DbCommonLibaray.executeQuery(None, sqlQuery)
         return returnValue
 
     def GetSearchConditional(self, userInfo, permissionScopeCode, search, roleIds, enabled, auditStates, departmentId):
+
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetSearchConditional, '')
+
         search = StringHelper.GetSearchString(self, search)
         whereConditional = 'piuser.deletemark=0 and piuser.isvisible=1 '
         if not enabled == None:
@@ -618,7 +676,7 @@ class UserSerivce(object):
         return whereConditional
 
 
-    def GetUserIdsInRole(self, roleId):
+    def GetUserIdsInRole(userInfo, roleId):
         """
         获取员工的角色主键数组
         Args:
@@ -626,13 +684,19 @@ class UserSerivce(object):
         Returns:
             returnValue (List): 主键数组
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetUserIdsInRole, roleId)
         q1 = Piuser.objects.filter(Q(roleid=roleId) & Q(deletemark=0) & Q(enabled=1)).values_list('id', flat=True)
         q2 = Piuserrole.objects.filter(Q(roleid=roleId) & Q(userid__in=Piuser.objects.filter(deletemark=0).values_list('id')) & Q(deletemark=0)).values_list('userid', flat=True)
         returnValue = q1.union(q2)
         return returnValue
 
     def SearchByPage(self, userInfo, permissionScopeCode, search, roleIds, enabled, auditStates, departmentId, pageIndex = 0, pageSize = 20, order = None):
-        whereConditional = UserSerivce.GetSearchConditional(self, userInfo, permissionScopeCode, search, roleIds, enabled, auditStates, departmentId)
+
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_SearchByPage, '')
+
+        whereConditional = UserSerivce.GetSearchConditional(None, userInfo, permissionScopeCode, search, roleIds, enabled, auditStates, departmentId)
         #countSqlQuery = ' SELECT * FROM ' + Piuser._meta.db_table + ' WHERE '
         countSqlQuery = 'SELECT * FROM (SELECT PIUSER.*, PIUSERLOGON.FIRSTVISIT, PIUSERLOGON.PREVIOUSVISIT, PIUSERLOGON.LASTVISIT, PIUSERLOGON.IPADDRESS, PIUSERLOGON.MACADDRESS, PIUSERLOGON.LOGONCOUNT, PIUSERLOGON.USERONLINE, PIUSERLOGON.CHECKIPADDRESS, PIUSERLOGON.MULTIUSERLOGIN FROM PIUSER LEFT OUTER JOIN PIUSERLOGON ON PIUSER.ID = PIUSERLOGON.ID WHERE PIUSER.DELETEMARK = 0  AND PIUSER.ISVISIBLE = 1 AND (PIUSER.ENABLED = 1) ORDER BY PIUSER.SORTCODE) PIUSER WHERE '
         countSqlQuery = countSqlQuery + ' ' + whereConditional
@@ -641,7 +705,7 @@ class UserSerivce(object):
         page = pageValue.page(pageIndex)
         return pageValue.count, page
 
-    def GetUserDTByRole(self, roleId):
+    def GetUserDTByRole(userInfo, roleId):
         """
        按角色获取用户列表
        Args:
@@ -649,6 +713,10 @@ class UserSerivce(object):
        Returns:
            returnValue (List): 用户实体列表
        """
+
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetUserDTByRole, roleId)
+
         sqlQuery = " SELECT " + 'piuser' + ".* " \
         + "," + 'piuserlogon' + "." + 'useronline' \
         + " FROM PIUSER LEFT OUTER JOIN PIUSERLOGON ON PIUSER.ID = PIUSERLOGON.ID ";
@@ -670,7 +738,11 @@ class UserSerivce(object):
         dataTable = DbCommonLibaray.executeQuery(None, sqlQuery)
         return dataTable
 
-    def GetUserIdsByOrganizeIdsAndRoleIds(receiverIds, organizeIds, roleIds):
+    def GetUserIdsByOrganizeIdsAndRoleIds(userInfo, receiverIds, organizeIds, roleIds):
+
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetUserIdsByOrganizeIdsAndRoleIds, '')
+
         companyUsers = Piuser.objects.filter(Q(deletemark=0) & Q(enabled=1) & Q(workgroupid__in=organizeIds) & Q(departmentid__in=organizeIds) & Q(subcompanyid__in=organizeIds) & Q(companyid__in=organizeIds) | Q(id__in=Piuserorganize.objects.filter(Q(deletemark=0) & (Q(departmentid__in=organizeIds) | Q(subdepartmentid__in=organizeIds) | Q(companyid__in=organizeIds))))).order_by('sortcode').values_list('id', flat=True)
         roleUsers = Piuserrole.objects.filter(Q(roleid__in=roleIds) & Q(userid__in=Piuser.objects.filter(Q(deletemark=0) & Q(deletionstatecode = 0)).values_list('id', flat=True)))
         users = companyUsers.union(roleUsers)

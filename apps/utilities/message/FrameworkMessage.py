@@ -632,8 +632,10 @@ class FrameworkMessage():
     UserService_Exists = "用户名是否重复"
     UserService_AddUser = "新增用户"
     UserService_GetEntity = "取得用户实体"
+    UserService_GetEntityByUserName = "根据用户名取得用户实体"
     UserService_GetDT = "取得用户列表"
     UserService_GetDTByPage = "取得分页用户列表"
+    UserService_GetList = "取得用户列表"
     UserService_GetDTByIds = "依主键取得用户列表"
     UserService_Search = "查询用户"
     UserService_SetUserAuditStates = "设置用户审核状态"
@@ -661,6 +663,14 @@ class FrameworkMessage():
     UserService_BatchDeleteUserOrganize = "批量删除用户组织机构关联"
     UserService_GetCompanyUser = "得到当前用户所在公司的用户列表"
     UserService_GetDepartmentUser = "得到当前用户所在部门的用户列表"
+    UserService_GetDTByOrganizes = "得到组织机构的用户列表"
+    UserService_GetDataTableByDepartment = "得到组织机构的用户列表"
+    UserService_GetDepartmentUsers = "得到当前用户所在部门的用户列表"
+    UserService_GetListByDepartment = "得到组织机构的用户列表"
+    UserService_GetSearchConditional = "获取查询条件"
+    UserService_GetUserIdsInRole = "获取指定角色的用户主键列表"
+    UserService_SearchByPage = "分页查询"
+    UserService_GetUserIdsByOrganizeIdsAndRoleIds = "获取组织机构和角色中的用户主键列表"
 
     # OrganizeService组织机构服务及相关的方法名称定义
     OrganizeService = "组织机构服务"
@@ -964,6 +974,8 @@ class FrameworkMessage():
     # ParameterService参数服务及相关的方法名称定义
     ParameterService = "参数服务"
     ParameterService_GetServiceConfig = "获取服务器上的配置信息"
+    ParameterService_Add = "新增配置信息"
+
     ParameterService_GetParameter = "取得参数值"
     ParameterService_SetParameter = "设置参数值"
     ParameterService_GetDTByParameter = "取得参数服务列表"
@@ -971,7 +983,11 @@ class FrameworkMessage():
     ParameterService_DeleteByParameter = "删除参数"
     ParameterService_DeleteByParameterCode = "依参数编号删除"
     ParameterService_Delete = "删除参数"
+    ParameterService_SetDeleted = "逻辑删除参数"
+    ParameterService_GetEntity = "获取参数实体"
     ParameterService_BatchDelete = "批量删除参数"
+    ParameterService_GetDTByPage = "获取系统参数分页数据"
+    ParameterService_Update = "更新系统参数"
 
     # FileService文件服务及相关的方法名称定义
     FileService = "文件服务"

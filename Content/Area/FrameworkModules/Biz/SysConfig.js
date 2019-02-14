@@ -29,7 +29,7 @@ function initCtrl() {
         data: _data.navType, panelHeight: 'auto', editable: false, valueField: 'id', textField: 'text', width: 180
     });
     $('#txtGridRows').val(20).numberspinner({ min: 10, max: 500, increment: 10 });
-    $.ajaxjson('/FrameworkModules/SysConfig/GetDefaultConfig', '', function (d) {
+    $.ajaxjson('/Admin/FrameworkModules/SysConfig/GetDefaultConfig/', '', function (d) {
         if (d) {
             $('#txtTheme').combobox('setValue', d.theme.name);
             $('#txtGridRows').numberspinner('setValue', d.gridRows);
@@ -61,7 +61,7 @@ function saveConfig() {
 
     var str = JSON.stringify(configObj);
 
-    $.ajaxtext('/FrameworkModules/SysConfig/UpdateUserConfig', 'themeJson=' + str, function (d) {
+    $.ajaxtext('/Admin/FrameworkModules/SysConfig/UpdateUserConfig/', 'themeJson=' + str, function (d) {
         if (d == 1)
             msg.ok('恭喜，全局设置保存成功,按F5看效果');
         else

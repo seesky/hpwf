@@ -31,7 +31,7 @@ class UserOrganizeService(object):
         """
         if not departmentId:
             #dataTable = Piuser.objects.filter(deletemark=0).order_by('sortcode', flat=True)
-            dataTable = UserSerivce.GetDT()
+            dataTable = UserSerivce.GetDT(None)
         else:
             dataTable = UserSerivce.GetDepartmentUsers(self, departmentId, containChildren)
         return dataTable

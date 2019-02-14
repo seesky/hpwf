@@ -1,7 +1,5 @@
-﻿@{
-    ViewBag.Title = "系统配置";
-    Layout = "~/Views/Shared/_LayoutIndex.cshtml";
-}
+﻿{% extends "Shared/_LayoutIndex.html" %}
+{% block content %}
 
 <style type="text/css">
     #sysconfig h1
@@ -25,7 +23,7 @@
         width:140px;float:left; text-align:right;padding-right:10px;
     }
 </style>
-<link href="~/Content/Styles/css3btn.css" rel="stylesheet" />
+<link href="/Content/Styles/css3btn.css" rel="stylesheet" />
 
    <div id="sysconfig" style="margin:10px;">
     <h1>界面皮肤设置</h1>
@@ -51,4 +49,5 @@
 <div style="margin:140px;width:160px; margin-top:40px; font-family:'Microsoft YaHei'">
     <a id="btnok" href="javascript:;" class="buttonHuge button-blue">保存设置</a>
 </div>
-<script src="~/Areas/FrameworkModules/Biz/SysConfig.js?v=30" type="text/javascript"></script>
+<script src="/Content/Area/FrameworkModules/Biz/SysConfig.js?v=30" type="text/javascript"></script>
+{% endblock %}

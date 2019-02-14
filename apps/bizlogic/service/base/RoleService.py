@@ -16,13 +16,14 @@ from apps.bizlogic.models import Piuser
 from apps.bizlogic.models import Piuserrole
 from apps.bizlogic.service.base.UserService import UserSerivce
 from apps.bizlogic.service.base.UserRoleService import UserRoleService
-
+from apps.bizlogic.service.base.LogService import LogService
+import sys
 
 class RoleService(object):
     """
     新增实体
     """
-    def Add(self, entity):
+    def Add(userInfo, entity):
         """
         用户名是否重复
         Args:
@@ -30,6 +31,8 @@ class RoleService(object):
         Returns:
             returnValue(bool): 新增结果
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.RoleService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.RoleService_Add, entity.id)
         try:
             entity.save()
             returnCode = StatusCode.statusCodeDic['OKAdd']
@@ -50,7 +53,7 @@ class RoleService(object):
             return returnCode, returnMessage, returnValue
         pass
 
-    def Update(self, entity):
+    def Update(userInfo, entity):
         """
         更新实体
         Args:
@@ -59,6 +62,8 @@ class RoleService(object):
             returnValue (string): 状态码
             returnMessage (string): 状态信息
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.RoleService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.RoleService_Update, entity.id)
         try:
             entity.save()
             returnCode = StatusCode.statusCodeDic['OKUpdate']
@@ -69,13 +74,15 @@ class RoleService(object):
             returnMessage = FrameworkMessage.MSG0001
             return returnCode, returnMessage
 
-    def GetDT(self):
+    def GetDT(userInfo):
         """
         取得角色列表
         Args:
         Returns:
             returnValue (List): 角色列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.RoleService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.RoleService_GetDT, '')
         returnValue = None
         try:
             # for role in Pirole.objects.all():
@@ -87,13 +94,15 @@ class RoleService(object):
         except TransactionManagementError as e:
             return returnValue
 
-    def GetList(self):
+    def GetList(userInfo):
         """
         取得角色列表
         Args:
         Returns:
             returnValue (List): 角色列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.RoleService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.RoleService_GetDT, '')
         returnValue = []
         try:
             for role in Pirole.objects.all():
@@ -104,7 +113,7 @@ class RoleService(object):
         except TransactionManagementError as e:
             return returnValue
 
-    def GetDtByPage(self, pageSize=20, whereConditional="", order=""):
+    def GetDtByPage(userInfo, pageSize=20, whereConditional="", order=""):
         """
         取得角色列表
         Args:
@@ -116,6 +125,8 @@ class RoleService(object):
             returnValue (List): 角色分页列表
 
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.RoleService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.RoleService_GetDTByPage, '')
         if not whereConditional:
             if not order:
                 whereConditional = 'SELECT * FROM ' + Pirole._meta.db_table + ' WHERE deletemark = 0'
@@ -126,11 +137,11 @@ class RoleService(object):
                 'SELECT * FROM ' + Pirole._meta.db_table + ' WHERE ' + whereConditional + ' AND deletemark = 0'
             else:
                 whereConditional = 'SELECT * FROM ' + Pirole._meta.db_table + ' WHERE ' + whereConditional + ' AND deletemark = 0 ORDER BY ' + order
-        staffList = DbCommonLibaray.executeQuery(self, whereConditional)
+        staffList = DbCommonLibaray.executeQuery(None, whereConditional)
         returnValue = Paginator(staffList, pageSize)
         return returnValue
 
-    def GetEntity(self, id):
+    def GetEntity(userInfo, id):
         """
         获取角色实体
         Args:
@@ -138,13 +149,15 @@ class RoleService(object):
         Returns:
             returnValue (Pirole or None): 员工实体
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.RoleService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.RoleService_GetDTByPage, id)
         try:
             role = Pirole.objects.get(id=id)
             return role
         except Pirole.DoesNotExist:
             return None
 
-    def GetDTByIds(self, ids):
+    def GetDTByIds(userInfo, ids):
         """
         按主键获取员工列表
         Args:
@@ -159,6 +172,8 @@ class RoleService(object):
         #         returnValue.append(role)
         #     except Pirole.DoesNotExist:
         #         continue
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.RoleService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.RoleService_GetDTByIds, str(ids))
         returnValue = Pirole.objects.filter(Q(id__in=ids) & Q(deletemark=0))
         return returnValue
 
@@ -177,7 +192,7 @@ class RoleService(object):
         returnValue = Pirole.objects.filter(q)
         return returnValue
 
-    def GetDTByOrganize(self, organizeId, showUser=True):
+    def GetDTByOrganize(userInfo, organizeId, showUser=True):
         """
         按组织机构获取角色列表
         Args:
@@ -186,12 +201,14 @@ class RoleService(object):
         Returns:
             returnValue (Pirole[]): 角色列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.RoleService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.RoleService_GetDTByOrganize, organizeId)
         dtRole = Pirole.objects.filter(Q(organizeid=organizeId) & Q(deletemark=0)).order_by('sortcode')
         if showUser:
             username = ''
-            dataTableUser = UserSerivce.GetDT(self)
+            dataTableUser = UserSerivce.GetDT(None)
             for role in dtRole:
-                userIds = UserSerivce.GetUserIdsInRole(self, role.id)
+                userIds = UserSerivce.GetUserIdsInRole(None, role.id)
                 if userIds:
                     for userid in userIds:
                         username = username + Piuser.objects.get(id=userid).realname + ', '
@@ -252,7 +269,7 @@ class RoleService(object):
             returnValue = returnValue + RoleService.Delete(self, id)
         return returnValue
 
-    def SetDeleted(self, ids):
+    def SetDeleted(userInfo, ids):
         """
         批量逻辑删除角色
         Args:
@@ -261,6 +278,8 @@ class RoleService(object):
             returnValue (True or False): 删除结果
         """
         #TODO:此处还应该把角色相应的权限，所拥有的用户等也做统一处理。
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.RoleService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.RoleService_SetDeleted, str(ids))
         returnValue = Pirole.objects.filter(Q(id__in=ids)).update(deletemark=1)
         return returnValue
 

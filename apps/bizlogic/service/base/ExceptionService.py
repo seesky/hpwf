@@ -10,6 +10,8 @@ from django.db.transaction import TransactionManagementError
 from django.db.models import Q
 from utilities.message.StatusCode import StatusCode
 from utilities.message.FrameworkMessage import FrameworkMessage
+from apps.bizlogic.service.base.LogService import LogService
+import sys
 
 
 class ExceptionService(object):
@@ -100,7 +102,7 @@ class ExceptionService(object):
         return returnValue
         pass
 
-    def Delete(self, id):
+    def Delete(userInfo, ids):
         """
         删除异常
         Args:
@@ -108,7 +110,13 @@ class ExceptionService(object):
         Returns:
             returnValue (int): 受影响行数
         """
-        returnValue = Ciexception.objects.filter(id=id).delete()
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ExceptionService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ExceptionService_Delete, '')
+        returnValue,v = Ciexception.objects.filter(id__in=ids).delete()
+        # returnValue = 0
+        # for id in ids:
+        #     returnValue = returnValue + Ciexception.objects.filter(id=id).delete()
+
         return returnValue
 
     def BatchDelete(self, ids):

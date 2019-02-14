@@ -73,19 +73,19 @@ class ModulePermission(object):
     def GetDTByPermission(self, userId, permissionItemScopeCode):
         #这里需要判断,是系统权限？
         isRole = False
-        irRole = PermissionScopeService.UserInRole(self, userId, "UserAdmin")
+        isRole = ModulePermission.UserInRole(self, userId, "UserAdmin")
         #用户管理员
         if isRole:
             returnValue = Pimodule.objects.filter(Q(category='System') & Q(deletemark=0) & Q(enabled=1)).order_by('sortcode')
             return returnValue
 
-        isRole = PermissionScopeService.UserInRole(self, userId, "Admin")
+        isRole = ModulePermission.UserInRole(self, userId, "Admin")
         if isRole:
             returnValue = Pimodule.objects.filter(Q(category='Application') & Q(deletemark=0) & Q(enabled=1)).order_by(
                 'sortcode')
             return returnValue
 
-        moduleIds = PermissionScopeService.GetTreeResourceScopeIds(self, 'PIMODULE', permissionItemScopeCode, True)
+        moduleIds = PermissionScopeService.GetTreeResourceScopeIds(self, userId, 'PIMODULE', permissionItemScopeCode, True)
         returnValue = Pimodule.objects.filter(Q(id__in=moduleIds) & Q(deletemark=0) & Q(enabled=1))
         return returnValue
 

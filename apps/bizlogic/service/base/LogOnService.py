@@ -48,7 +48,7 @@ class LogOnService(object):
     def LogOnByUserName(self, userName, returnStatusCode, returnStatusMessage):
         pass
 
-    def UserLogOn(userName, password, openId, createOpenId):
+    def UserLogOn(userName, password, openId, createOpenId, ipAddress):
         """
         用户登录
         Args:
@@ -63,7 +63,7 @@ class LogOnService(object):
         returnCode = ''
         returnMessage = ''
         returnUserInfo = None
-        returnStatusCode,returnUserInfo = LogOnService.LogOn(userName, password, openId, createOpenId)
+        returnStatusCode,returnUserInfo = LogOnService.LogOn(userName, password, openId, createOpenId, ipAddress)
         return returnStatusCode,returnUserInfo
 
     def GetEntity(self, id):
@@ -284,9 +284,11 @@ class LogOnService(object):
         if UserInfo:
             realName = userInfo.RealName
             if ipAddress:
-                ipAddress = UserInfo.IPAddress
+                #ipAddress = UserInfo.IPAddress
+                userInfo.IPAddress = ipAddress
             if macAddress:
-                macAddress = UserInfo.MACAddress
+                #macAddress = UserInfo.MACAddress
+                userInfo.MACAddress = macAddress
 
         #01: 系统是否采用了在线用户的限制
         if SystemInfo.OnLineLimit > 0 and LogOnService.CheckOnLineLimit():

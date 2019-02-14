@@ -36,10 +36,10 @@ class LoginAuthorize(object):
 
     def __call__(self, *args, **kw):
 
-        if ParameterService.GetServiceConfig('LoginProvider') == 'Cookie':
+        if ParameterService.GetServiceConfig(None, 'LoginProvider') == 'Cookie':
             try:
-                user = args[0].get_signed_cookie(ParameterService.GetServiceConfig('LoginProvider'),
-                                                 salt=ParameterService.GetServiceConfig('LoginUserKey'))
+                user = args[0].get_signed_cookie(ParameterService.GetServiceConfig(None, 'LoginProvider'),
+                                                 salt=ParameterService.GetServiceConfig(None, 'LoginUserKey'))
                 if user:
                     user = SecretHelper.AESDecrypt(user)
 

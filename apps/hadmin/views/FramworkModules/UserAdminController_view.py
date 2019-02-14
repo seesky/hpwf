@@ -161,7 +161,7 @@ def GetUserListByPage(request):
     response = HttpResponse()
 
     recordCount = 0
-    dtUser = UserSerivce.GetDTByPage(None, SearchFilter.TransfromFilterToSql(filter, False), '', '', rows, sort + ' ' + order)
+    dtUser = UserSerivce.GetDTByPage(CommonUtils.Current(response, request), SearchFilter.TransfromFilterToSql(filter, False), '', '', rows, sort + ' ' + order)
 
     recordCount = dtUser.count
     pageValue = dtUser.page(page)
@@ -204,7 +204,7 @@ def SubmitForm(request):
             user.isdimission = 0
 
 
-            returnCode, returnMessage, returnValue = UserSerivce.AddUser(None, user)
+            returnCode, returnMessage, returnValue = UserSerivce.AddUser(CommonUtils.Current(response, request), user)
             if returnCode == StatusCode.statusCodeDic['OKAdd']:
                 response.content = json.dumps({'Success':True, 'Data':IsOk, 'Message':returnMessage})
                 return response
@@ -212,14 +212,14 @@ def SubmitForm(request):
                 response.content = json.dumps({'Success': False, 'Data': '0', 'Message': returnMessage})
                 return response
         else:
-            updateEntity = UserSerivce.GetEntity(key)
+            updateEntity = UserSerivce.GetEntity(CommonUtils.Current(HttpResponse(), request), key)
             if updateEntity:
                 updateEntity = updateEntity.loadJson(request)
 
             if curUser:
                 updateEntity.modifiedby = curUser.RealName
                 updateEntity.modifieduserid = curUser.Id
-                returnCode, returnMessage = UserSerivce.UpdateUser(None, updateEntity)
+                returnCode, returnMessage = UserSerivce.UpdateUser(CommonUtils.Current(response, request), updateEntity)
                 if returnCode == StatusCode.statusCodeDic['OKUpdate']:
                     response.content = json.dumps({'Success': True, 'Data': IsOk, 'Message': returnMessage})
                     return response
@@ -238,7 +238,7 @@ def GetEntity(request):
         key = request.POST['key']
     except:
         key = None
-    entity = UserSerivce.GetEntity(key)
+    entity = UserSerivce.GetEntity(CommonUtils.Current(HttpResponse(), request), key)
     response = HttpResponse()
     response.content = entity.toJSON()
     return response
@@ -250,7 +250,7 @@ def Delete(request):
     except:
         key = ''
 
-    returnValue = UserSerivce.SetDeleted(None, [key])
+    returnValue = UserSerivce.SetDeleted(CommonUtils.Current(HttpResponse(), request), [key])
 
     if returnValue:
         response = HttpResponse()
@@ -320,7 +320,7 @@ def GetUserListJson(request):
     response = HttpResponse()
     user = CommonUtils.Current(response, request)
     if user.IsAdministrator or (not "Resource.ManagePermission") or (SystemInfo.EnableUserAuthorizationScope):
-        dtUser = UserSerivce.GetDT(None)
+        dtUser = UserSerivce.GetDT(user)
     else:
         dtUser = ScopPermission.GetUserDTByPermissionScope(None, user.Id, "Resource.ManagePermission")
 

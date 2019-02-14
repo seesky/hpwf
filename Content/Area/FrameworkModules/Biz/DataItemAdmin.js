@@ -59,7 +59,7 @@ var DicCategory = {
         treeData = JSON.stringify(treeData);
         treeData = '[{"id":0,"selected":true,"text":"请选择上级节点"},' + treeData.substr(1, treeData.length - 1);
 
-        top.$('#ParentId').combotree({
+        top.$('#parentid').combotree({
             data: JSON.parse(treeData),
             valueField: 'id',
             textField: 'text',
@@ -67,9 +67,9 @@ var DicCategory = {
             editable: false,
             lines: true,
             onSelect: function (item) {
-                var nodeId = top.$('#ParentId').combotree('getValue');
+                var nodeId = top.$('#parentid').combotree('getValue');
                 if (item.id == curId) {
-                    top.$('#ParentId').combotree('setValue', nodeId);
+                    top.$('#parentid').combotree('setValue', nodeId);
                     top.$.messager.alert('警告提示', '上级节点不能与当前所选相同！', 'warning');
                 }
             }
@@ -84,16 +84,16 @@ var DicCategory = {
             height: 350,
             onLoad: function () {
                 DicCategory.bindCtrl();
-                top.$('#Enabled').attr("checked", true);
-                pageMethod.bindCategory('Category', 'DataDictionaryCategory');
+                top.$('#enabled').attr("checked", true);
+                pageMethod.bindCategory('category', 'DataDictionaryCategory');
             },
             submit: function () {
                 var isValid = top.$('#ItemsForm').form("validate");
                 if (isValid) {
                     var queryString = pageMethod.serializeJson(top.$('#ItemsForm'));
-                    $.ajaxjson(controlUrl + 'SubmitItemsForm', queryString, function (d) {
+                    $.ajaxjson(controlUrl + 'SubmitItemsForm/', queryString, function (d) {
                         if (d.Data > 0) {
-                            msg.ok('亲，字典类别添加成功。');
+                            msg.ok('字典类别添加成功。');
                             addDialog.dialog('close');
                             DicCategory.reload();
                         } else {
@@ -114,13 +114,13 @@ var DicCategory = {
                 width: 390,
                 height: 350,
                 onLoad: function () {
-                    pageMethod.bindCategory('Category', 'DataDictionaryCategory');
+                    pageMethod.bindCategory('category', 'DataDictionaryCategory');
                     var parm = 'key=' + node.id;
-                    $.ajaxjson(controlUrl + 'GetItemsEntity', parm, function (data) {
+                    $.ajaxjson(controlUrl + 'GetItemsEntity/', parm, function (data) {
                         if (data) {
-                            DicCategory.bindCtrl(data.Id);
+                            DicCategory.bindCtrl(data.id);
                             SetWebControls(data, true);
-                            top.$('#ParentId').combotree('setValue', data.ParentId);
+                            top.$('#parentid').combotree('setValue', data.parentid);
                         }
                     });
                 },
@@ -153,7 +153,7 @@ var DicCategory = {
         }
         if (node) {
             if (confirm('亲,确认要删除此类别吗?')) {
-                $.ajaxjson(controlUrl + 'DeleteDataItem', 'key=' + node.id, function (d) {
+                $.ajaxjson(controlUrl + 'DeleteDataItem/', 'key=' + node.id, function (d) {
                     if (d.Data > 0) {
                         msg.ok('亲，字典类别删除成功。');
                         DicCategory.reload();
@@ -247,19 +247,19 @@ var mygrid = {
     initCtrl: function(dicId) {
         var cateData = $('body').data('categoryData');
         //alert(JSON.stringify(cateData));
-        var comboCategory = top.$('#ItemId').combobox({ data: cateData.rows, valuefield: 'id', textfield: 'text', editable: false, required: true, missingMessage: '请选择类别', disabled: true });
+        var comboCategory = top.$('#itemid').combobox({ data: cateData.rows, valuefield: 'id', textfield: 'text', editable: false, required: true, missingMessage: '请选择类别', disabled: true });
         var cnode = DicCategory.getSelected();
         if (cnode)
             comboCategory.combobox('setValue', cnode.id);
 
         var dicData = $("#dicGrid").treegrid('getData');
         if (dicData.length > 0) {
-            dicData = JSON.stringify(dicData).replace(/Id/g, "id").replace(/ItemName/g, "text");
+            dicData = JSON.stringify(dicData).replace(/id/g, "id").replace(/itemname/g, "text");
             dicData = '[{id:0,text:"== 请选择 =="},' + dicData.substr(1);
         } else
             dicData = '[{id:0,text:"== 请选择 =="}]';
 
-        var parentTree = top.$('#ParentId').combotree({
+        var parentTree = top.$('#parentid').combotree({
             data: eval(dicData),
             valuefield: 'id',
             textField: 'text',
@@ -276,9 +276,9 @@ var mygrid = {
 
         var crow = mygrid.GetSelectedRow();
         if (!dicId && crow) {
-            top.$('#ParentId').combotree('setValue', crow.Id);
+            top.$('#parentid').combotree('setValue', crow.Id);
         } else
-            top.$('#ParentId').combotree('setValue', 0);
+            top.$('#parentid').combotree('setValue', 0);
     },
     add: function() {
         if ($(this).linkbutton('options').disabled == true) {
@@ -302,10 +302,10 @@ var mygrid = {
             submit: function() {
                 if (top.$('#dicForm').form('validate')) {
                     var queryString = pageMethod.serializeJson(top.$('#ItemDetailForm'));
-                    $.ajaxjson(controlUrl + 'SubmitItemsDetailForm', queryString, function (d) {
+                    $.ajaxjson(controlUrl + 'SubmitItemsDetailForm/', queryString, function (d) {
                         if (d.Data > 0) {
                             msg.ok(d.Message);
-                            mygrid.reload(top.$('#ItemId').combobox('getValue'));
+                            mygrid.reload(top.$('#itemid').combobox('getValue'));
                         } else {
                             MessageOrRedirect(d);
                         }
@@ -331,11 +331,11 @@ var mygrid = {
             title: '编辑字典',
             iconCls: 'icon16_table_edit',
             onLoad: function() {
-                var parm = 'key=' + row.Id;
-                $.ajaxjson(controlUrl + 'GetItemsDetailEntity', parm, function (data) {
+                var parm = 'key=' + row.id;
+                $.ajaxjson(controlUrl + 'GetItemsDetailEntity/', parm, function (data) {
                     if (data) {
                         mygrid.initCtrl(row.Id);
-                        top.$('#ParentId').combotree('setValue', row.ParentId);
+                        top.$('#parentid').combotree('setValue', row.parentid);
                         SetWebControls(data, true);
                     }
                 });
@@ -343,10 +343,10 @@ var mygrid = {
             submit: function() {
                 if (top.$('#ItemDetailForm').form('validate')) {
                     var queryString = pageMethod.serializeJson(top.$('#ItemDetailForm'));
-                    $.ajaxjson(controlUrl + 'SubmitItemsDetailForm/?key=' + row.Id, queryString, function (d) {
+                    $.ajaxjson(controlUrl + 'SubmitItemsDetailForm/?key=' + row.id, queryString, function (d) {
                         if (d.Data > 0) {
                             msg.ok(d.Message);
-                            mygrid.reload(top.$('#ItemId').combobox('getValue'));
+                            mygrid.reload(top.$('#itemid').combobox('getValue'));
                             dicDialog.dialog('close');
                         } else {
                             MessageOrRedirect(d);
@@ -363,15 +363,15 @@ var mygrid = {
         }
         var row = mygrid.GetSelectedRow();
         if (row) {
-            var childs = $('#dicGrid').treegrid('getChildren', row.Id);
+            var childs = $('#dicGrid').treegrid('getChildren', row.id);
             if (childs.length > 0) {
                 msg.warning('当前字典有下级数据，不能删除。<br> 请先删除子节点数据。');
                 return false;
             }
 
             if (confirm('确认要删除此条字典数据吗?')) {
-                var query = 'key=' + row.Id;
-                $.ajaxjson(controlUrl + 'DeleteItemDetail', query, function (d) {
+                var query = 'key=' + row.id;
+                $.ajaxjson(controlUrl + 'DeleteItemDetail/', query, function (d) {
                     if (d.Data == 1) {
                         msg.ok(d.Message);
                         var node = DicCategory.getSelected();

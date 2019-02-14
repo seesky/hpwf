@@ -12,12 +12,13 @@ from django.http.response import HttpResponse
 from django.template import loader ,Context
 import json
 from apps.hadmin.MvcAppUtilties.JsonHelper import DateEncoder
+from apps.utilities.message.FrameworkMessage import FrameworkMessage
 
 
 def BuildToolBarButton(response, request):
     sb = ''
-    linkbtnTemplate = "<a id=\"a_{0}\" class=\"easyui-linkbutton\" style=\"float:left\"  plain=\"true\" href=\"javascript:;\" icon=\"{1}\"  {2} title=\"{3}\">{4}</a>"
-    sb = sb + "<a id=\"a_refresh\" class=\"easyui-linkbutton\" style=\"float:left\"  plain=\"true\" href=\"javascript:;\" icon=\"icon16_arrow_refresh\"  title=\"重新加载\">刷新</a> "
+    linkbtnTemplate = "<a id=\"btn{0}\" class=\"easyui-linkbutton\" style=\"float:left\"  plain=\"true\" href=\"javascript:;\" icon=\"{1}\"  {2} title=\"{3}\">{4}</a>"
+    sb = sb + "<a id=\"btnRefresh\" class=\"easyui-linkbutton\" style=\"float:left\"  plain=\"true\" href=\"javascript:;\" icon=\"icon16_arrow_refresh\"  title=\"重新加载\">刷新</a> "
     sb = sb + "<div class='datagrid-btn-separator'></div> "
     sb = sb + linkbtnTemplate.format("ViewDetail", "icon16_table_export", "" if PublicController.IsAuthorized(response, request, "ExceptionAdmin.Query") else "disabled=\"True\"", "查看异常详情", "查看异常详情")
     sb = sb + "<div class='datagrid-btn-separator'></div> "
@@ -87,3 +88,21 @@ def GridPageListJson(request):
 
     response.content = returnValue
     return response
+
+@LoginAuthorize
+def Delete(request):
+    try:
+        keys = request.POST['keys']
+    except:
+        key = ''
+
+    returnValue = ExceptionService.Delete(CommonUtils.Current(HttpResponse(), request), keys.split(','))
+
+    if returnValue > 0:
+        response = HttpResponse()
+        response.content = json.dumps({'Success': True, 'Data': '1', 'Message': FrameworkMessage.MSG0013})
+        return response
+    else:
+        response = HttpResponse()
+        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
+        return response

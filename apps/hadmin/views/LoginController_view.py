@@ -55,7 +55,7 @@ def CheckLogin(request):
 
                 returnStatusCode = ''
 
-                returnStatusCode,userInfo = LogOnService.UserLogOn(Account, Password, '', False)
+                returnStatusCode,userInfo = LogOnService.UserLogOn(Account, Password, '', False, IPAddress)
 
                 if returnStatusCode == StatusCode.statusCodeDic.get('OK'):
                     Msg = '3'
@@ -74,7 +74,7 @@ def CheckLogin(request):
 def OutLogin(request):
     response = HttpResponse()
     LogOnService.OnExit(None, CommonUtils.Current(response, request).Id)
-    CommonUtils.EmptyCurrent(response)
+    CommonUtils.EmptyCurrent(response, request)
     request.session.flush()
     response.content = '1'
     return response

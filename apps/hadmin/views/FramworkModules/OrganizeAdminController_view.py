@@ -210,9 +210,9 @@ def SubmitForm(request):
             org = org.loadJson(request)
 
             if org.managerid:
-                org.manager = UserSerivce.GetEntity(org.managerid).realname
+                org.manager = UserSerivce.GetEntity(CommonUtils.Current(response, request), org.managerid).realname
             if org.assistantmanagerid:
-                org.assistantmanager = UserSerivce.GetEntity(org.assistantmanagerid).realname
+                org.assistantmanager = UserSerivce.GetEntity(CommonUtils.Current(response, request), org.assistantmanagerid).realname
 
             org.id = uuid.uuid4()
             org.deletemark = 0

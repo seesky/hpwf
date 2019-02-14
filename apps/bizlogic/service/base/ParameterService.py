@@ -7,17 +7,18 @@ from apps.bizlogic.models import Ciparameter
 from django.db.models import Q
 from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 from django.core.paginator import Paginator
-import os
+import os,sys
 from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
 from django.db.utils import DatabaseError
 from django.db.transaction import TransactionManagementError
+from apps.bizlogic.service.base.LogService import LogService
 
 class ParameterService(object):
 
 
 
-    def GetServiceConfig(key):
+    def GetServiceConfig(userInfo, key):
         """
         获取服务器上的配置信息
         Args:
@@ -25,11 +26,14 @@ class ParameterService(object):
         Returns:
             returnValue (string): 配置内容
         """
+        if userInfo:
+            LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ParameterService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ParameterService_GetServiceConfig, id)
         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         config = ConfigObj(BASE_DIR + r'\..\..\utilities\config\Config.ini', encoding='UTF8')
         return config['appSettings'][key]
 
-    def GetParameter(categoryKey, parameterId, parameterCode):
+    def GetParameter(userInfo, categoryKey, parameterId, parameterCode):
         """
         获取参数值
         Args:
@@ -39,13 +43,15 @@ class ParameterService(object):
         Returns:
             returnValue (string): 参数值
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ParameterService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ParameterService_GetParameter, id)
         try:
             returnValue = Ciparameter.objects.get(Q(categorykey=categoryKey) & Q(parameterid=parameterId) & Q(parametercode=parameterCode) & Q(deletemark=0)).parametercontent
         except Ciparameter.DoesNotExist as e:
             returnValue = None
         return returnValue
 
-    def GetEntity(self, id):
+    def GetEntity(userInfo, id):
         """
         获取实体
         Args:
@@ -53,13 +59,15 @@ class ParameterService(object):
         Returns:
             returnValue (Ciparameter): 配置实体
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ParameterService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ParameterService_GetEntity, id)
         try:
             returnValue = Ciparameter.objects.get(id=id)
             return returnValue
         except Ciparameter.DoesNotExist:
             return None
 
-    def SetParameter(self, categoryKey, parameterId, parameterCode, parameterContent, allowEdit=0, allowDelete=0):
+    def SetParameter(userInfo, categoryKey, parameterId, parameterCode, parameterContent, allowEdit=0, allowDelete=0):
         """
         设置参数值
         Args:
@@ -72,6 +80,9 @@ class ParameterService(object):
         Returns:
             returnValue (int): 影响行数
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ParameterService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ParameterService_SetParameter, id)
+
         returnValue = 0
         if not parameterContent:
             returnValue = Ciparameter.objects.filter(Q(categorykey=categoryKey) & Q(parameterid=parameterId) & Q(parametercode=parameterCode) & Q(deletemark=0)).delete()
@@ -92,7 +103,7 @@ class ParameterService(object):
                 returnValue = 1
             return returnValue
 
-    def GetDTByParameter(self, categoryKey, parameterId):
+    def GetDTByParameter(userInfo, categoryKey, parameterId):
         """
         获取记录
         Args:
@@ -101,6 +112,8 @@ class ParameterService(object):
         Returns:
             returnValue (Ciparameter[]): 数据表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ParameterService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ParameterService_GetDTByParameter, parameterId)
         returnValue = Ciparameter.objects.filter(Q(categorykey=categoryKey) & Q(parameterid=parameterId) & Q(deletemark=0))
         return returnValue
 
@@ -144,7 +157,7 @@ class ParameterService(object):
             Q(categorykey=categoryKey) & Q(parameterid=parameterId) & Q(deletemark=0) & Q(parametercode=parameterCode))
         return returnValue
 
-    def GetDTByPage(self, searchValue, pageSize=50, order=None):
+    def GetDTByPage(userInfo, searchValue, pageSize=50, order=None):
         """
         分页查询
         Args:
@@ -155,6 +168,9 @@ class ParameterService(object):
             staffCount (int): 所有参数数量
             returnValue (Paginator): 参数分页列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ParameterService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ParameterService_GetDTByPage,
+                            '')
         if not searchValue:
             if not order:
                 whereConditional = 'SELECT * FROM ' + Ciparameter._meta.db_table + ' WHERE deletemark = 0'
@@ -165,12 +181,12 @@ class ParameterService(object):
                 'SELECT * FROM ' + Ciparameter._meta.db_table + ' WHERE ' + searchValue + ' AND deletemark = 0'
             else:
                 whereConditional = 'SELECT * FROM ' + Ciparameter._meta.db_table + ' WHERE ' + searchValue + ' AND deletemark = 0 ORDER BY ' + order
-        staffList = DbCommonLibaray.executeQuery(self, whereConditional)
+        staffList = DbCommonLibaray.executeQuery(None, whereConditional)
         parameterValue = Paginator(staffList, pageSize)
         parameterCount = parameterValue.count
         return parameterCount, parameterValue
 
-    def SetDeleted(self, id):
+    def SetDeleted(userInfo, id):
         """
         逻辑删除
         Args:
@@ -178,6 +194,8 @@ class ParameterService(object):
         Returns:
             returnValue (int): 影响行数
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ParameterService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ParameterService_SetDeleted, id)
         returnValue = Ciparameter.objects.filter(id=id).update(deletemark=1)
         return returnValue
 
@@ -206,7 +224,7 @@ class ParameterService(object):
         returnValue = Ciparameter.objects.filter(Q(categorykey=categoryKey) & Q(parameterid=parameterId) & Q(parametercode=parameterCode)).delete()
         return returnValue
 
-    def Delete(self, id):
+    def Delete(userInfo, id):
         """
         删除参数
         Args:
@@ -214,6 +232,8 @@ class ParameterService(object):
         Returns:
             returnValue (int): 影响行数
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ParameterService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ParameterService_Add, id)
         returnValue = Ciparameter.objects.filter(id=id).delete()
         return returnValue
 
@@ -243,7 +263,7 @@ class ParameterService(object):
         except Ciparameter.DoesNotExist as e:
             return False
 
-    def Add(self, parameterEntity):
+    def Add(userInfo, parameterEntity):
         """
         添加模块菜单
         Args:
@@ -253,7 +273,7 @@ class ParameterService(object):
             returnMessage: 状态信息
             returnValue: 主键
         """
-
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ParameterService, sys._getframe().f_code.co_name, FrameworkMessage.ParameterService_Add, parameterEntity.id)
         try:
             parameterEntity.save()
             returnCode = StatusCode.statusCodeDic['OKAdd']
@@ -273,7 +293,7 @@ class ParameterService(object):
             returnValue = None
             return returnCode, returnMessage, returnValue
 
-    def Update(self, parameterEntity):
+    def Update(userInfo, parameterEntity):
         """
         更新模块菜单
         Args:
@@ -282,6 +302,8 @@ class ParameterService(object):
             returnCode: 状态码
             returnValue: 主键
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ParameterService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ParameterService_Update, parameterEntity.id)
         try:
             parameterEntity.save()
             returnCode = StatusCode.statusCodeDic['OKUpdate']

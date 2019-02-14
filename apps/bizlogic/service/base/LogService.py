@@ -9,6 +9,7 @@ from apps.utilities.publiclibrary.StringHelper import StringHelper
 from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 from django.core.paginator import Paginator
 from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
+import uuid,datetime
 
 class LogService(object):
 
@@ -16,6 +17,9 @@ class LogService(object):
         if not SystemInfo.EnableRecordLog:
             return
         logEntity = Cilog()
+        logEntity.id = uuid.uuid4()
+        logEntity.ipaddress = userInfo.IPAddress
+        logEntity.createon = datetime.datetime.now()
         logEntity.createuserid = userInfo.Id
         logEntity.userrealname = userInfo.RealName
         logEntity.processid = processId
@@ -28,7 +32,7 @@ class LogService(object):
         logEntity.createuserid = userInfo.Id
         logEntity.save()
 
-    def WriteLog(userInfo, processId, processName, methodId, methodName):
+    def WriteLog(userInfo, processId, processName, methodId, methodName, parameters):
         """
         写入日志
         Args:
@@ -39,7 +43,10 @@ class LogService(object):
             methodName (string): 操作名称
         Returns:
         """
-        LogService.Add(userInfo, processName, methodName, processId, methodId, '')
+        if userInfo:
+            LogService.Add(userInfo, processName, methodName, processId, methodId, parameters)
+        else:
+            return
 
     def WriteExit(userInfo, logId):
         """

@@ -23,6 +23,7 @@ import apps.hadmin.views.FramworkModules.TableFieldAdminController_view as Table
 import apps.hadmin.views.FramworkModules.UtilityController_view as Utility
 import apps.hadmin.views.FramworkModules.PermissionSetController_view as PermissionSet
 import apps.hadmin.views.FramworkModules.ResourcePermissionController_view as ResourcePermission
+import apps.hadmin.views.FramworkModules.SysConfigAdminController_view as SysConfig
 import apps.hadmin.views.FramworkModules.HighchartsController_view as Highcharts
 
 
@@ -122,9 +123,18 @@ urlpatterns = [
     url(r'^FrameworkModules/LogAdmin/GetPageListLogByGeneral/', LogAdmin.GetPageListLogByGeneral),
     url(r'^FrameworkModules/ExceptionAdmin/Index/', ExceptionAdmin.Index),
     url(r'^FrameworkModules/ExceptionAdmin/GridPageListJson/', ExceptionAdmin.GridPageListJson),
+    url(r'^FrameworkModules/ExceptionAdmin/Delete/', ExceptionAdmin.Delete),
     url(r'^FrameworkModules/DataItemAdmin/Index/', DataItemAdmin.Index),
     url(r'^FrameworkModules/DataItemAdmin/GetDataItemTreeJson/', DataItemAdmin.GetDataItemTreeJson),
     url(r'^FrameworkModules/DataItemAdmin/GetDataItemDetailById/', DataItemAdmin.GetDataItemDetailById),
+    url(r'^FrameworkModules/DataItemAdmin/DataItemDetail/', DataItemAdmin.DataItemDetail),
+    url(r'^FrameworkModules/DataItemAdmin/DataItem/', DataItemAdmin.DataItem),
+    url(r'^FrameworkModules/DataItemAdmin/SubmitItemsForm/', DataItemAdmin.SubmitItemsForm),
+    url(r'^FrameworkModules/DataItemAdmin/DeleteDataItem/', DataItemAdmin.DeleteDataItem),
+    url(r'^FrameworkModules/DataItemAdmin/DeleteItemDetail/', DataItemAdmin.DeleteItemDetail),
+    url(r'^FrameworkModules/DataItemAdmin/GetItemsEntity/', DataItemAdmin.GetItemsEntity),
+    url(r'^FrameworkModules/DataItemAdmin/GetItemsDetailEntity/', DataItemAdmin.GetItemsDetailEntity),
+    url(r'^FrameworkModules/DataItemAdmin/SubmitItemsDetailForm/', DataItemAdmin.SubmitItemsDetailForm),
     url(r'^FrameworkModules/ParameterAdmin/Index/', ParameterAdmin.Index),
     url(r'^FrameworkModules/ParameterAdmin/GridPageListJson/', ParameterAdmin.GridPageListJson),
     url(r'^FrameworkModules/ParameterAdmin/Form/', ParameterAdmin.Form),
@@ -201,6 +211,14 @@ urlpatterns = [
         ResourcePermission.SaveRoleModuleScope),
     url(r'^FrameworkModules/ResourcePermission/SaveRolePermissionItemScope/',
         ResourcePermission.SaveRolePermissionItemScope),
+
+    url(r'^FrameworkModules/SysConfig/Index/',
+        SysConfig.Index),
+    url(r'^FrameworkModules/SysConfig/GetDefaultConfig/',
+        SysConfig.GetDefaultConfig),
+    url(r'^FrameworkModules/SysConfig/UpdateUserConfig/',
+        SysConfig.UpdateUserConfig),
+
 
     url(r'^FrameworkModules/Highcharts/Sample1/', Highcharts.Sample1),
     url(r'^FrameworkModules/Highcharts/Sample2/', Highcharts.Sample2),

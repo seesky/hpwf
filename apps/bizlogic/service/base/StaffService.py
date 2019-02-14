@@ -14,18 +14,19 @@ from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 from apps.utilities.publiclibrary.StringHelper import StringHelper
 from apps.bizlogic.service.base.OrganizeService import OrganizeService
 
-import uuid
+import uuid,sys
 import datetime
 from apps.bizlogic.models import Pistafforganize
 from apps.bizlogic.models import Pistaff
 from apps.bizlogic.models import Piuser
 from apps.bizlogic.models import Piuserrole
 from apps.bizlogic.service.base.UserService import UserSerivce
+from apps.bizlogic.service.base.LogService import LogService
 
 
 class StaffService(object):
 
-    def Add(self, entity, organizeId=""):
+    def Add(userInfo, entity, organizeId=""):
         """
         添加员工
         Args:
@@ -33,6 +34,7 @@ class StaffService(object):
         Returns:
             returnValue: 用户主键
         """
+
         try:
             entity.save()
             staffId = entity.id
@@ -48,6 +50,10 @@ class StaffService(object):
             returnCode = StatusCode.statusCodeDic['OKAdd']
             returnMessage = FrameworkMessage.MSG0009
             returnValue =  staffId
+
+            LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                                sys._getframe().f_code.co_name, FrameworkMessage.StaffService_AddStaff, entity.id)
+
             return returnCode, returnMessage, returnValue
         except DatabaseError as e:
             print(e)
@@ -62,13 +68,15 @@ class StaffService(object):
             returnValue = None
             return returnCode, returnMessage, returnValue
 
-    def GetDT(self):
+    def GetDT(userInfo):
         """
         获取员工列表
         Args:
         Returns:
             returnValue (List): 员工列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.StaffService_GetDT, '')
         returnValue = []
         try:
             for staff in Pistaff.objects.all():
@@ -79,7 +87,7 @@ class StaffService(object):
         except TransactionManagementError as e:
             return returnValue
 
-    def GetDTByPage(self, searchValue, pageSize=50, order=None):
+    def GetDTByPage(userInfo, searchValue, pageSize=50, order=None):
         """
         分页查询
         Args:
@@ -90,6 +98,8 @@ class StaffService(object):
             staffCount (int): 所有员工数
             returnValue (Paginator): 员工分页列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.StaffService_GetDTByPage, '')
         if not searchValue:
             if not order:
                 whereConditional = 'SELECT * FROM ' + Pistaff._meta.db_table + ' WHERE deletemark = 0'
@@ -100,12 +110,12 @@ class StaffService(object):
                 'SELECT * FROM ' + Pistaff._meta.db_table + ' WHERE ' + searchValue + ' AND deletemark = 0'
             else:
                 whereConditional = 'SELECT * FROM ' + Pistaff._meta.db_table + ' WHERE ' + searchValue + ' AND deletemark = 0 ORDER BY ' + order
-        staffList = DbCommonLibaray.executeQuery(self, whereConditional)
+        staffList = DbCommonLibaray.executeQuery(None, whereConditional)
         returnValue = Paginator(staffList, pageSize)
         staffCount = returnValue.count
         return staffCount,returnValue
 
-    def GetEntity(self, id):
+    def GetEntity(userInfo, id):
         """
         获取员工实体
         Args:
@@ -113,13 +123,15 @@ class StaffService(object):
         Returns:
             returnValue (Staff or None): 员工实体
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.StaffService_GetEntity, id)
         try:
             staff = Pistaff.objects.get(id=id)
             return staff
         except Pistaff.DoesNotExist:
             return None
 
-    def UpdateStaff(self, entity):
+    def UpdateStaff(userInfo, entity):
         """
         更新员工
         Args:
@@ -128,6 +140,8 @@ class StaffService(object):
             returnValue (string): 状态码
             returnMessage (string): 状态信息
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.StaffService_UpdateStaff, entity.id)
         try:
             entity.save()
             returnCode = StatusCode.statusCodeDic['OKUpdate']
@@ -139,7 +153,7 @@ class StaffService(object):
             returnMessage = FrameworkMessage.MSG0001
             return returnCode, returnMessage
 
-    def GetDTByIds(self, ids):
+    def GetDTByIds(userInfo, ids):
         """
         按主键获取员工列表
         Args:
@@ -147,6 +161,8 @@ class StaffService(object):
         Returns:
             returnValue (List): 用户列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.StaffService_UpdateStaff, str(ids))
         returnValue = []
         for id in ids:
             try:
@@ -156,7 +172,7 @@ class StaffService(object):
                 continue
         return returnValue
 
-    def GetDTByOrganize(self, organizeId, containChildren):
+    def GetDTByOrganize(userInfo, organizeId, containChildren):
         """
         按组织结构获取员工列表
         Args:
@@ -165,8 +181,10 @@ class StaffService(object):
         Returns:
             returnValue (List): 员工列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.StaffService_GetDTByOrganize, organizeId)
         if containChildren:
-            organizeIds = OrganizeService.GetChildrensById(self, organizeId)
+            organizeIds = OrganizeService.GetChildrensById(None, organizeId)
             staffIds = []
             for staff in Pistafforganize.objects.filter(Q(organizeid__in=organizeIds) & Q(deletemark=0)):
                 staffIds.append(staff.staffid)
@@ -180,17 +198,19 @@ class StaffService(object):
             returnValue = Pistaff.objects.filter(Q(id__in=starffIds) & Q(deletemark=0)).order_by('sortcode')
             return returnValue
 
-    def GetDTNotOrganize(self):
+    def GetDTNotOrganize(userInfo):
         """
         得到未设置组织机构的员工列表
         Args:
         Returns:
             returnValue (List): 员工列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.StaffService_GetDTByOrganize, '')
         returnValue = Pistaff.objects.filter(Q(deletemark=0) & ~Q(id__in=Pistafforganize.objects.filter(Q(deletemark=0) & Q(enabled=1)).values_list('staffid', flat=True)))
         return returnValue
 
-    def SetStaffUser(self, staffId, userId):
+    def SetStaffUser(userInfo, staffId, userId):
         """
         员工关联用户
         Args:
@@ -199,6 +219,8 @@ class StaffService(object):
         Returns:
             returnValue (bool): 关联结果
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.StaffService_GetDTByOrganize, staffId + '/' + userId)
         try:
             if not userId:
                 with transaction.atomic():
@@ -212,7 +234,7 @@ class StaffService(object):
                     with transaction.atomic():
                         pistaff = Pistaff.objects.get(id=staffId)
                         pistaff.userid = userId
-                        username = UserSerivce.GetEntity(userId).username
+                        username = UserSerivce.GetEntity(None, userId).username
                         pistaff.username = username
                         pistaff.save()
                         return True
@@ -222,7 +244,7 @@ class StaffService(object):
             return False
 
 
-    def DeleteUser(self, staffId):
+    def DeleteUser(userInfo, staffId):
         """
         删除员工关联的用户
         Args:
@@ -230,11 +252,14 @@ class StaffService(object):
         Returns:
             returnValue (bool): 删除结果
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.StaffService_DeleteUser,
+                            staffId)
         try:
             try:
                 staff = Pistaff.objects.get(id = staffId)
                 ids = [staff.userid]
-                UserSerivce.SetDeleted(self, ids)
+                UserSerivce.SetDeleted(None, ids)
             except Pistaff.DoesNotExist as e:
                 pass
             staff = Pistaff.objects.get(id = staffId)
@@ -244,7 +269,7 @@ class StaffService(object):
         except Exception as e:
             return False
 
-    def Delete(self, id):
+    def Delete(userInfo, id):
         """
         单个删除
         Args:
@@ -252,11 +277,13 @@ class StaffService(object):
         Returns:
             returnValue (bool): 删除结果
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.StaffService_Delete, id)
         try:
             try:
                 staff = Pistaff.objects.get(id = id)
                 Piuserrole.objects.filter(userid=staff.userid).delete()
-                UserSerivce.Delete(self, staff.userid)
+                UserSerivce.Delete(None, staff.userid)
             except Pistaff.DoesNotExist as e:
                 pass
             Pistafforganize.objects.filter(staffid=id).delete()
@@ -266,7 +293,7 @@ class StaffService(object):
             return False
 
 
-    def BatchDelete(self, ids):
+    def BatchDelete(userInfo, ids):
         """
         批量删除
         Args:
@@ -274,9 +301,11 @@ class StaffService(object):
         Returns:
             returnValue (bool): 删除结果
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.StaffService_Delete, str(ids))
         try:
             try:
-                UserSerivce.BatchDelete(self, Pistaff.objects.filter(id__in=ids).values_list('userid', flat=True))
+                UserSerivce.BatchDelete(None, Pistaff.objects.filter(id__in=ids).values_list('userid', flat=True))
                 Piuserrole.objects.filter(userid__in=Pistaff.objects.filter(id__in=ids)).delete()
 
             except Pistaff.DoesNotExist as e:
@@ -287,7 +316,7 @@ class StaffService(object):
         except Exception as e:
             return False
 
-    def SetDeleted(self, ids):
+    def SetDeleted(userInfo, ids):
         """
         批量打删除标志
         Args:
@@ -295,9 +324,11 @@ class StaffService(object):
         Returns:
             returnValue (bool): 删除结果
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.StaffService_SetDeleted, str(ids))
         try:
             try:
-                UserSerivce.SetDeleted(self, Pistaff.objects.filter(id__in=ids).values_list('userid', flat=True))
+                UserSerivce.SetDeleted(None, Pistaff.objects.filter(id__in=ids).values_list('userid', flat=True))
                 Piuserrole.objects.filter(userid__in=Pistaff.objects.filter(id__in=ids)).delete()
             except Pistaff.DoesNotExist as e:
                 pass
@@ -307,7 +338,7 @@ class StaffService(object):
         except Exception as e:
             return False
 
-    def MoveTo(self, id, organizeId):
+    def MoveTo(userInfo, id, organizeId):
         """
         移动员工数据到指定组织机构
         Args:
@@ -316,6 +347,8 @@ class StaffService(object):
         Returns:
             returnValue (bool): 移动结果
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.StaffService_MoveTo, id + '/' + organizeId)
         try:
             staff = Pistafforganize.objects.get(staffid=id)
             staff.organizeid = organizeId
@@ -325,7 +358,7 @@ class StaffService(object):
             print(e)
             return False
 
-    def BatchMoveTo(self, ids, organizeId):
+    def BatchMoveTo(userInfo, ids, organizeId):
         """
         批量移动员工数据到指定组织机构
         Args:
@@ -334,6 +367,8 @@ class StaffService(object):
         Returns:
             returnValue (bool): 移动结果
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.StaffService_MoveTo, str(ids) + '/' + organizeId)
         try:
             staff = Pistafforganize.objects.filter(staffid__in=ids).update(organizeid=organizeId)
             return True
@@ -342,7 +377,7 @@ class StaffService(object):
             return False
         pass
 
-    def GetId(self, valueDic):
+    def GetId(userInfo, valueDic):
         """
         获取主键
         Args:
@@ -350,6 +385,8 @@ class StaffService(object):
         Returns:
             returnValue (string[]): ID列表
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.StaffService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.StaffService_GetId, '')
         q = Q()
         for i in valueDic:
             q.add(Q(**{i: valueDic[i]}), Q.AND)

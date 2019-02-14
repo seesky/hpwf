@@ -85,7 +85,7 @@ def GridPageListJson(request):
 
     response = HttpResponse()
 
-    recordCount, dtParameter = ParameterService.GetDTByPage(None, SearchFilter.TransfromFilterToSql(filter, False), rows,  sort + ' ' + order)
+    recordCount, dtParameter = ParameterService.GetDTByPage(CommonUtils.Current(response, request), SearchFilter.TransfromFilterToSql(filter, False), rows,  sort + ' ' + order)
     pageValue = dtParameter.page(page)
 
     parameterTmp = ''
@@ -112,7 +112,7 @@ def GetEntity(request):
         key = request.POST['key']
     except:
         key = None
-    entity = ParameterService.GetEntity(None, key)
+    entity = ParameterService.GetEntity(CommonUtils.Current(HttpResponse(), request), key)
     response = HttpResponse()
     response.content = entity.toJSON()
     return response
@@ -143,7 +143,7 @@ def SubmitForm(request):
             parameter.modifiedby = curUser.RealName
             parameter.enabled = 1
 
-            returnCode, returnMessage, returnValue = ParameterService.Add(None, parameter)
+            returnCode, returnMessage, returnValue = ParameterService.Add(curUser, parameter)
 
 
             if returnCode == StatusCode.statusCodeDic['OKAdd']:
@@ -156,7 +156,7 @@ def SubmitForm(request):
                 response.content = json.dumps({'Success': False, 'Data': '0', 'Message': returnMessage})
                 return response
         else:
-            parameter = ParameterService.GetEntity(None, key)
+            parameter = ParameterService.GetEntity(CommonUtils.Current(response, request), key)
             if parameter:
                 parameter = parameter.loadJson(request)
             else:
@@ -167,7 +167,7 @@ def SubmitForm(request):
                 response.modifiedby = curUser.RealName
                 response.modifieduserid = curUser.Id
                 response.modifiedon = datetime.datetime.now()
-                returnCode, returnMessage = ParameterService.Update(None, parameter)
+                returnCode, returnMessage = ParameterService.Update(CommonUtils.Current(response, request), parameter)
                 if returnCode == StatusCode.statusCodeDic['OKUpdate']:
                     response.content = json.dumps({'Success': True, 'Data': IsOk, 'Message': returnMessage})
                     return response
@@ -187,7 +187,7 @@ def Delete(request):
     except:
         key = ''
 
-    returnValue = ParameterService.SetDeleted(None, key)
+    returnValue = ParameterService.SetDeleted(CommonUtils.Current(HttpResponse(), request), key)
 
     if returnValue > 0:
         response = HttpResponse()

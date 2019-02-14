@@ -20,35 +20,35 @@ class CommonUtils(object):
         Returns:
         """
         try:
-            if ParameterService.GetServiceConfig('LoginProvider') == 'Cookie':
+            if ParameterService.GetServiceConfig(CommonUtils.Current(response, request), 'LoginProvider') == 'Cookie':
                 #user = pickle.dumps(user)
                 user = json.dumps(user, default=UserInfo.obj_2_json)
                 #response.set_signed_cookie(ParameterService.GetServiceConfig('LoginProvider'), str(user), max_age=int(ParameterService.GetServiceConfig('CookieMaxAge')), salt=ParameterService.GetServiceConfig('LoginUserKey'))
                 user = SecretHelper.AESEncrypt(user)
                 user = str(user, encoding = "utf8")
-                response.set_signed_cookie(ParameterService.GetServiceConfig('LoginProvider'), user,
-                                           max_age=int(ParameterService.GetServiceConfig('CookieMaxAge')),
-                                           salt=ParameterService.GetServiceConfig('LoginUserKey'))
+                response.set_signed_cookie(ParameterService.GetServiceConfig(CommonUtils.Current(response, request), 'LoginProvider'), user,
+                                           max_age=int(ParameterService.GetServiceConfig(CommonUtils.Current(response, request), 'CookieMaxAge')),
+                                           salt=ParameterService.GetServiceConfig(CommonUtils.Current(response, request), 'LoginUserKey'))
             else:
                 #user = pickle.dumps(user)
                 user = json.dumps(user, default=UserInfo.obj_2_json)
-                request.session[ParameterService.GetServiceConfig('LoginProvider')] = user
+                request.session[ParameterService.GetServiceConfig(CommonUtils.Current(response, request), 'LoginProvider')] = user
         except Exception as e:
             print(e)
 
-    def EmptyCurrent(response):
+    def EmptyCurrent(response, request):
         try:
-            if ParameterService.GetServiceConfig('LoginProvider') == 'Cookie':
-                response.delete_cookie(ParameterService.GetServiceConfig('LoginProvider'))
+            if ParameterService.GetServiceConfig(CommonUtils.Current(response, request), 'LoginProvider') == 'Cookie':
+                response.delete_cookie(ParameterService.GetServiceConfig(CommonUtils.Current(response, request), 'LoginProvider'))
             else:
                 pass
         except Exception as e:
             print(e)
 
     def Current(response, request):
-        if ParameterService.GetServiceConfig('LoginProvider') == 'Cookie':
+        if ParameterService.GetServiceConfig(None, 'LoginProvider') == 'Cookie':
             try:
-                user = request.get_signed_cookie(ParameterService.GetServiceConfig('LoginProvider'), salt=ParameterService.GetServiceConfig('LoginUserKey'))
+                user = request.get_signed_cookie(ParameterService.GetServiceConfig(None, 'LoginProvider'), salt=ParameterService.GetServiceConfig(None, 'LoginUserKey'))
                 #user =  pickle.loads(user)
                 user = SecretHelper.AESDecrypt(user)
                 user = json.loads(user, object_hook=UserInfo.json_2_obj)
@@ -63,7 +63,7 @@ class CommonUtils(object):
         vUser = CommonUtils.Current(response, request)
         if vUser:
             try:
-                tmpUIStyle = ParameterService.GetParameter('User', vUser.Id, 'NavType')
+                tmpUIStyle = ParameterService.GetParameter(CommonUtils.Current(response, request), 'User', vUser.Id, 'NavType')
             except:
                 tmpUIStyle = 'AccordionTree'
         else:
@@ -71,22 +71,22 @@ class CommonUtils(object):
 
         request.session['UIStyle'] = tmpUIStyle
         response.set_signed_cookie('UIStyle', tmpUIStyle,
-                                   max_age=int(ParameterService.GetServiceConfig('CookieMaxAge')),
-                                   salt=ParameterService.GetServiceConfig('LoginUserKey'))
+                                   max_age=int(ParameterService.GetServiceConfig(CommonUtils.Current(response, request), 'CookieMaxAge')),
+                                   salt=ParameterService.GetServiceConfig(CommonUtils.Current(response, request), 'LoginUserKey'))
         return tmpUIStyle
 
     def Theme(response, request):
         tmpTheme = "default"
         vUser = CommonUtils.Current(response, request)
         if vUser:
-                tmpTheme = ParameterService.GetParameter('User', vUser.Id, 'WebTheme')
+                tmpTheme = ParameterService.GetParameter(CommonUtils.Current(response, request), 'User', vUser.Id, 'WebTheme')
         if not tmpTheme:
             tmpTheme = 'default'
 
         request.session['theme'] = tmpTheme
         response.set_signed_cookie('theme', tmpTheme,
-                                   max_age=int(ParameterService.GetServiceConfig('CookieMaxAge')),
-                                   salt=ParameterService.GetServiceConfig('LoginUserKey'))
+                                   max_age=int(ParameterService.GetServiceConfig(CommonUtils.Current(response, request), 'CookieMaxAge')),
+                                   salt=ParameterService.GetServiceConfig(CommonUtils.Current(response, request), 'LoginUserKey'))
         return tmpTheme
 
     def CheckTreeParentId(dataTable, fieldId, fieldParentId):

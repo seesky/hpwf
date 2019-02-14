@@ -66,7 +66,7 @@ def GetStaffByOrganizeId(request):
 
     if organizeId:
         recordCount = 0
-        dtStaff = StaffService.GetDTByOrganize(None, organizeId, True)
+        dtStaff = StaffService.GetDTByOrganize(CommonUtils.Current(response, request), organizeId, True)
         for staff in dtStaff:
             returnValue = returnValue + staff.toJSON() + ","
         returnValue = returnValue.strip(",")
@@ -130,9 +130,9 @@ def SubmitForm(request):
 
 
             if not organizeId:
-                returnCode, returnMessage, returnValue = StaffService.Add(None, staff)
+                returnCode, returnMessage, returnValue = StaffService.Add(CommonUtils.Current(response, request), staff)
             else:
-                returnCode, returnMessage, returnValue = StaffService.Add(None, staff, organizeId)
+                returnCode, returnMessage, returnValue = StaffService.Add(CommonUtils.Current(response, request), staff, organizeId)
 
 
             if returnCode == StatusCode.statusCodeDic['OKAdd']:
@@ -142,14 +142,14 @@ def SubmitForm(request):
                 response.content = json.dumps({'Success': False, 'Data': '0', 'Message': returnMessage})
                 return response
         else:
-            staffEntity = StaffService.GetEntity(None, key)
+            staffEntity = StaffService.GetEntity(CommonUtils.Current(response, request), key)
             if staffEntity:
                 staffEntity = staffEntity.loadJson(request)
 
             if curUser:
                 staffEntity.modifiedby = curUser.RealName
                 staffEntity.modifieduserid = curUser.Id
-                returnCode, returnMessage = StaffService.UpdateStaff(None, staffEntity)
+                returnCode, returnMessage = StaffService.UpdateStaff(CommonUtils.Current(response, request), staffEntity)
                 if returnCode == StatusCode.statusCodeDic['OKUpdate']:
                     response.content = json.dumps({'Success': True, 'Data': IsOk, 'Message': returnMessage})
                     return response
@@ -168,7 +168,7 @@ def GetEntity(request):
         key = request.POST['key']
     except:
         key = None
-    entity = StaffService.GetEntity(None, key)
+    entity = StaffService.GetEntity(CommonUtils.Current(HttpResponse(), request), key)
     response = HttpResponse()
     response.content = entity.toJSON()
     return response
@@ -180,7 +180,7 @@ def Delete(request):
     except:
         key = ''
 
-    returnValue = StaffService.SetDeleted(None, [key])
+    returnValue = StaffService.SetDeleted(CommonUtils.Current(HttpResponse(), request), [key])
 
     if returnValue:
         response = HttpResponse()
@@ -204,7 +204,7 @@ def MoveTo(request):
         organizeId = ''
 
     if staffId and organizeId:
-        returnValue = StaffService.MoveTo(None, staffId, organizeId)
+        returnValue = StaffService.MoveTo(CommonUtils.Current(HttpResponse(), request), staffId, organizeId)
         if returnValue:
             response = HttpResponse()
             response.content = json.dumps({'Success': True, 'Data': '1', 'Message': FrameworkMessage.MSG0013})

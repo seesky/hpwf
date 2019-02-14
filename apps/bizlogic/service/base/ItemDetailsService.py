@@ -7,10 +7,12 @@ from apps.bizlogic.models import Ciitems
 from django.db.models import Q
 from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
+from apps.bizlogic.service.base.LogService import LogService
+import sys
 
 class ItemDetailsService(object):
 
-    def Add(entity):
+    def Add(userInfo, entity):
         """
         新增数据
         Args:
@@ -19,6 +21,9 @@ class ItemDetailsService(object):
             returnValue (int):
             statusMessage (stirng): 状态信息
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ItemDetailsService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ItemDetailsService_Add, entity.id)
+
         returnValue = 0
         statusMessage = ''
         if len(ItemDetailsService.GetDTByValues({'itemid':entity.itemid, 'itemname':entity.itemname, 'deletemark':0})) > 0:
@@ -45,7 +50,7 @@ class ItemDetailsService(object):
         returnValue = Ciitemdetails.objects.filter(Q(deletemark=0)).order_by('sortcode')
         return returnValue
 
-    def GetEntity(id):
+    def GetEntity(userInfo, id):
         """
         取得实体
         Args:
@@ -53,6 +58,8 @@ class ItemDetailsService(object):
         Returns:
             returnValue (Ciitemdetails): 字典实体
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ItemDetailsService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ItemDetailsService_GetEntity, id)
         try:
             returnValue = Ciitemdetails.objects.get(id = id)
             return returnValue
@@ -143,7 +150,7 @@ class ItemDetailsService(object):
         returnValue = Ciitemdetails.objects.filter(Q(id__in=ids)).delete()
         return returnValue
 
-    def SetDeleted(ids):
+    def SetDeleted(userInfo, ids):
         """
         批次设置删除标志
         Args:
@@ -151,6 +158,8 @@ class ItemDetailsService(object):
         Returns:
             returnValue (int): 影响行数
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ItemDetailsService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ItemDetailsService_SetDeleted, str(ids))
         returnValue = Ciitemdetails.objects.filter(Q(id__in=ids)).update(deletemark=1)
         return returnValue
 

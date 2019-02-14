@@ -8,6 +8,8 @@ from django.db.models import Q
 from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
 from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
+from apps.bizlogic.service.base.LogService import LogService
+import sys
 
 class ItemsService(object):
 
@@ -47,7 +49,7 @@ class ItemsService(object):
         returnValue = Ciitemdetails.objects.filter(Q(deletemark=0) & Q(itemid=itemId)).order_by('sortcode')
         return returnValue
 
-    def GetEntity(id):
+    def GetEntity(userInfo, id):
         """
        获取实体
        Args:
@@ -55,13 +57,15 @@ class ItemsService(object):
        Returns:
            returnValue (Ciitems):
        """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ItemsService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ItemsService_GetEntity, id)
         try:
             returnValue = Ciitems.objects.get(id=id)
             return returnValue
         except:
             return None
 
-    def Add(itemsEntity):
+    def Add(userInfo, itemsEntity):
         """
         新增数据
         Args:
@@ -70,6 +74,8 @@ class ItemsService(object):
             returnValue (int):
             statusMessage (stirng): 状态信息
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ItemsService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ItemsService_Add, itemsEntity.id)
         returnValue = 0
         statusMessage = ''
         if len(Ciitems.objects.filter(Q(id=itemsEntity.id) & Q(deletemark=0))) > 0:
@@ -86,7 +92,7 @@ class ItemsService(object):
                 statusMessage = "操作异常！"
                 return returnValue, statusMessage
 
-    def Update(itemsEntity):
+    def Update(userInfo, itemsEntity):
         """
         更新实体
         Args:
@@ -95,6 +101,8 @@ class ItemsService(object):
             returnCode (): 返回值
             returnMessage (): 状态码
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ItemsService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ItemsService_Update, itemsEntity.id)
         try:
             itemsEntity.save()
             returnCode = StatusCode.statusCodeDic['OKUpdate']
@@ -119,7 +127,7 @@ class ItemsService(object):
         returnValue = Ciitems.objects.filter(Q(id = id)).delete()
         return returnValue
 
-    def SetDeleted(ids):
+    def SetDeleted(userInfo, ids):
         """
        设置删除标志
        Args:
@@ -127,5 +135,7 @@ class ItemsService(object):
        Returns:
            returnValue (): 返回值
        """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.ItemsService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.ItemsService_SetDeleted, str(ids))
         returnValue = Ciitems.objects.filter(Q(id__in=ids)).update(deletemark=1)
         return returnValue
