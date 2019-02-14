@@ -97,7 +97,7 @@ var mygrid = {
                 }
             },
             onDblClickRow: function (rowIndex, rowData) {
-                document.getElementById('a_edit').click();
+                document.getElementById('readMessage').click();
             },
             onClickCell: function (rowIndex, field, value) {
                 if (field == 'MSGCONTENT') {
@@ -151,7 +151,7 @@ function statusFormatter1(value) {
 var MessageAdminMethod = {
     sendMessage: function () {   
         var sendDailog = top.$.hDialog({
-            id: 'sendMessage', title: '发送消息', width: 1000, height: 500, href: '/Admin/FrameworkModules/MessageAdmin/SendMessage/', iconCls: 'icon16_comment_edit',
+            id: 'sendMessage', title: '发送消息', width: 1000, height: 500, href: '/Admin/FrameworkModules/MessageAdmin/SendMessageForm/', iconCls: 'icon16_comment_edit',
             buttons: [
                     {
                         text: '发 送',
@@ -220,7 +220,7 @@ var MessageAdminMethod = {
     },
     broadcastMessage:function() {
         var broadcastDailog = top.$.hDialog({
-            id: 'broadcastMessage', title: '广播消息', width: 1000, height: 470, href: '/Admin/FrameworkModules/MessageAdmin/BroadcastMessage/', iconCls: 'icon16_comments_add',
+            id: 'broadcastMessage', title: '广播消息', width: 1000, height: 470, href: '/Admin/FrameworkModules/MessageAdmin/BroadcastMessageForm/', iconCls: 'icon16_comments_add',
             buttons: [
                     {
                         text: '发 送',

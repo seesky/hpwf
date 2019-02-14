@@ -1,7 +1,5 @@
-﻿@{
-    ViewBag.Title = "广播消息";
-    Layout = "~/Views/Shared/_LayoutForm.cshtml";
-}
+﻿{% extends "Shared/_LayoutIndex.html" %}
+{% block content %}
 
 <style type="text/css">
     .background{background-color:#F2F2F2;}
@@ -19,7 +17,9 @@
             <textarea style="width:99%;height:95%;" class="txt01" id="MSGContent" name="MSGContent"></textarea>
         </div>
         <div style="height: 30px; line-height: 30px;">
-            <label style="float: left;">发件人：@ViewBag.Addresser</label>
+            <label style="float: left;">发件人：{{ Addresser }}</label>
         </div>
     </div>
 </form>
+
+{% endblock %}

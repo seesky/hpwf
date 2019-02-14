@@ -322,7 +322,7 @@ class UserSerivce(object):
         return whereConditional
 
 
-    def Searchs(self, permissionScopeCode, search, roleIds, enabled, audiStates, departmentId):
+    def Searchs(userInfo, permissionScopeCode, search, roleIds, enabled, audiStates, departmentId):
         """
         查询用户
         Args:
@@ -338,7 +338,7 @@ class UserSerivce(object):
 
         userList = []
         sqlQuery = 'select piuser.*,piuserlogon.FIRSTVISIT,piuserlogon.PREVIOUSVISIT,piuserlogon.LASTVISIT,piuserlogon.IPADDRESS,piuserlogon.MACADDRESS,piuserlogon.LOGONCOUNT,piuserlogon.USERONLINE,piuserlogon.CHECKIPADDRESS,piuserlogon.MULTIUSERLOGIN FROM PIUSER LEFT OUTER JOIN PIUSERLOGON ON PIUSER.ID = PIUSERLOGON.ID '
-        whereConditional = UserSerivce.GetSearchConditional(None,permissionScopeCode, search, roleIds, enabled, audiStates, departmentId)
+        whereConditional = UserSerivce.GetSearchConditional(None, userInfo, permissionScopeCode, search, roleIds, enabled, audiStates, departmentId)
         sqlQuery = sqlQuery + " WHERE " + whereConditional
         sqlQuery = sqlQuery + " ORDER BY piuser.SORTCODE"
         userList = DbCommonLibaray.executeQuery(None, sqlQuery)
@@ -356,7 +356,8 @@ class UserSerivce(object):
         """
         LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
                             sys._getframe().f_code.co_name, FrameworkMessage.UserService_Search, '')
-        returnValue = UserSerivce.Searchs(userInfo, '', searchValue, roleIds, None,   auditStatus, '')
+        #returnValue = UserSerivce.Searchs(userInfo, '', searchValue, roleIds, None, auditStatus, '')
+        returnValue = UserSerivce.Searchs(userInfo, None, searchValue, None, None, auditStatus, None)
         return returnValue
 
 
@@ -744,10 +745,10 @@ class UserSerivce(object):
                             sys._getframe().f_code.co_name, FrameworkMessage.UserService_GetUserIdsByOrganizeIdsAndRoleIds, '')
 
         companyUsers = Piuser.objects.filter(Q(deletemark=0) & Q(enabled=1) & Q(workgroupid__in=organizeIds) & Q(departmentid__in=organizeIds) & Q(subcompanyid__in=organizeIds) & Q(companyid__in=organizeIds) | Q(id__in=Piuserorganize.objects.filter(Q(deletemark=0) & (Q(departmentid__in=organizeIds) | Q(subdepartmentid__in=organizeIds) | Q(companyid__in=organizeIds))))).order_by('sortcode').values_list('id', flat=True)
-        roleUsers = Piuserrole.objects.filter(Q(roleid__in=roleIds) & Q(userid__in=Piuser.objects.filter(Q(deletemark=0) & Q(deletionstatecode = 0)).values_list('id', flat=True)))
+        roleUsers = Piuserrole.objects.filter(Q(roleid__in=roleIds) & Q(userid__in=Piuser.objects.filter(Q(deletemark=0)).values_list('id', flat=True)))
         users = companyUsers.union(roleUsers)
         returnValue = []
         for id in users:
             returnValue.append(id)
-        returnValue = receiverIds.extend(returnValue)
-        return returnValue
+        receiverIds.extend(returnValue)
+        return receiverIds

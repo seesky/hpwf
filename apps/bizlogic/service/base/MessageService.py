@@ -15,9 +15,12 @@ from apps.utilities.message.MessageCategory import MessageCategory
 from apps.utilities.message.MessageFunction import MessageFunction
 from apps.utilities.message.MessageStateCode import MessageStateCode
 from apps.hadmin.MvcAppUtilties.CommonUtils import CommonUtils
-import time
+import time,uuid
 from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 from django.core.paginator import Paginator
+from apps.bizlogic.service.base.LogService import LogService
+from apps.utilities.message.FrameworkMessage import FrameworkMessage
+import sys
 
 class MessageService(object):
 
@@ -74,7 +77,8 @@ class MessageService(object):
             returnValue (int): 影响行数
         """
         returnValue = 0
-        messageEntity.categorycode = MessageCategory.Receiver
+        #messageEntity.categorycode = MessageCategory.Receiver
+        messageEntity.categorycode = 'Receiver'
         messageEntity.isnew = MessageStateCode.New
         messageEntity.ipaddress = CommonUtils.Current(response, request).IPAddress
         messageEntity.parentid = None
@@ -86,8 +90,11 @@ class MessageService(object):
 
         for id in receiverIds:
             messageEntity.parentid = None
-            messageEntity.categorycode = MessageCategory.Receiver
+            #messageEntity.categorycode = MessageCategory.Receiver
+            messageEntity.categorycode = 'Receiver'
             messageEntity.receiverid = id
+            #messageEntity.functioncode = MessageFunction.UserMessage
+            messageEntity.functioncode = 'UserMessage'
             try:
                 userEntity = Piuser.objects.get(id = id)
                 messageEntity.receiverrealname = userEntity.realname
@@ -102,8 +109,10 @@ class MessageService(object):
             parentId = MessageService.Add(messageEntity)
 
             if saveSend:
+                messageEntity.id = uuid.uuid4()
                 messageEntity.parentid = parentId
-                messageEntity.categorycode = MessageCategory.Send
+                #messageEntity.categorycode = MessageCategory.Send
+                messageEntity.categorycode = 'Send'
                 messageEntity.deletemark = 0
                 messageEntity.enabled = 0
                 MessageService.Add(messageEntity)
@@ -152,7 +161,7 @@ class MessageService(object):
             roleIds = [roleId]
         if organizeId:
             organizeIds = [organizeId]
-        MessageService.BatchSends(response, request, receiverIds, organizeIds, roleIds, messageEntity)
+        return MessageService.BatchSends(response, request, receiverIds, organizeIds, roleIds, messageEntity)
 
     def BatchSends(response, request, receiverIds, organizeIds, roleIds, messageEntity):
         receiverIds = UserSerivce.GetUserIdsByOrganizeIdsAndRoleIds(None, receiverIds, organizeIds, roleIds)
@@ -167,16 +176,19 @@ class MessageService(object):
         Returns:
         """
         returnValue = 0
-        receiverIds = []
-        reveiverIds = Piuser.objects.filter(Q(enabled=1) & Q(deletemark=0)).values_list('id', flat=True)
+        receiverIds = list(Piuser.objects.filter(Q(enabled=1) & Q(deletemark=0)).values_list('id', flat=True))
         messageEntity = Cimessage()
-        messageEntity.functioncode = MessageFunction.Remind
+        messageEntity.id = uuid.uuid4()
+        #messageEntity.functioncode = MessageFunction.Remind
+        messageEntity.functioncode = 'Remind'
         messageEntity.msgcontent = message
         messageEntity.isnew = 1
         messageEntity.readcount = 0
         messageEntity.enabled = 1
         messageEntity.deletemark = 0
-        returnValue = MessageService.BatchSends(response, request, receiverIds, '', '', message)
+        messageEntity.createon = datetime.datetime.now()
+        messageEntity.modifiedon = messageEntity.createon
+        returnValue = MessageService.BatchSends(response, request, receiverIds, '', '', messageEntity)
         return returnValue
 
     def GetNewCount(userInfo, messageFunction):
@@ -234,13 +246,17 @@ class MessageService(object):
         returnValue = 0
         messageEntity = Cimessage.objects.get(id = id)
         #针对“已发送”的情况
-        if messageEntity.receiverid == userInfo.id:
+        if messageEntity.receiverid == userInfo.Id:
             #针对“删除的信息”的情况
-            if messageEntity.isnew == str(MessageStateCode.New):
+            if str(messageEntity.isnew) == MessageStateCode.New:
                 messageEntity.isnew = MessageStateCode.Old
                 messageEntity.readdate = datetime.datetime.now()
-                messageEntity.save()
                 messageEntity.readcount = messageEntity.readcount + 1
+                messageEntity.save()
+            else:
+                messageEntity.readcount = messageEntity.readcount + 1
+                messageEntity.save()
+
         returnValue = returnValue + 1
         return returnValue
 
@@ -326,7 +342,9 @@ class MessageService(object):
         return recordCount, pages.page(pageIndex)
 
 
-    def SetDeleted(self, ids):
+    def SetDeleted(userInfo, ids):
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.MessageService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.MessageService_SetDeleted, str(ids))
         returnValue = Cimessage.objects.filter(id__in=ids).update(deletemark=1)
         return returnValue
 

@@ -14,6 +14,7 @@ from django.db.utils import DatabaseError
 from django.db.transaction import TransactionManagementError
 from django.core.paginator import Paginator
 from django.db.models import F,Q
+import datetime,uuid
 
 class SequenceService(object):
     FillZeroPrefix = True  # 是否前缀补零
@@ -144,7 +145,7 @@ class SequenceService(object):
         SequenceService.UpdateSequence(self, fullName, 1)
         sequence = sequenceEntity.sequence
         if SequenceService.FillZeroPrefix:
-            sequence = StringHelper.RepeatString(self, '0', len(sequenceEntity.sequence)) + sequenceEntity.sequence
+            sequence = StringHelper.RepeatString(self, '0', len(str(sequenceEntity.sequence))) + str(sequenceEntity.sequence)
         if SequenceService.UsePrefix:
             sequence = sequenceEntity.prefix + sequenceEntity.separate + sequence
         return sequence
@@ -246,8 +247,9 @@ class SequenceService(object):
         Returns:
             returnValue (string): 序列号
         """
-        returnValue = Cisequence.objects.get_or_create(defaults={'fullname':fullName}, fullname=fullName, sequence=SequenceService.DefaultSequence, reduction=SequenceService.DefaultReduction, step=SequenceService.DefaultStep, prefix=SequenceService.DefaultPrefix, separate=SequenceService.DefaultSeparator)
-        return returnValue
+        id = uuid.uuid4()
+        returnValue = Cisequence.objects.get_or_create(defaults={'fullname':fullName}, id = id, fullname=fullName, sequence=SequenceService.DefaultSequence, reduction=SequenceService.DefaultReduction, step=SequenceService.DefaultStep, prefix=SequenceService.DefaultPrefix, separate=SequenceService.DefaultSeparator, deletemark=0, createon=datetime.datetime.now())
+        return Cisequence.objects.get(id = id)
 
     def UpdateSequence(self, fullName, sequenceCount):
         """
