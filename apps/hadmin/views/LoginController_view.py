@@ -45,7 +45,7 @@ def CheckLogin(request):
                     Msg = '3'
                     response = HttpResponse(Msg)
                     CommonUtils.AddCurrent(imanageuser, response, request)
-                    response.set_cookie('UIStyle', CommonUtils.UIStyle(response, request))
+                    response.set_cookie('UIStyle', CommonUtils.UIStyle(imanageuser, response, request))
                     return response
                 else:
                     Msg = '4'
@@ -61,7 +61,7 @@ def CheckLogin(request):
                     Msg = '3'
                     response = HttpResponse(Msg)
                     CommonUtils.AddCurrent(userInfo, response, request)
-                    response.set_cookie('UIStyle', CommonUtils.UIStyle(response, request))
+                    response.set_cookie('UIStyle', CommonUtils.UIStyle(userInfo, response, request))
                     return response
                 else:
                     Msg = '4'

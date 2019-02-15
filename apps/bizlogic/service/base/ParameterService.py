@@ -13,6 +13,7 @@ from apps.utilities.message.FrameworkMessage import FrameworkMessage
 from django.db.utils import DatabaseError
 from django.db.transaction import TransactionManagementError
 from apps.bizlogic.service.base.LogService import LogService
+import datetime
 
 class ParameterService(object):
 
@@ -96,6 +97,8 @@ class ParameterService(object):
                 parameterEntity.parametercontent = parameterContent
                 parameterEntity.allowdelete = allowDelete
                 parameterEntity.allowedit = allowEdit
+                parameterEntity.createon = datetime.datetime.now()
+                parameterEntity.modifiedon = parameterEntity.createon
                 parameterEntity.enabled = 1
                 parameterEntity.worked = 0
                 parameterEntity.deletemark = 0

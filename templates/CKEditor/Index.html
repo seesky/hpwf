@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta name="viewport" content="width=device-width" />
+		<title>CKEditor Test</title>
+		<script src="/Content/Scripts/jquery-1.8.3.min.js"></script>
+		<script src="/Content/Scripts/ckeditor/ckeditor.js"></script>
+	</head>
+	<body style="margin:10px;">
+	    <textarea class="ckeditor" cols="80" id="txtEditMsg" name="txtEditMsg" rows="10">		
+            <p><s>哈哈哈，测试</s></p>
+
+                <ol>
+                    <li>哈哈哈，测试</li>
+                    <li>哈哈哈，测试
+                    <hr />
+                    <p>&nbsp;</p>
+                    </li>
+                    <li>哈哈哈，测试</li>
+                </ol>
+
+                <blockquote>
+                <ul>
+                    <li>哈哈哈，测试</li>
+                    <li>哈哈哈，测试</li>
+                </ul>
+                </blockquote>
+
+		</textarea>
+	</body>
+	<script type="text/javascript">			
+			$(function () {
+				var oCKeditor = CKEDITOR.replace( 'txtEditMsg' );
+				oCKeditor.on('instanceReady', function( event )
+				{
+					var editor = event.editor;
+					setTimeout( function()
+					{
+						// Delay bit more if editor is still not ready.
+						if ( !editor.element )
+						{
+							setTimeout( arguments.callee, 100 );
+							return;
+						}
+						event.removeListener( 'instanceReady', this.callee );
+						if ( editor.name == 'txtEditMsg' )
+						{
+							editor.resize( editor.container.getStyle( 'width' ), CKEDITOR.document.getById( 'cke_'+'txtEditMsg' ).getParent().$.offsetHeight );
+						}
+					}, 0 );
+				}, null, null, 9999 );
+			});
+		</script>
+</html>

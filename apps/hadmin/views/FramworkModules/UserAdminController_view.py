@@ -3,6 +3,7 @@ __author__ = 'seesky@hstecs.com'
 __date__ = '2019/1/8 14:25'
 
 from apps.hadmin.MvcAppUtilties.LoginAuthorize import LoginAuthorize
+from apps.hadmin.MvcAppUtilties.IsAuthorized import IsAuthorized
 from apps.hadmin.MvcAppUtilties.CommonUtils import CommonUtils
 from apps.hadmin.MvcAppUtilties.PublicController import PublicController
 from apps.hadmin.MvcAppUtilties.AjaxOnly import AjaxOnly
@@ -23,6 +24,7 @@ from apps.bizlogic.service.base.LogOnService import LogOnService
 from apps.utilities.publiclibrary.SystemInfo import SystemInfo
 from apps.bizlogic.service.permission.ScopPermission import ScopPermission
 from apps.bizlogic.service.base.UserRoleService import UserRoleService
+
 
 def GenerateSplitTool():
     sbTool = ''
@@ -67,6 +69,7 @@ def Index(request):
 
 
 @LoginAuthorize
+@IsAuthorized('UserManagement.Edit')
 def Form(request):
     """
     起始页
@@ -176,6 +179,7 @@ def GetUserListByPage(request):
     return response
 
 @LoginAuthorize
+@IsAuthorized('UserManagement.Edit')
 def SubmitForm(request):
     try:
         IsOk = '1'
@@ -244,6 +248,7 @@ def GetEntity(request):
     return response
 
 @LoginAuthorize
+@IsAuthorized('UserManagement.Delete')
 def Delete(request):
     try:
         key = request.POST['key']

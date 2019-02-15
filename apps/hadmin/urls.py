@@ -25,6 +25,8 @@ import apps.hadmin.views.FramworkModules.PermissionSetController_view as Permiss
 import apps.hadmin.views.FramworkModules.ResourcePermissionController_view as ResourcePermission
 import apps.hadmin.views.FramworkModules.SysConfigAdminController_view as SysConfig
 import apps.hadmin.views.FramworkModules.HighchartsController_view as Highcharts
+import apps.hadmin.views.ExampleModules.PDFReaderController_view as PDFReader
+import apps.hadmin.views.ExampleModules.CKEditorController_view as CKEditor
 
 
 
@@ -33,6 +35,7 @@ urlpatterns = [
     url(r'^CheckLogin/', LoginController.CheckLogin),
     url(r'^OutLogin/', LoginController.OutLogin),
     url(r'^AccordionTreeIndex/', HomeController.AccordiontreeIndex),
+    url(r'^TreeIndex/', HomeController.TreeIndex),
     url(r'^LoadTreeMenu/', HomeController.LoadTreeMenu),
     url(r'^StartPage/', HomeController.StartPage),
     #
@@ -257,6 +260,10 @@ urlpatterns = [
     url(r'^FrameworkModules/Highcharts/Sample27/', Highcharts.Sample27),
     url(r'^FrameworkModules/Highcharts/Sample28/', Highcharts.Sample28),
     url(r'^FrameworkModules/Highcharts/Sample29/', Highcharts.Sample29),
+
+    url(r'^ExampleModules/PDFReader/Index/', PDFReader.Index),
+    url(r'^ExampleModules/PDFReader/PDFViewer/', PDFReader.PDFViewer),
+    url(r'^ExampleModules/CKEditor/Index/', CKEditor.Index),
 
 
 ]

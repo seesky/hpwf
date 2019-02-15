@@ -94,12 +94,12 @@
         var Index = $.cookie('UIStyle');
        
         if (Index && Index == 'Tree') {
-            //window.location.href = '@Url.Content("~/Home/")' + Index;
-             window.location.href = '/Admin/AccordionTreeIndex/';
+            window.location.href = '/Admin/TreeIndex/';
+             //window.location.href = '/Admin/AccordionTreeIndex/';
         } else if (Index == 'AccordionTree') {
             window.location.href = '/Admin/AccordionTreeIndex/';
         } else {
-             window.location.href = '/Admin/AccordionTreeIndex/';
+             window.location.href = '/Admin/TreeIndex/';
         }
         return false;
     }

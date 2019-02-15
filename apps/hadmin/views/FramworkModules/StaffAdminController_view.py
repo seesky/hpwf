@@ -3,6 +3,7 @@ __author__ = 'seesky@hstecs.com'
 __date__ = '2019/1/10 13:38'
 
 from apps.hadmin.MvcAppUtilties.LoginAuthorize import LoginAuthorize
+from apps.hadmin.MvcAppUtilties.IsAuthorized import IsAuthorized
 from django.http.response import HttpResponse
 from django.template import loader ,Context
 from apps.hadmin.MvcAppUtilties.CommonUtils import CommonUtils

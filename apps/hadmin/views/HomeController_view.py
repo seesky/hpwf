@@ -36,6 +36,20 @@ def AccordiontreeIndex(request):
     return response
 
 @LoginAuthorize
+def TreeIndex(request):
+    """
+    无限树UI
+    Args:
+    Returns:
+    """
+    response = HttpResponse()
+    tmp = loader.get_template('Home/TreeIndex.html')   #加载模板
+    render_content = {'Skin':CommonUtils.Theme(response, request), 'Account':CommonUtils.Current(response, request).RealName}   #将要渲染到模板的数据
+    new_body = tmp.render(render_content)   #渲染模板
+    response.content = new_body #设置返回内容
+    return response
+
+@LoginAuthorize
 def LoadTreeMenu(request):
     """
     加载无限树菜单

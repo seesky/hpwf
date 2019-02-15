@@ -32,7 +32,10 @@ class CommonUtils(object):
             else:
                 #user = pickle.dumps(user)
                 user = json.dumps(user, default=UserInfo.obj_2_json)
+                user = SecretHelper.AESEncrypt(user)
+                user = str(user, encoding="utf8")
                 request.session[ParameterService.GetServiceConfig(CommonUtils.Current(response, request), 'LoginProvider')] = user
+                request.session.set_expiry(int(ParameterService.GetServiceConfig(CommonUtils.Current(response, request), 'CookieMaxAge')))
         except Exception as e:
             print(e)
 
@@ -41,7 +44,7 @@ class CommonUtils(object):
             if ParameterService.GetServiceConfig(CommonUtils.Current(response, request), 'LoginProvider') == 'Cookie':
                 response.delete_cookie(ParameterService.GetServiceConfig(CommonUtils.Current(response, request), 'LoginProvider'))
             else:
-                pass
+                request.session.clear()
         except Exception as e:
             print(e)
 
@@ -56,14 +59,21 @@ class CommonUtils(object):
             except Exception as e:
                 return None
         else:
-            pass
+            try:
+                user = request.session.get(ParameterService.GetServiceConfig(None, 'LoginProvider'))
+                user = SecretHelper.AESDecrypt(user)
+                user = json.loads(user, object_hook=UserInfo.json_2_obj)
+                return user
+            except Exception as e:
+                print(e)
+                return None
 
-    def UIStyle(response, request):
+    def UIStyle(userInfo, response, request):
         tmpUIStyle = "AccordionTree"
         vUser = CommonUtils.Current(response, request)
-        if vUser:
+        if userInfo:
             try:
-                tmpUIStyle = ParameterService.GetParameter(CommonUtils.Current(response, request), 'User', vUser.Id, 'NavType')
+                tmpUIStyle = ParameterService.GetParameter(CommonUtils.Current(response, request), 'User', userInfo.Id, 'NavType')
             except:
                 tmpUIStyle = 'AccordionTree'
         else:

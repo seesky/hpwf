@@ -137,6 +137,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'Content'),
 ]
 
+MEDIA_ROOT = os.path.join(BASE_DIR,"Media")
+MEDIA_URL = "/Media/"
 
 CACHES = {
     'default': {

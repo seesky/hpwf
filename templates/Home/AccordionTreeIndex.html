@@ -18,6 +18,7 @@
         <script type="text/javascript" src="/Content/Scripts/jsCommon.js?v=30" ></script>
         <script type="text/javascript" src="/Content/Scripts/jQuery.cookie.js" ></script>
         <script type="text/javascript" src="/Content/Scripts/csrf.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/clearcookie.js"></script>
     </head>
 <body class="easyui-layout" style="overflow-y: hidden;" fit="true" scroll="no" oncontextmenu="return false" ondragstart="return false" oncopy="document.selection.empty()" onbeforecopy="return false">
     <div id="loading" style="position: fixed;top: -50%;left: -50%;width: 200%;height: 200%;background: #fff;z-index: 100;overflow: hidden;">
@@ -112,7 +113,24 @@
             event.returnValue = "确定离开当前页面吗？您还没有退出登录！"
         }
 
-
+        var lastTime = new Date().getTime();
+        var currentTime = new Date().getTime();
+        var timeOut = 30 * 60 * 1000;
+        $(document).ready(function(){
+            /* 鼠标移动事件 */
+            $(document).mousemove(function(){
+                lastTime = new Date().getTime(); //更新操作时间
+            });
+        });
+        function testTime(){
+            currentTime = new Date().getTime(); //更新当前时间
+            if(currentTime - lastTime > timeOut){ //判断是否超时
+                console.log("超时")
+                clearCookie();
+                window.location.href = '/Admin/Index/';
+            }
+        }
+        window.setInterval(testTime, 10000);
 
 
     </script>

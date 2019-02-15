@@ -53,3 +53,18 @@ class LoginAuthorize(object):
             except Exception as e:
                 print(e)
                 return HttpResponseRedirect('/Admin/Index/')
+        else:
+            try:
+                user = args[0].session.get(ParameterService.GetServiceConfig(None, 'LoginProvider'))
+                if user:
+                    user = SecretHelper.AESDecrypt(user)
+                    try:
+                        user = json.loads(user, object_hook=UserInfo.json_2_obj)
+                    except:
+                        return HttpResponseRedirect('/Admin/Index/')
+                    return self.f(*args, **kw)
+                else:
+                    return HttpResponseRedirect('/Admin/Index/')
+            except Exception as e:
+                print(e)
+                return HttpResponseRedirect('/Admin/Index/')
