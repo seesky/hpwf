@@ -16,5 +16,22 @@ class PublicController(object):
         Returns:
             returnValue (bool): 是否有权限
         """
+
+
         isAuthorized = PermissionService.IsAuthorizedByUserId(PublicController, CommonUtils.Current(response, request).Id, permissionItemCode, permissionItemName)
+        return isAuthorized
+
+    def ApiIsAuthorized(userInfo, permissionItemCode, permissionItemName=None):
+        """
+        是否有相应的权限
+        Args:
+            permissionItemCode (string): 权限编号
+            permissionItemName (string): 权限名称
+        Returns:
+            returnValue (bool): 是否有权限
+        """
+
+        isAuthorized = PermissionService.IsAuthorizedByUserId(PublicController,
+                                                              userInfo.Id,
+                                                              permissionItemCode, permissionItemName)
         return isAuthorized

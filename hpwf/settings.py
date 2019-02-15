@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.bizlogic',
     'apps.hadmin',
+    'apps.api',
 ]
 
 MIDDLEWARE = [
