@@ -86,6 +86,7 @@ class UserAdminService(ServiceBase):
 
 
 
+
 useradmin_application = Application([UserAdminService],
                           tns='Usable-Programming.UserAdminService.GetUserPageDTByDepartmentId',
                           in_protocol = JsonDocument(validator='soft'),

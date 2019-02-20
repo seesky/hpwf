@@ -242,18 +242,42 @@ class UserRoleService(object):
             return returnValue
 
     def AddToRolesR(self, userId, roleIds):
+        """
+        将用户加入多个角色
+        Args:
+            userId (string): 用户主键
+            roleIds (List[string]): 角色主键列表
+        Returns:
+            returnValue (int): 影响行数
+        """
         returnValue = 0
         for roleid in roleIds:
             returnValue = returnValue + UserRoleService.AddToRole(self, userId, roleid)
         return returnValue
 
     def AddToRolesU(userInfo, userIds, roleId):
+        """
+        将多个用户加入角色
+        Args:
+            userIds (string): 用户主键列表
+            roleId (List[string]): 角色主键
+        Returns:
+            returnValue (int): 影响行数
+        """
         returnValue = 0
         for userid in userIds:
             returnValue = returnValue + UserRoleService.AddToRole(userInfo, userid, roleId)
         return returnValue
 
     def RemoveFormRole(userInfo, userId, roleId):
+        """
+        取消用户角色
+        Args:
+            userId (string): 用户主键
+            roleId (List[string]): 角色主键
+        Returns:
+            returnValue (int): 影响行数
+        """
         try:
             Piuserrole.objects.filter(Q(userid=userId) & Q(roleid=roleId)).delete()
             return 1
@@ -261,24 +285,54 @@ class UserRoleService(object):
             return 0
 
     def RemoveFromRoleR(self, userId, roleIds):
+        """
+        取消用户的多个角色
+        Args:
+            userId (string): 用户主键
+            roleIds (List[string]): 角色主键列表
+        Returns:
+            returnValue (int): 影响行数
+        """
         returnValue = 0
         for roleid in roleIds:
             returnValue = returnValue + UserRoleService.RemoveFormRole(self, userId, roleid)
         return returnValue
 
     def RemoveFromRoleU(userInfo, userIds, roleId):
+        """
+        取消多个用户的角色
+        Args:
+            userIds (List[string]): 用户主键列表
+            roleId (List[string]): 角色主键
+        Returns:
+            returnValue (int): 影响行数
+        """
         returnValue = 0
         for userid in userIds:
             returnValue = returnValue + UserRoleService.RemoveFormRole(userInfo, userid, roleId)
         return returnValue
 
     def ClearRoleUser(self, roleId):
+        """
+        取消角色中的用户
+        Args:
+            roleId (List[string]): 角色列表
+        Returns:
+            returnValue (int): 影响行数
+        """
         returnValue = 0
         Piuser.objects.filter(roleid=roleId).update(roleid=None)
         returnValue = returnValue + Piuserrole.objects.filter(roleid=roleId).delete()
         return returnValue
 
     def GetRoleIds(userId):
+        """
+        获取角色列表
+        Args:
+            userId (string): 用户主键
+        Returns:
+            returnValue (int): 影响行数
+        """
         returnValue = Piuserrole.objects.filter(Q(userid=userId) & Q(roleid__in=Pirole.objects.filter(deletemark=0).values_list('id', flat=True)) & Q(deletemark=0)).values_list('roleid',flat=True)
         return returnValue
 

@@ -24,6 +24,7 @@ from apps.bizlogic.service.base.LogOnService import LogOnService
 from apps.utilities.publiclibrary.SystemInfo import SystemInfo
 from apps.bizlogic.service.permission.ScopPermission import ScopPermission
 from apps.bizlogic.service.base.UserRoleService import UserRoleService
+from apps.bizlogic.service.base.SequenceService import SequenceService
 
 
 def GenerateSplitTool():
@@ -206,6 +207,9 @@ def SubmitForm(request):
             user.isstaff = 0
             user.isvisible = 1
             user.isdimission = 0
+            if user.sortcode == None or user.sortcode == 0:
+                sequence = SequenceService.GetSequence(None, 'PIUSER')
+                user.sortcode = int(sequence)
 
 
             returnCode, returnMessage, returnValue = UserSerivce.AddUser(CommonUtils.Current(response, request), user)

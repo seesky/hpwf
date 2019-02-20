@@ -152,6 +152,16 @@ class MessageService(object):
         pass
 
     def BatchSend(response, request, receiverId, organizeId, roleId, messageEntity, saveSend = True):
+        """
+        按时间获取列表
+        Args:
+            receiverId (string): 获取方主键
+            organizeId (string): 组织机构主键
+            roleId (string): 角色主键
+            messageEntity (Cimessage): 消息实体
+            saveSend (bool): 是否保存发送方信息
+        Returns:
+        """
         receiverIds = []
         organizeIds = []
         roleIds = []
@@ -164,6 +174,15 @@ class MessageService(object):
         return MessageService.BatchSends(response, request, receiverIds, organizeIds, roleIds, messageEntity)
 
     def BatchSends(response, request, receiverIds, organizeIds, roleIds, messageEntity):
+        """
+        按时间获取列表
+        Args:
+            receiverIds (string): 获取方主键
+            organizeIds (string): 组织机构主键
+            roleIds (string): 角色主键
+            messageEntity (Cimessage): 消息实体
+        Returns:
+        """
         receiverIds = UserSerivce.GetUserIdsByOrganizeIdsAndRoleIds(None, receiverIds, organizeIds, roleIds)
         returnValue = MessageService.Sends(response, request, messageEntity, receiverIds)
         return returnValue
@@ -205,6 +224,14 @@ class MessageService(object):
         return returnValue
 
     def MessageChek(self, userInfo, onLineState, lastChekDate):
+        """
+        获取消息状态
+        Args:
+            userInfo (string): 用户
+            onLineState (string): 用户在线状态
+            lastChekDate (string): 最后检查日期
+        Returns:
+        """
         returnValue = []
         LogOnService.OnLine(None, userInfo.Id, onLineState)
         messageCount = MessageService.GetNewCount(userInfo, MessageFunction.Message)
@@ -223,6 +250,13 @@ class MessageService(object):
 
 
     def GetDTNew(self, userInfo, openId):
+        """
+        获取消息状态
+        Args:
+            userInfo (string): 用户
+            openId (string): 单点登录标识
+        Returns:
+        """
         myOpenId = userInfo.OpenId
 
         if not SystemInfo.CheckOnLine:
@@ -236,6 +270,13 @@ class MessageService(object):
         return openId,dataTable
 
     def ReadFromReceiver(userInfo, reveiverId):
+        """
+        获取特定用户的新信息
+        Args:
+            userInfo (string): 用户
+            reveiverId (string): 当前交互的用户
+        Returns:
+        """
         #读取发给我的信息
         dataTable = Cimessage.objects.filter(Q(isnew=MessageStateCode.New) & Q(receiverid=userInfo.Id) & Q(createuserid=reveiverId)).order_by('sortcode')
         dataTable.update(isnew=MessageStateCode.Old)
@@ -243,6 +284,13 @@ class MessageService(object):
 
 
     def Read(userInfo, id):
+        """
+        获取特定用户的新信息
+        Args:
+            userInfo (string): 用户
+            id (string): 主键
+        Returns:
+        """
         returnValue = 0
         messageEntity = Cimessage.objects.get(id = id)
         #针对“已发送”的情况
@@ -261,12 +309,27 @@ class MessageService(object):
         return returnValue
 
     def CheckOnLine(userInfo, onLineState):
+        """
+        检查在线状态
+        Args:
+            userInfo (string): 用户
+            onLineState (string): 用户在线状态
+        Returns:
+            returnValue (int): 离线人数
+        """
         #设置为在线状态
         LogOnService.OnLine(None, userInfo.Id, onLineState)
         returnValue = LogOnService.CheckOnLine(None)
         return returnValue
 
     def GetOnLineState(userInfo):
+        """
+        获取在线用户列表
+        Args:
+            userInfo (string): 用户
+        Returns:
+            returnValue (Ciuser[]): 数据表
+        """
         #设置为在线状态
         getOnLine = False
         LogOnService.OnLine(None, userInfo.Id)
@@ -284,6 +347,18 @@ class MessageService(object):
         return MessageService.OnLineStateDT
 
     def GetUserSentMessagesByPage(userInfo, userId, whereConditional, pageIndex=0, pageSize=20, order=None):
+        """
+        得到指定用户已发送的消息
+        Args:
+            userInfo (string): 用户
+            userId (string):  指定用户主键
+            whereConditional (string): 条件表达式
+            pageIndex (string): 当前页
+            pageSize (string): 每页显示
+            order  (string): 排序
+        Returns:
+            returnValue (Ciuser[]): 数据表
+        """
         if not userId:
             userId = userInfo.Id
 
@@ -303,6 +378,18 @@ class MessageService(object):
 
 
     def GetUserReceivedMessagesByPage(userInfo, userId, whereConditional, pageIndex=0, pageSize=20, order=None):
+        """
+        得到指定用户收到的消息
+        Args:
+            userInfo (string): 用户
+            userId (string):  指定用户主键
+            whereConditional (string): 条件表达式
+            pageIndex (string): 当前页
+            pageSize (string): 每页显示
+            order  (string): 排序
+        Returns:
+            returnValue (Cimessage[]): 数据表
+        """
         if not userId:
             userId = userInfo.Id
         if whereConditional:
@@ -317,6 +404,17 @@ class MessageService(object):
         return recordCount, pages.page(pageIndex)
 
     def GetMessagesByConditional(userInfo, whereConditional, pageIndex=0, pageSize=20, order=None):
+        """
+        通过指定条件得到消息
+        Args:
+            userInfo (string): 用户
+            whereConditional (string): 条件表达式
+            pageIndex (string): 当前页
+            pageSize (string): 每页显示
+            order  (string): 排序
+        Returns:
+            returnValue (Cimessage[]): 数据表
+        """
         if not order:
             order = "createon DESC "
         if not userInfo.IsAdministrator:
@@ -343,12 +441,27 @@ class MessageService(object):
 
 
     def SetDeleted(userInfo, ids):
+        """
+        批量逻辑删除消息
+        Args:
+            userInfo (string): 用户
+            ids (List[string]): 主键数组
+        Returns:
+            returnValue (Cimessage[]): 数据表
+        """
         LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.MessageService,
                             sys._getframe().f_code.co_name, FrameworkMessage.MessageService_SetDeleted, str(ids))
         returnValue = Cimessage.objects.filter(id__in=ids).update(deletemark=1)
         return returnValue
 
     def GetEntity(self, id):
+        """
+        取得实体
+        Args:
+            id (string): 主键
+        Returns:
+            returnValue (Cimessage[]): 数据表
+        """
         try:
             returnValue = Cimessage.objects.get(id = id)
             return returnValue
@@ -357,12 +470,26 @@ class MessageService(object):
             return returnValue
 
     def Add(cIMESSAGEEntity):
+        """
+        添加实体
+        Args:
+            cIMESSAGEEntity (Cimessage): 实体
+        Returns:
+            returnValue (string): 主键
+        """
         return MessageService.AddEntity(cIMESSAGEEntity)
 
     def AddEntity(cIMESSAGEEntity):
+        """
+        添加实体
+        Args:
+            cIMESSAGEEntity (Cimessage): 实体
+        Returns:
+            returnValue (string): 主键
+        """
         sequence = ''
         if cIMESSAGEEntity.sortcode == None or cIMESSAGEEntity.sortcode == 0:
-            sequence = SequenceService.GetSequence(None, 'cimessage')
+            sequence = SequenceService.GetSequence(None, 'CIMESSAGE')
             cIMESSAGEEntity.sortcode = int(sequence)
         cIMESSAGEEntity.save()
         return cIMESSAGEEntity.id

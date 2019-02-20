@@ -466,12 +466,14 @@ class UserSerivce(object):
         """
         LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.UserService,
                             sys._getframe().f_code.co_name, FrameworkMessage.UserService_BatchSave, str(dataTable))
+        returnValue = 0
         try:
             for user in dataTable:
                 user.save()
-            return True
+                returnValue = returnValue + 1
+            return returnValue
         except:
-            return False
+            return returnValue
 
     def GetCompanyUser(userInfo, user):
         """

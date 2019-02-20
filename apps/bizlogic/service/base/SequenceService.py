@@ -8,7 +8,8 @@ from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
 from apps.utilities.publiclibrary.StringHelper import StringHelper
-
+from apps.bizlogic.service.base.LogService import LogService
+import sys
 
 from django.db.utils import DatabaseError
 from django.db.transaction import TransactionManagementError
@@ -27,7 +28,7 @@ class SequenceService(object):
     SequenceLength = 8  # 序列长度
     UsePrefix = True  # 是否采用前缀，补充0方式
 
-    def Add(self, sequenceEntity):
+    def Add(userInfo, sequenceEntity):
         """
           添加序列
           Args:
@@ -37,6 +38,10 @@ class SequenceService(object):
               returnMessage(string):  状态信息
               returnValue（string）: 主键
         """
+
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.SequenceService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.SequenceService_Add, id)
+
         try:
             sequenceEntity.save()
             returnCode = StatusCode.statusCodeDic['OKAdd']
@@ -100,7 +105,7 @@ class SequenceService(object):
         staffCount = returnValue.count
         return staffCount,returnValue
 
-    def GetEntity(self, id):
+    def GetEntity(userInfo, id):
         """
         获取实体
         Args:
@@ -108,6 +113,8 @@ class SequenceService(object):
         Returns:
             returnValue (Staff or None): 实体
         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.SequenceService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.SequenceService_GetEntity, id)
         try:
             sequence = Cisequence.objects.get(id=id)
             return sequence
@@ -230,14 +237,44 @@ class SequenceService(object):
     def Reset(self, ids):
         pass
 
-    def Delete(self, id):
-        pass
+    def Delete(userInfo, id):
+        """
+         删除
+         Args:
+             id (string): 参数项主键
+         Returns:
+             returnValue (int): 影响行数
+         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.SequenceService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.SequenceService_Delete, id)
+        returnValue = Cisequence.objects.filter(id=id).delete()
+        return returnValue
 
-    def SetDeleted(self, id):
-        pass
+    def SetDeleted(userInfo, id):
+        """
+        逻辑删除
+        Args:
+            id (string): 参数项主键
+        Returns:
+            returnValue (int): 影响行数
+        """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.SequenceService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.SequenceService_Delete, id)
+        returnValue = Cisequence.objects.filter(id=id).update(deletemark=1)
+        return returnValue
 
-    def BatchDelete(self, ids):
-        pass
+    def BatchDelete(userInfo, ids):
+        """
+         批量删除
+         Args:
+             id (string): 参数项主键
+         Returns:
+             returnValue (int): 影响行数
+         """
+        LogService.WriteLog(userInfo, __class__.__name__, FrameworkMessage.SequenceService,
+                            sys._getframe().f_code.co_name, FrameworkMessage.SequenceService_Delete, id)
+        returnValue = Cisequence.objects.filter(id__in=ids).delete()
+        return returnValue
 
     def GetEntityByAdd(self, fullName):
         """
@@ -248,8 +285,9 @@ class SequenceService(object):
             returnValue (string): 序列号
         """
         id = uuid.uuid4()
-        returnValue = Cisequence.objects.get_or_create(defaults={'fullname':fullName}, id = id, fullname=fullName, sequence=SequenceService.DefaultSequence, reduction=SequenceService.DefaultReduction, step=SequenceService.DefaultStep, prefix=SequenceService.DefaultPrefix, separate=SequenceService.DefaultSeparator, deletemark=0, createon=datetime.datetime.now())
-        return Cisequence.objects.get(id = id)
+        #returnValue,v = Cisequence.objects.get_or_create(defaults={'fullname':fullName}, id = id, fullname=fullName, sequence=SequenceService.DefaultSequence, reduction=SequenceService.DefaultReduction, step=SequenceService.DefaultStep, prefix=SequenceService.DefaultPrefix, separate=SequenceService.DefaultSeparator, deletemark=0, createon=datetime.datetime.now())
+        returnValue, v = Cisequence.objects.get_or_create(fullname = fullName, deletemark= 0, defaults={'id':id, 'fullname':fullName, 'sequence':SequenceService.DefaultSequence, 'reduction':SequenceService.DefaultReduction, 'step':SequenceService.DefaultStep, 'prefix':SequenceService.DefaultPrefix, 'separate':SequenceService.DefaultSeparator, 'deletemark':0, 'createon':datetime.datetime.now()})
+        return returnValue
 
     def UpdateSequence(self, fullName, sequenceCount):
         """

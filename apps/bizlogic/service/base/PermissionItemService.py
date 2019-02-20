@@ -18,6 +18,10 @@ from apps.bizlogic.models import Piuserrole
 #from apps.bizlogic.service.base.PermissionScopeService import PermissionScopeService
 from apps.utilities.message.StatusCode import StatusCode
 from apps.utilities.message.FrameworkMessage import FrameworkMessage
+from apps.bizlogic.models import Pipermissionscope
+from apps.utilities.message.PermissionScope import PermissionScope
+from apps.utilities.publiclibrary.StringHelper import StringHelper
+from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 
 
 class PermissionItemService(object):
@@ -160,7 +164,7 @@ class PermissionItemService(object):
             returnValue = Pipermissionitem.objects.filter(
                 Q(categorycode='Application') & Q(deletemark=0) & Q(enabled=1)).order_by('sortcode')
             return returnValue
-        permissionItemIds = PermissionScopeService.GetTreeResourceScopeIds(self, userId, 'pipermissionitem', permissionItemCode, True)
+        permissionItemIds = PermissionItemService.GetTreeResourceScopeIds(self, userId, 'pipermissionitem', permissionItemCode, True)
         returnValue = Pipermissionitem.objects.filter(
             Q(id__in=permissionItemIds) & Q(deletemark=0) & Q(enabled=1)).order_by('sortcode')
         return returnValue
@@ -345,7 +349,7 @@ class PermissionItemService(object):
                 'sortcode')
             return returnValue
 
-        permissionItemIds = PermissionScopeService.GetTreeResourceScopeIds(self, 'PIPERMISSIONITEM', permissionItemCode, True)
+        permissionItemIds = PermissionItemService.GetTreeResourceScopeIds(self, 'PIPERMISSIONITEM', permissionItemCode, True)
         returnValue = Pipermissionitem.objects.filter(Q(id__in=permissionItemIds) & Q(deletemark=0) & Q(enabled=1))
         return returnValue
 
@@ -413,3 +417,72 @@ class PermissionItemService(object):
 
         item = Pipermissionitem.objects.get(Q(code=permissionItemCode) & Q(deletemark=0) & Q(enabled=1))
         return item.id
+
+    def GetTreeResourceScopeIds(self, userId, tableName, permissionItemCode, childrens):
+        """
+        用户名是否重复
+        Args:
+            fieldNames (string): 字段名
+            fieldValue (string): 字段值
+        Returns:
+            returnValue(bool): 已存在
+        """
+        resourceScopeIds = None
+        resourceScopeIds = PermissionItemService.GetResourceScopeIds(self, userId, tableName, permissionItemCode)
+
+        idList = StringHelper.ArrayToList(self, resourceScopeIds, '\'')
+
+        if idList:
+            sqlQuery = 'select id from ( select id from ' + tableName + ' where (id in (' + idList + ')) UNION ALL select ResourceTree.Id AS ID FROM ' + tableName + ' AS ResourceTree INNER JOIN pipermissionscope AS A ON A.Id = ResourceTree.ParentId) AS PermissionScopeTree'
+            dataTable = DbCommonLibaray.executeQuery(self, sqlQuery)
+        return resourceScopeIds
+
+    def GetResourceScopeIds(self, userId, targetCategory, permissionItemCode):
+        """
+        获得用户的某个权限范围资源主键数组
+        Args:
+            userId (string): 用户主键
+            targetCategory (string): 资源分类
+            permissionItemCode (string): 权限编号
+        Returns:
+            returnValue(string[]): 主键数组
+        """
+        permissionItemId = Pipermissionitem.objects.get(code=permissionItemCode).id
+        defaultRoleId = Piuser.objects.get(id=userId).roleid
+
+        q1 = Pipermissionscope.objects.filter(Q(resourcecategory='PIUSER') & Q(resourceid=userId) & Q(targetcategory=targetCategory) & Q(permissionid=permissionItemId) & Q(enabled=1) & Q(deletemark=0)).values_list('targetid', flat=True)
+        q2 = Pipermissionscope.objects.filter(Q(resourcecategory='PIROLE') & Q(resourcecategory=targetCategory) & Q(permissionid=permissionItemId) & Q(deletemark=0) & Q(enabled=1) & Q(resourceid__in=Piuserrole.objects.filter(Q(userid=userId) & Q(enabled=1) & Q(deletemark=0)).values_list('roleid', flat=True))).values_list('targetid', flat=True)
+        resourceIds = q1.union(q2)
+
+        if targetCategory == 'PIORGANIZE':
+            resourceIds,permissionScope = PermissionItemService.TransformPermissionScope(None, userId, resourceIds)
+
+        return resourceIds
+
+    def TransformPermissionScope(self, userId, resourceIds):
+        """
+        转换用户的权限范围
+        Args:
+            userId (string): 用户主键
+            resourceIds (string[]): 权限范围
+        Returns:
+        """
+        permissionScope = PermissionScope.PermissionScopeDic.get('No')
+        if len(resourceIds) > 0:
+            userEntity = Piuser.objects.get(id=userId)
+            for r in resourceIds:
+                if r == PermissionScope.PermissionScopeDic.get('All'):
+                    permissionScope = PermissionScope.PermissionScopeDic.get('All')
+                    continue
+                if r == PermissionScope.PermissionScopeDic.get('UserCompany'):
+                    permissionScope = PermissionScope.PermissionScopeDic.get('UserCompany')
+                    continue
+                if r == PermissionScope.PermissionScopeDic.get('UserDepartment'):
+                    permissionScope = PermissionScope.PermissionScopeDic.get('UserDepartment')
+                    continue
+                if r == PermissionScope.PermissionScopeDic.get('UserWorkgroup'):
+                    permissionScope = PermissionScope.PermissionScopeDic.get('UserWorkgroup')
+                    continue
+            return resourceIds,permissionScope
+        return resourceIds, permissionScope
+

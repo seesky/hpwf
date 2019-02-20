@@ -14,6 +14,17 @@ import uuid,datetime
 class LogService(object):
 
     def Add(userInfo, processName, methodName, processId, methodEngName, parameters):
+        """
+        添加日志信息
+        Args:
+            processName (string): 服务名称
+            methodName (string): 方法名
+            processId (string): 操作
+            methodEngName (string): 操作名称
+            parameters (string):  可记录的参数
+        Returns:
+            returnValue (string): 异常主键
+        """
         if not SystemInfo.EnableRecordLog:
             return
         logEntity = Cilog()
@@ -62,6 +73,16 @@ class LogService(object):
         pass
 
     def GetDTByDate(userInfo, beginDate, endDate, userId, moduleId):
+        """
+        按时间获取列表
+        Args:
+            userInfo (UserInfo): 当前用户
+            beginDate (string): 开始时间
+            endDate (string): 结束时间
+            userId (string): 用户主键
+            moduleId (string): 模块主键
+        Returns:
+        """
         if userId:
             dataTable = DbCommonLibaray.executeQuery(None, LogService.GetDTSql([userId], 'processid', moduleId, beginDate, endDate))
         else:

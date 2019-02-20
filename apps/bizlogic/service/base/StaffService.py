@@ -22,7 +22,7 @@ from apps.bizlogic.models import Piuser
 from apps.bizlogic.models import Piuserrole
 from apps.bizlogic.service.base.UserService import UserSerivce
 from apps.bizlogic.service.base.LogService import LogService
-
+from apps.bizlogic.service.base.SequenceService import SequenceService
 
 class StaffService(object):
 
@@ -46,6 +46,7 @@ class StaffService(object):
             staffOrganize.deletemark = 0
             staffOrganize.createon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             staffOrganize.modifiedon = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
             staffOrganize.save()
             returnCode = StatusCode.statusCodeDic['OKAdd']
             returnMessage = FrameworkMessage.MSG0009

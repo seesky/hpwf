@@ -407,6 +407,34 @@ class Cisequence(models.Model):
     createon = models.DateTimeField(db_column='CREATEON')  # Field name made lowercase.
     description = models.CharField(db_column='DESCRIPTION', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
+    def toJSON(self):
+        fields = []
+        for field in self._meta.fields:
+            fields.append(field.name)
+
+        d = {}
+        import datetime
+        for attr in fields:
+            if isinstance(getattr(self, attr), datetime.datetime):
+                d[attr] = getattr(self, attr).strftime('%Y-%m-%d %H:%M:%S')
+            elif isinstance(getattr(self, attr), datetime.date):
+                d[attr] = getattr(self, attr).strftime('%Y-%m-%d')
+            else:
+                d[attr] = getattr(self, attr)
+
+        import json
+        return json.dumps(d)
+
+    def loadJson(self, request):
+        for i in request.POST:
+           # self.(str(i.key).lower())
+            if hasattr(self, i.lower()):
+                if request.POST[i] == '':
+                    setattr(self, i.lower(), None)
+                else:
+                    setattr(self, i.lower(), request.POST[i])
+        return self
+
     class Meta:
         managed = True
         db_table = 'cisequence'

@@ -16,6 +16,7 @@ from apps.bizlogic.models import Pistaff
 import json
 import uuid
 import datetime
+from apps.bizlogic.service.base.SequenceService import SequenceService
 
 
 def BuildToolBarButton(response, request):
@@ -127,6 +128,10 @@ def SubmitForm(request):
             staff.modifiedby = curUser.RealName
             staff.enabled = 1
             staff.isdimission = 0
+
+            if staff.sortcode == None or staff.sortcode == 0:
+                sequence = SequenceService.GetSequence(None, 'PISTAFF')
+                staff.sortcode = int(sequence)
 
 
 

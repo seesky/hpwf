@@ -8,6 +8,9 @@ from django.http.response import HttpResponseRedirect
 from apps.utilities.publiclibrary.SecretHelper import SecretHelper
 import json
 from apps.utilities.publiclibrary.UserInfo import UserInfo
+from apps.bizlogic.service.base.ExceptionService import ExceptionService
+from apps.bizlogic.models import Ciexception
+import uuid,datetime
 
 class LoginAuthorize(object):
 
@@ -67,4 +70,11 @@ class LoginAuthorize(object):
                     return HttpResponseRedirect('/Admin/Index/')
             except Exception as e:
                 print(e)
+                #TODO:这个地方只是暂时用来记录异常信息的代码，应当将不同模块不同方法的异常记录写到各自的代码中，后期此代码要删除
+                e_out = Ciexception()
+                e_out.id = uuid.uuid4()
+                e_out.createon = datetime.datetime.now()
+                e_out.message = e
+                ExceptionService.Add(None, e_out)
+
                 return HttpResponseRedirect('/Admin/Index/')

@@ -220,11 +220,11 @@ class OrganizeService(object):
 
     def GetList(self):
         """
-                获取组织机构列表
-                Args:
-                Returns:
-                    returnValue (List): 组织机构列表
-                """
+        获取组织机构列表
+        Args:
+        Returns:
+            returnValue (List): 组织机构列表
+        """
         returnValue = []
         try:
             for organize in Piorganize.objects.all():

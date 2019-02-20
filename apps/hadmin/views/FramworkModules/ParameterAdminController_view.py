@@ -164,9 +164,9 @@ def SubmitForm(request):
                 return response
 
             if curUser:
-                response.modifiedby = curUser.RealName
-                response.modifieduserid = curUser.Id
-                response.modifiedon = datetime.datetime.now()
+                parameter.modifiedby = curUser.RealName
+                parameter.modifieduserid = curUser.Id
+                parameter.modifiedon = datetime.datetime.now()
                 returnCode, returnMessage = ParameterService.Update(CommonUtils.Current(response, request), parameter)
                 if returnCode == StatusCode.statusCodeDic['OKUpdate']:
                     response.content = json.dumps({'Success': True, 'Data': IsOk, 'Message': returnMessage})

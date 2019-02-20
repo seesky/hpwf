@@ -100,7 +100,6 @@ class ExceptionService(object):
             q.add(Q(**{i: valueDic[i]}), Q.AND)
         returnValue = Ciexception.objects.filter(q)
         return returnValue
-        pass
 
     def Delete(userInfo, ids):
         """

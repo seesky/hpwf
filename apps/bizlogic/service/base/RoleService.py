@@ -347,6 +347,14 @@ class RoleService(object):
         pass
 
     def MoveTo(self, id, targetOrganizedId):
+        """
+       移动角色
+       Args:
+           id (string): 主键
+           targetOrganizedId (string): 组织机构主键
+       Returns:
+           returnValue (True or False): 是否成功
+       """
         try:
             role = Pirole.objects.get(id=id)
         except Pirole.DoesNotExist as e:
