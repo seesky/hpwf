@@ -9,3 +9,5 @@
 8、前台模板来自于网络，如侵权请联系作者
 9、快速部署包及帮助文档请访问www.usable-programming.com获取
 10、觉得代码比较实用的用户别忘了去www.usable-programming.com留言或捐赠，开源世界，你们的支持是我最大的动力
+捐赠二维码：
+![image](http://www.usable-programming.com/zb_users/upload/2019/02/201902251551057612320685.png)
