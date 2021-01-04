@@ -1,0 +1,19 @@
+﻿<form id="formUserControl">
+    <table class="grid">
+        <tr><td align="right">子表单名：</td><td><input type="text" style="width:350px;" id="txt_FullName" name="FullName" class="txt03 required" /></td></tr>
+        <tr>
+            <td align="right">表单类型：</td>
+            <td>
+                <input type="radio" class="txt03" name="Type" value="1" /><label>WinForm</label> 
+                <input type="radio" class="txt03" name="Type" value="2" checked="checked"/><label>Web</label>
+                <input type="radio" class="txt03" name="Type" value="3" /><label>WinForm/Web</label>
+            </td>
+        </tr>        
+        <tr><td align="right">位置：</td><td><input type="text"  style="width:350px;" id="txt_Path" name="Path" class="txt03" /></td></tr>
+        <tr><td align="right">控件ID：</td><td><input type="text" style="width:350px;" id="txt_ControlId" name="ControlId" class="txt03" /></td></tr>
+        <tr><td align="right" style="background-color:#337fb2;">表单名称：</td><td><input type="text" style="width:350px;" id="txt_FormName" name="FormName" class="txt03" /></td></tr>
+        <tr><td align="right" style="background-color:#337fb2;">所在程序集：</td><td><input type="text" style="width:350px;" id="txt_AssemblyName" name="AssemblyName" class="txt03" /></td></tr>
+        <tr><td align="right">有效：</td><td><input type="checkbox" class="txt03" name="Enabled" id="chk_Enabled" /><label>有效</label></td></tr>
+        <tr><td align="right">描述：</td><td><textarea style="width:350px;height:70px;" class="txt03" name="Description" id="txt_Description" ></textarea></td></tr>
+    </table>
+</form>
