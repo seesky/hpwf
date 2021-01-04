@@ -1,5 +1,5 @@
 # _*_ coding: utf-8 _*_
-__author__ = 'seesky@hstecs.com'
+__author__ = 'baxuelong@163.com'
 __date__ = '2018/12/13 14:55'
 
 from django.db import connection, transaction

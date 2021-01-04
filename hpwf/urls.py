@@ -23,7 +23,7 @@ app_name = '[hadmin]'
 urlpatterns = [
     url(r'^$', LoginController_view.Index),
     url(r'^piusertest/$', PiuserTest.as_view(), name='piusertest'),
-    url(r'^Admin/', include('hadmin.urls')),
-    url(r'^Api/', include('api.urls')),
-    url(r'^Front/', include('front.urls'))
+    url(r'^Admin/', include('apps.hadmin.urls')),
+    url(r'^Api/', include('apps.api.urls')),
+    url(r'^Front/', include('apps.front.urls'))
 ]

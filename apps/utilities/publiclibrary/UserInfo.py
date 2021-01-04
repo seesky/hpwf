@@ -1,5 +1,5 @@
 # _*_ coding: utf-8 _*_
-__author__ = 'seesky@hstecs.com'
+__author__ = 'baxuelong@163.com'
 __date__ = '2018/12/26 14:03'
 
 from apps.utilities.publiclibrary.SystemInfo import SystemInfo

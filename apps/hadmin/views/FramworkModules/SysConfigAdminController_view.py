@@ -1,5 +1,5 @@
 # _*_ coding: utf-8 _*_
-__author__ = 'seesky@hstecs.com'
+__author__ = 'baxuelong@163.com'
 __date__ = '2019/2/14 8:44'
 
 from apps.hadmin.MvcAppUtilties.CommonUtils import CommonUtils

@@ -1,5 +1,5 @@
 # _*_ coding: utf-8 _*_
-__author__ = 'seesky@hstecs.com'
+__author__ = 'baxuelong@163.com'
 __date__ = '2018/12/11 16:29'
 
 from apps.bizlogic.models import Pirole
@@ -9,9 +9,9 @@ from django.db.transaction import TransactionManagementError
 from django.core.paginator import Paginator
 from django.db.models import Q
 
-from utilities.message.StatusCode import StatusCode
-from utilities.message.FrameworkMessage import FrameworkMessage
-from utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
+from apps.utilities.message.StatusCode import StatusCode
+from apps.utilities.message.FrameworkMessage import FrameworkMessage
+from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 from apps.bizlogic.models import Piuser
 from apps.bizlogic.models import Piuserrole
 from apps.bizlogic.service.base.UserService import UserSerivce

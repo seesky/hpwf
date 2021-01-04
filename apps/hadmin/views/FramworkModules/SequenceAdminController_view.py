@@ -1,5 +1,5 @@
 # _*_ coding: utf-8 _*_
-__author__ = 'seesky@hstecs.com'
+__author__ = 'baxuelong@163.com'
 __date__ = '2019/1/17 8:00'
 
 from apps.bizlogic.service.base.ExceptionService import ExceptionService

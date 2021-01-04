@@ -1,12 +1,12 @@
 # _*_ coding: utf-8 _*_
-__author__ = 'seesky@hstecs.com'
+__author__ = 'baxuelong@163.com'
 __date__ = '2018/12/11 17:04'
 
 from apps.utilities.publiclibrary.UserInfo import UserInfo
 from apps.utilities.publiclibrary.SystemInfo import SystemInfo
 from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 from apps.utilities.message.AuditStatus import AuditStatus
-from utilities.message.StatusCode import StatusCode
+from apps.utilities.message.StatusCode import StatusCode
 from apps.bizlogic.models import Piuserlogon
 from apps.bizlogic.models import Piuser
 import time
@@ -19,6 +19,7 @@ from apps.bizlogic.service.permission.PermissionService import PermissionService
 import uuid
 from django.db.models import Q,F
 from apps.utilities.publiclibrary.ValidateUtil import ValidateUtil
+
 
 class LogOnService(object):
 

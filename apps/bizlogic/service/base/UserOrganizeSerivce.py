@@ -1,5 +1,5 @@
 # _*_ coding: utf-8 _*_
-__author__ = 'seesky@hstecs.com'
+__author__ = 'baxuelong@163.com'
 __date__ = '2018/12/11 16:13'
 
 from apps.bizlogic.models import Piuser
@@ -13,8 +13,8 @@ from apps.utilities.publiclibrary.DbCommonLibaray import DbCommonLibaray
 from django.db.utils import DatabaseError
 from django.db.transaction import TransactionManagementError
 from django.db.models import Q
-from utilities.message.StatusCode import StatusCode
-from utilities.message.FrameworkMessage import FrameworkMessage
+from apps.utilities.message.StatusCode import StatusCode
+from apps.utilities.message.FrameworkMessage import FrameworkMessage
 
 
 
