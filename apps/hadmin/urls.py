@@ -27,7 +27,10 @@ import apps.hadmin.views.FramworkModules.SysConfigAdminController_view as SysCon
 import apps.hadmin.views.FramworkModules.HighchartsController_view as Highcharts
 import apps.hadmin.views.ExampleModules.PDFReaderController_view as PDFReader
 import apps.hadmin.views.ExampleModules.CKEditorController_view as CKEditor
-
+import apps.hadmin.views.FramworkModules.DailyBizAdminController_view as DailyBiz
+import apps.hadmin.views.FramworkModules.UnClaimedTaskAdminController_view as UnClaimedTask
+import apps.hadmin.views.FramworkModules.ToDoTaskAdminController_view as ToDoTask
+import apps.hadmin.views.FramworkModules.MyParticipantTaskAdminController_view as MyParticipantTask
 
 
 urlpatterns = [
@@ -112,6 +115,11 @@ urlpatterns = [
     url(r'^FrameworkModules/PermissionItemAdmin/Delete/', PermissionItem.Delete),
     url(r'^FrameworkModules/PermissionItemAdmin/MoveTo/', PermissionItem.MoveTo),
 
+    #工作流
+    url(r'^FrameworkModules/DailyBizAdmin/Index/', DailyBiz.Index),
+    url(r'^FrameworkModules/UnClaimedTaskAdmin/Index/', UnClaimedTask.Index),
+    url(r'^FrameworkModules/ToDoTaskAdmin/Index/', ToDoTask.Index),
+    url(r'^FrameworkModules/MyParticipantTaskAdmin/Index/', MyParticipantTask.Index),
 
     url(r'^FrameworkModules/UserPermissionAdmin/Index/', UserPermission.Index),
     url(r'^FrameworkModules/RolePermissionAdmin/Index/', RolePermission.Index),
