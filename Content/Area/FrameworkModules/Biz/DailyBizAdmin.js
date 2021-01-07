@@ -1,4 +1,4 @@
-﻿var actionUrl = '/WorkFlow/DailyBiz/';
+﻿var actionUrl = '/Admin/FrameworkModules/DailyBizAdmin/';
 
 
 $(function () {
@@ -15,7 +15,7 @@ var myWFBizTree = {
     init: function () {
         $('#myWFBizTree').tree({
             lines: true,
-            url: actionUrl + 'GetAvailableBizClass',
+            url: actionUrl + 'GetAvailableBizClass/',
             animate: true,
             onLoadSuccess: function (node, data) {
                 $('body').data('depData', data);

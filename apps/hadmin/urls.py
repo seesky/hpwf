@@ -117,6 +117,7 @@ urlpatterns = [
 
     #工作流
     url(r'^FrameworkModules/DailyBizAdmin/Index/', DailyBiz.Index),
+    url(r'^FrameworkModules/DailyBizAdmin/GetAvailableBizClass/', DailyBiz.GetAvailableBizClass),
     url(r'^FrameworkModules/UnClaimedTaskAdmin/Index/', UnClaimedTask.Index),
     url(r'^FrameworkModules/ToDoTaskAdmin/Index/', ToDoTask.Index),
     url(r'^FrameworkModules/MyParticipantTaskAdmin/Index/', MyParticipantTask.Index),
