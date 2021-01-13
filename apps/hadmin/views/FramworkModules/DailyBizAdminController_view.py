@@ -9,6 +9,7 @@ from django.template import loader ,Context
 from apps.hadmin.MvcAppUtilties.CommonUtils import CommonUtils
 from django.views.decorators.csrf import csrf_exempt
 from apps.bizlogic.service.workflow.WorkFlowTemplate import WorkFlowTemplate
+import json
 
 
 @csrf_exempt
@@ -112,3 +113,38 @@ def GetAvailableBizClass(request):
     response.content = str(returnValue)
     return response
 
+
+
+@csrf_exempt
+@LoginAuthorize
+def GetWorkFlowByClassId(request):
+
+    classId = None
+    try:
+        classId = request.POST['classId']
+    except:
+        page = None
+
+    response = HttpResponse()
+
+    curUser = CommonUtils.Current(response, request)
+
+    writeJson = "[]"
+    if classId is not None:
+        dtAvailableBizClass = WorkFlowTemplate.GetAllowStartWorkFlows(None, curUser, curUser.Id)
+        dv = []
+        for dr in dtAvailableBizClass:
+            if dr["WFCLASSID"] == classId:
+                dv.append(dr)
+            else:
+                continue
+        if len(dv) > 0:
+            writeJson = json.dumps(dv)
+        response.content = writeJson
+        return response
+    else:
+        response.content = writeJson
+        return response
+
+    response.content = str(returnValue)
+    return response

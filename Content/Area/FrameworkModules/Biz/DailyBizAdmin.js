@@ -34,7 +34,7 @@ var navgrid;
 var mygrid = {
     bindGrid: function (size) {
         navgrid = $('#taskList').datagrid({
-            url: actionUrl + "GetWorkFlowByClassId",
+            url: actionUrl + "GetWorkFlowByClassId/",
             title: "任务列表",
             //loadMsg: "正在加载业务流程数据，请稍等...",
             iconCls: 'icon16_list',
