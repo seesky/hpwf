@@ -31,6 +31,9 @@ import apps.hadmin.views.FramworkModules.DailyBizAdminController_view as DailyBi
 import apps.hadmin.views.FramworkModules.UnClaimedTaskAdminController_view as UnClaimedTask
 import apps.hadmin.views.FramworkModules.ToDoTaskAdminController_view as ToDoTask
 import apps.hadmin.views.FramworkModules.MyParticipantTaskAdminController_view as MyParticipantTask
+import apps.hadmin.views.FramworkModules.BeDoneTaskAdminController_view as BeDoneTask
+import apps.hadmin.views.FramworkModules.WorkFlowMonitorAdminController_views as WorkFlowMonitor
+import apps.hadmin.views.FramworkModules.UserFormAdminController_view as UserForm
 
 
 urlpatterns = [
@@ -122,6 +125,16 @@ urlpatterns = [
     url(r'^FrameworkModules/UnClaimedTaskAdmin/Index/', UnClaimedTask.Index),
     url(r'^FrameworkModules/ToDoTaskAdmin/Index/', ToDoTask.Index),
     url(r'^FrameworkModules/MyParticipantTaskAdmin/Index/', MyParticipantTask.Index),
+    url(r'^FrameworkModules/BeDoneTaskAdmin/Index/', BeDoneTask.Index),
+    url(r'^FrameworkModules/WorkFlowMonitorAdmin/Index/', WorkFlowMonitor.Index),
+    url(r'^FrameworkModules/UserFormAdmin/Index/', UserForm.Index),
+    url(r'^FrameworkModules/UserFormAdmin/MainUserControl/', UserForm.MainUserControl),
+    url(r'^FrameworkModules/UserFormAdmin/UserControlForm/', UserForm.UserControlForm),
+    url(r'^FrameworkModules/UserFormAdmin/MainUserControlLink/', UserForm.MainUserControlLink),
+    url(r'^FrameworkModules/UserFormAdmin/GetUserControlClass/', UserForm.GetUserControlClass),
+    url(r'^FrameworkModules/UserFormAdmin/GetMainUserControlByPage/', UserForm.GetMainUserControlByPage),
+    url(r'^FrameworkModules/UserFormAdmin/GetUserControlByPage/', UserForm.GetUserControlByPage),
+
 
     url(r'^FrameworkModules/UserPermissionAdmin/Index/', UserPermission.Index),
     url(r'^FrameworkModules/RolePermissionAdmin/Index/', RolePermission.Index),

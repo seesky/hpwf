@@ -1,4 +1,4 @@
-﻿var actionUrl = '/WorkFlow/UserFormAdmin/';
+﻿var actionUrl = '/Admin/FrameworkModules/UserFormAdmin/';
 $(function () {
     pageSizeControl.init({ gridId: 'list', gridType: 'datagrid' });
     userContorlTree.init();
@@ -12,7 +12,7 @@ var userContorlTree = {
     init: function () {
         $('#formtree').tree({
             lines: true,
-            url: actionUrl + 'GetUserControlClass',
+            url: actionUrl + 'GetUserControlClass/',
             animate: true,
             onClick: function (node) {
                 mygrid.loadGrid(node.id);
@@ -43,7 +43,7 @@ var mygrid = {
         });
         if (type == '1') { //加载主表单
             navgrid = $('#list').datagrid({
-                url: actionUrl + "GetMainUserControlByPage",
+                url: actionUrl + "GetMainUserControlByPage/",
                 title: "主表单列表",
                 toolbar: [{
                     id: 'btnAddMainForm',
@@ -69,7 +69,7 @@ var mygrid = {
                 columns: [[
                     { title: '名称', field: 'FULLNAME', width: 150 },
                     { title: '有效', field: 'ENABLED', width: 50, formatter: function (cellvalue, d, i) {
-                        return cellvalue ? '<img src="../../Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="../../Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
+                        return cellvalue ? '<img src="/Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="/Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
                     }},
                     { title: '描述', field: 'DESCRIPTION', width: 300 },
                     { title: '创建时间', field: 'CREATEON', width: 144 },
@@ -81,7 +81,7 @@ var mygrid = {
         
         if (type == '2') {
             navgrid = $('#list').datagrid({
-                url: actionUrl + "GetUserControlByPage",
+                url: actionUrl + "GetUserControlByPage/",
                 title: "子表单列表",
                 toolbar: [{
                         id:'btnAddChildForm',
@@ -104,7 +104,7 @@ var mygrid = {
                     { title: 'Web配置', colspan: 2 }, 
                     { title: 'WinForm配置', colspan: 2},
                     { title: '有效', field: 'ENABLED', width: 50, rowspan: 2, formatter: function (cellvalue, d, i) {
-                        return cellvalue ? '<img src="../../Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="../../Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
+                        return cellvalue ? '<img src="/Content/Styles/icon/bullet_tick.png" alt="正常" title="正常" />' : '<img src="/Content/Styles/icon/bullet_minus.png" alt="禁用" title="禁用" />';
                     } },
                     {
                         title: '表单类型',
