@@ -146,7 +146,7 @@ var mygrid = {
 var UserFormAdminMethod = {
     AddMainForm: function () {
         var addDialog = top.$.hDialog({
-            title: '增加主表单', iconCls: 'icon16_add', href: '/WorkFlow/UserFormAdmin/MainUserControl?n=' + Math.random(),
+            title: '增加主表单', iconCls: 'icon16_add', href: '/Admin/FrameworkModules/UserFormAdmin/MainUserControl/',
             width: 430,height: 250,
             onLoad: function () {
                 top.$('#chk_Enabled').attr("checked", true);
@@ -154,7 +154,7 @@ var UserFormAdminMethod = {
             submit: function () {
                 var isValid = top.$('#idCommonForm').form("validate");
                 if (isValid) {
-                    $.ajaxjson(actionUrl + 'AddMainForm',top.$('#idCommonForm').serialize(), function (d) {
+                    $.ajaxjson(actionUrl + 'AddMainForm/',top.$('#idCommonForm').serialize(), function (d) {
                         if (d.Data > 0) {
                             msg.ok('添加主表单成功!');
                             addDialog.dialog('close');
@@ -172,22 +172,22 @@ var UserFormAdminMethod = {
         var selectRow = mygrid.getSelectedRow();
         if (selectRow) {
             var editDialog = top.$.hDialog({
-                title: '修改主表单', iconCls: 'icon16_edit_button', href: '/WorkFlow/UserFormAdmin/MainUserControl?n=' + Math.random(),
+                title: '修改主表单', iconCls: 'icon16_edit_button', href: '/Admin/FrameworkModules/UserFormAdmin/MainUserControl/',
                 width: 430,height: 250,
                 onLoad: function () {
                     var parm = 'keyId=' + selectRow.ID;
-                    $.ajaxjson(actionUrl + 'GetMainUserControlEntity', parm, function (data) {
+                    $.ajaxjson(actionUrl + 'GetMainUserControlEntity/', parm, function (data) {
                         if (data) {
-                            top.$('#txt_FullName').val(data.FullName);
-                            top.$('#txt_Description').val(data.Description);
-                            top.$('#chk_Enabled').attr('checked', data.Enabled == "1");
+                            top.$('#txt_FullName').val(data.fullname);
+                            top.$('#txt_Description').val(data.description);
+                            top.$('#chk_Enabled').attr('checked', data.enabled == "1");
                         }                   
                     });
                 },
                 submit: function () {
                     var isValid = top.$('#idCommonForm').form("validate");
                     if (isValid) {
-                        $.ajaxjson(actionUrl + 'EditMainForm',top.$('#idCommonForm').serialize() + '&keyId=' + selectRow.ID, function (d) {
+                        $.ajaxjson(actionUrl + 'EditMainForm/',top.$('#idCommonForm').serialize() + '&keyId=' + selectRow.ID, function (d) {
                             if (d.Data > 0) {
                                 msg.ok('修改主表单成功!。');
                                 editDialog.dialog('close');
@@ -208,7 +208,7 @@ var UserFormAdminMethod = {
        var selectRow = mygrid.getSelectedRow();
         if (selectRow) {
             if (confirm('确认要删除所选主表单吗?')) {
-                $.ajaxjson(actionUrl + 'DelMainForm', 'keyId=' + selectRow.ID, function (d) {
+                $.ajaxjson(actionUrl + 'DelMainForm/', 'keyId=' + selectRow.ID, function (d) {
                     if (d.Data > 0) {
                         msg.ok('成功删除所选主表单!');
                         mygrid.loadGrid('1');
@@ -294,7 +294,7 @@ var UserFormAdminMethod = {
     },
     AddChildForm: function () {
         var addDialog = top.$.hDialog({
-            title: '增加子表单', iconCls: 'icon16_add', href: '/WorkFlow/UserFormAdmin/UserControlForm?n=' + Math.random(),
+            title: '增加子表单', iconCls: 'icon16_add', href: '/Admin/FrameworkModules/UserFormAdmin/UserControlForm/',
             width: 480,height: 430,
             onLoad: function () {
                 top.$('#chk_Enabled').attr("checked", true);
@@ -308,7 +308,7 @@ var UserFormAdminMethod = {
                 
                 var isValid = top.$('#formUserControl').form("validate");
                 if (isValid) {
-                    $.ajaxjson(actionUrl + 'AddChildForm',top.$('#formUserControl').serialize(), function (d) {
+                    $.ajaxjson(actionUrl + 'AddChildForm/',top.$('#formUserControl').serialize(), function (d) {
                         if (d.Data > 0) {
                             msg.ok('添加子表单成功!');
                             addDialog.dialog('close');
@@ -326,22 +326,22 @@ var UserFormAdminMethod = {
         var selectRow = mygrid.getSelectedRow();
         if (selectRow) {
             var editDialog = top.$.hDialog({
-                title: '修改子表单', iconCls: 'icon16_edit_button', href: '/WorkFlow/UserFormAdmin/UserControlForm?n=' + Math.random(),
+                title: '修改子表单', iconCls: 'icon16_edit_button', href: '/Admin/FrameworkModules/UserFormAdmin/UserControlForm/',
                 width: 480,height: 430,
                 onLoad: function () {
                     var parm = 'keyId=' + selectRow.ID;
-                    $.ajaxjson(actionUrl + 'GetChildUserControlEntity', parm, function (data) {
+                    $.ajaxjson(actionUrl + 'GetChildUserControlEntity/', parm, function (data) {
                         if (data) {
-                            top.$('#txt_FullName').val(data.FullName);
-                            top.$('#txt_Path').val(data.Path);
-                            top.$('#txt_ControlId').val(data.ControlId);
-                            top.$('#txt_FormName').val(data.FormName);
-                            top.$('#txt_AssemblyName').val(data.AssemblyName);
-                            top.$('#txt_Description').val(data.Description);
-                            top.$('#chk_Enabled').attr('checked', data.Enabled == "1");
-                            if (data.Type == 1) {
+                            top.$('#txt_FullName').val(data.fullname);
+                            top.$('#txt_Path').val(data.path);
+                            top.$('#txt_ControlId').val(data.controlid);
+                            top.$('#txt_FormName').val(data.formname);
+                            top.$('#txt_AssemblyName').val(data.assemblyname);
+                            top.$('#txt_Description').val(data.description);
+                            top.$('#chk_Enabled').attr('checked', data.enabled == "1");
+                            if (data.type == 1) {
                                 top.$("input[name='Type'][value='1']").attr('checked',true);
-                            }else if (data.Type == 2) {
+                            }else if (data.type == 2) {
                                 top.$("input[name='Type'][value='2']").attr('checked', true);
                             } else {
                                 top.$("input[name='Type'][value='3']").attr('checked', true);
@@ -352,7 +352,7 @@ var UserFormAdminMethod = {
                 submit: function () {
                     var isValid = top.$('#formUserControl').form("validate");
                     if (isValid) {
-                        $.ajaxjson(actionUrl + 'EditChildForm',top.$('#formUserControl').serialize() + '&keyId=' + selectRow.ID, function (d) {
+                        $.ajaxjson(actionUrl + 'EditChildForm/',top.$('#formUserControl').serialize() + '&keyId=' + selectRow.ID, function (d) {
                             if (d.Data > 0) {
                                 msg.ok('修改子表单成功!。');
                                 editDialog.dialog('close');
@@ -373,7 +373,7 @@ var UserFormAdminMethod = {
        var selectRow = mygrid.getSelectedRow();
         if (selectRow) {
             if (confirm('确认要删除所选子表单吗?')) {
-                $.ajaxjson(actionUrl = 'DelChildForm', 'keyId=' + selectRow.ID, function (d) {
+                $.ajaxjson(actionUrl + 'DelChildForm/', 'keyId=' + selectRow.ID, function (d) {
                     if (d.Data > 0) {
                         msg.ok('成功删除所选子表单!');
                         mygrid.loadGrid('2');

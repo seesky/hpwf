@@ -134,6 +134,15 @@ urlpatterns = [
     url(r'^FrameworkModules/UserFormAdmin/GetUserControlClass/', UserForm.GetUserControlClass),
     url(r'^FrameworkModules/UserFormAdmin/GetMainUserControlByPage/', UserForm.GetMainUserControlByPage),
     url(r'^FrameworkModules/UserFormAdmin/GetUserControlByPage/', UserForm.GetUserControlByPage),
+    url(r'^FrameworkModules/UserFormAdmin/AddMainForm/', UserForm.AddMainForm),
+    url(r'^FrameworkModules/UserFormAdmin/GetMainUserControlEntity/', UserForm.GetMainUserControlEntity),
+    url(r'^FrameworkModules/UserFormAdmin/EditMainForm/', UserForm.EditMainForm),
+    url(r'^FrameworkModules/UserFormAdmin/DelMainForm/', UserForm.DelMainForm),
+    url(r'^FrameworkModules/UserFormAdmin/UserControlForm/', UserForm.UserControlForm),
+    url(r'^FrameworkModules/UserFormAdmin/AddChildForm/', UserForm.AddChildForm),
+    url(r'^FrameworkModules/UserFormAdmin/GetChildUserControlEntity/', UserForm.GetChildUserControlEntity),
+    url(r'^FrameworkModules/UserFormAdmin/EditChildForm/', UserForm.EditChildForm),
+    url(r'^FrameworkModules/UserFormAdmin/DelChildForm/', UserForm.DelChildForm),
 
 
     url(r'^FrameworkModules/UserPermissionAdmin/Index/', UserPermission.Index),

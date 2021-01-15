@@ -1276,3 +1276,172 @@ class ZdNationcode(models.Model):
     class Meta:
         managed = True
         db_table = 'zd_nationcode'
+
+
+class MainUserControl(models.Model):
+    id = models.CharField(db_column='ID', primary_key=True, max_length=40)  # Field name made lowercase.
+    fullname = models.CharField(db_column='FULLNAME', max_length=512, blank=True, null=True)  # Field name made lowercase.
+    type = models.CharField(db_column='TYPE', max_length=50, blank=True,
+                                   null=True)  # Field name made lowercase.
+    deletemark = models.SmallIntegerField(db_column='DELETEMARK')  # Field name made lowercase.
+    description = models.CharField(db_column='DESCRIPTION', max_length=200, blank=True,
+                                   null=True)  # Field name made lowercase.
+    createon = models.DateTimeField(db_column='CREATEON')  # Field name made lowercase.
+    createuserid = models.CharField(db_column='CREATEUSERID', max_length=50, blank=True,
+                                    null=True)  # Field name made lowercase.
+    createby = models.CharField(db_column='CREATEBY', max_length=50, blank=True,
+                                null=True)  # Field name made lowercase.
+    modifiedon = models.DateTimeField(db_column='MODIFIEDON')  # Field name made lowercase.
+    modifieduserid = models.CharField(db_column='MODIFIEDUSERID', max_length=50, blank=True,
+                                      null=True)  # Field name made lowercase.
+    modifiedby = models.CharField(db_column='MODIFIEDBY', max_length=50, blank=True,
+                                  null=True)  # Field name made lowercase.
+    sortcode = models.SmallIntegerField(db_column='SORTCODE')
+    enabled = models.SmallIntegerField(db_column='ENABLED')
+
+    def loadJson(self, request):
+        for i in request.POST:
+           # self.(str(i.key).lower())
+            if hasattr(self, i.lower()):
+                if request.POST[i] == '':
+                    setattr(self, i.lower(), None)
+                else:
+                    setattr(self, i.lower(), request.POST[i])
+        return self
+
+    def toJSON(self):
+        fields = []
+        for field in self._meta.fields:
+            fields.append(field.name)
+
+        d = {}
+        import datetime
+        for attr in fields:
+            if isinstance(getattr(self, attr), datetime.datetime):
+                d[attr] = getattr(self, attr).strftime('%Y-%m-%d %H:%M:%S')
+            elif isinstance(getattr(self, attr), datetime.date):
+                d[attr] = getattr(self, attr).strftime('%Y-%m-%d')
+            else:
+                d[attr] = getattr(self, attr)
+
+        import json
+        return json.dumps(d)
+
+    class Meta:
+        managed = True
+        db_table = 'mainusercontrol'
+
+class MainUserControl(models.Model):
+    id = models.CharField(db_column='ID', primary_key=True, max_length=40)  # Field name made lowercase.
+    fullname = models.CharField(db_column='FULLNAME', max_length=512, blank=True, null=True)  # Field name made lowercase.
+    type = models.CharField(db_column='TYPE', max_length=50, blank=True,
+                                   null=True)  # Field name made lowercase.
+    deletemark = models.SmallIntegerField(db_column='DELETEMARK')  # Field name made lowercase.
+    description = models.CharField(db_column='DESCRIPTION', max_length=200, blank=True,
+                                   null=True)  # Field name made lowercase.
+    createon = models.DateTimeField(db_column='CREATEON')  # Field name made lowercase.
+    createuserid = models.CharField(db_column='CREATEUSERID', max_length=50, blank=True,
+                                    null=True)  # Field name made lowercase.
+    createby = models.CharField(db_column='CREATEBY', max_length=50, blank=True,
+                                null=True)  # Field name made lowercase.
+    modifiedon = models.DateTimeField(db_column='MODIFIEDON')  # Field name made lowercase.
+    modifieduserid = models.CharField(db_column='MODIFIEDUSERID', max_length=50, blank=True,
+                                      null=True)  # Field name made lowercase.
+    modifiedby = models.CharField(db_column='MODIFIEDBY', max_length=50, blank=True,
+                                  null=True)  # Field name made lowercase.
+    sortcode = models.SmallIntegerField(db_column='SORTCODE')
+    enabled = models.SmallIntegerField(db_column='ENABLED')
+
+    def loadJson(self, request):
+        for i in request.POST:
+           # self.(str(i.key).lower())
+            if hasattr(self, i.lower()):
+                if request.POST[i] == '':
+                    setattr(self, i.lower(), None)
+                else:
+                    setattr(self, i.lower(), request.POST[i])
+        return self
+
+    def toJSON(self):
+        fields = []
+        for field in self._meta.fields:
+            fields.append(field.name)
+
+        d = {}
+        import datetime
+        for attr in fields:
+            if isinstance(getattr(self, attr), datetime.datetime):
+                d[attr] = getattr(self, attr).strftime('%Y-%m-%d %H:%M:%S')
+            elif isinstance(getattr(self, attr), datetime.date):
+                d[attr] = getattr(self, attr).strftime('%Y-%m-%d')
+            else:
+                d[attr] = getattr(self, attr)
+
+        import json
+        return json.dumps(d)
+
+    class Meta:
+        managed = True
+        db_table = 'mainusercontrol'
+
+
+class UserControls(models.Model):
+    id = models.CharField(db_column='ID', primary_key=True, max_length=40)  # Field name made lowercase.
+    fullname = models.CharField(db_column='FULLNAME', max_length=512, blank=True, null=True)  # Field name made lowercase.
+    path = models.CharField(db_column='PATH', max_length=512, blank=True,
+                                null=True)  # Field name made lowercase.
+    controlid = models.CharField(db_column='CONTROLID', max_length=50, blank=True,
+                                null=True)  # Field name made lowercase.
+    formname = models.CharField(db_column='FORMNAME', max_length=512, blank=True,
+                                null=True)  # Field name made lowercase.
+    assemblyname = models.CharField(db_column='ASSEMBLYNAME', max_length=512, blank=True,
+                                null=True)  # Field name made lowercase.
+    type = models.CharField(db_column='TYPE', max_length=50, blank=True,
+                                   null=True)  # Field name made lowercase.
+    deletemark = models.SmallIntegerField(db_column='DELETEMARK')  # Field name made lowercase.
+    description = models.CharField(db_column='DESCRIPTION', max_length=200, blank=True,
+                                   null=True)  # Field name made lowercase.
+    createon = models.DateTimeField(db_column='CREATEON')  # Field name made lowercase.
+    createuserid = models.CharField(db_column='CREATEUSERID', max_length=50, blank=True,
+                                    null=True)  # Field name made lowercase.
+    createby = models.CharField(db_column='CREATEBY', max_length=50, blank=True,
+                                null=True)  # Field name made lowercase.
+    modifiedon = models.DateTimeField(db_column='MODIFIEDON')  # Field name made lowercase.
+    modifieduserid = models.CharField(db_column='MODIFIEDUSERID', max_length=50, blank=True,
+                                      null=True)  # Field name made lowercase.
+    modifiedby = models.CharField(db_column='MODIFIEDBY', max_length=50, blank=True,
+                                  null=True)  # Field name made lowercase.
+    sortcode = models.SmallIntegerField(db_column='SORTCODE')
+    enabled = models.SmallIntegerField(db_column='ENABLED')
+
+    def loadJson(self, request):
+        for i in request.POST:
+           # self.(str(i.key).lower())
+            if hasattr(self, i.lower()):
+                if request.POST[i] == '':
+                    setattr(self, i.lower(), None)
+                else:
+                    setattr(self, i.lower(), request.POST[i])
+        return self
+
+    def toJSON(self):
+        fields = []
+        for field in self._meta.fields:
+            fields.append(field.name)
+
+        d = {}
+        import datetime
+        for attr in fields:
+            if isinstance(getattr(self, attr), datetime.datetime):
+                d[attr] = getattr(self, attr).strftime('%Y-%m-%d %H:%M:%S')
+            elif isinstance(getattr(self, attr), datetime.date):
+                d[attr] = getattr(self, attr).strftime('%Y-%m-%d')
+            else:
+                d[attr] = getattr(self, attr)
+
+        import json
+        return json.dumps(d)
+
+    class Meta:
+        managed = True
+        db_table = 'usercontrols'
