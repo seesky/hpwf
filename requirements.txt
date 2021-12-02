@@ -20,26 +20,27 @@ idna==2.8
 imagesize==1.1.0
 jdcal==1.4
 Jinja2==2.10
-lxml @ file:///C:/ci/lxml_1606516905842/work
+lxml
 MarkupSafe==1.1.0
 mysqlclient==1.3.14
 odfpy==1.4.0
 openpyxl==2.5.12
 packaging==18.0
-pycrypto==2.6.1
+pycryptodome
 Pygments==2.3.0
 pyparsing==2.3.0
-pytz @ file:///tmp/build/80754af9/pytz_1608922264688/work
+pytz
 PyYAML==3.13
 requests==2.21.0
 six==1.10.0
 snowballstemmer==1.2.1
 Sphinx==1.8.2
 sphinxcontrib-websupport==1.1.0
-spyne @ file:///home/conda/feedstock_root/build_artifacts/spyne_1606171620400/work
+spyne
 tablib==0.12.1
 unicodecsv==0.14.1
 urllib3==1.24.1
 wincertstore==0.2
 xlrd==1.1.0
 xlwt==1.3.0
+configobj==5.0.6

@@ -19,11 +19,13 @@ class SecretHelper(object):
         if toEncrypt.strip() == '':
             return ''
 
-        key = '12345678901234567890123456789012'  # 加密时使用的key，只能是长度16,24和32的字符串
+        key = '12345678901234567890123456789012'.encode()  # 加密时使用的key，只能是长度16,24和32的字符串
         BS = AES.block_size
         pad = lambda s: s + (BS - len(s) % BS) * chr(BS - len(s) % BS)
-        cipher = AES.new(key)
-        encrypted = cipher.encrypt(pad(toEncrypt))  # aes加密
+        x = pad(toEncrypt)
+        x = x.encode()
+        cipher = AES.new(key, AES.MODE_ECB)
+        encrypted = cipher.encrypt(x)  # aes加密
         result = base64.b64encode(encrypted)  # base64 encode
         return result
 
@@ -38,9 +40,9 @@ class SecretHelper(object):
         if toDecrypt.strip() == '':
             return ''
 
-        key = '12345678901234567890123456789012'
+        key = '12345678901234567890123456789012'.encode()
         unpad = lambda s: s[0:-ord(s[-1])]
-        cipher = AES.new(key)
+        cipher = AES.new(key, AES.MODE_ECB)
         # missing_padding = 4 - len(toDecrypt) % 4
         # # toDecrypt.lstrip('b\'')
         # # toDecrypt.rstrip('\'')
