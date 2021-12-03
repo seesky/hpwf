@@ -14,7 +14,8 @@ var _data = {
         { "title": "ui-cupertino", "name": "ui-cupertino" },
         { "title": "ui-dark-hive", "name": "ui-dark-hive" },
         { "title": "ui-pepper-grinder", "name": "ui-pepper-grinder" },
-        { "title": "ui-sunny", "name": "ui-sunny" }
+        { "title": "ui-sunny", "name": "ui-sunny" },
+        { "title": "uimaker", "name": "uimaker" }
     ],
     navType: [{ "id": "AccordionTree", "text": "手风琴+树形目录(2级+)", "selected": true }
             , { "id": "Tree", "text": "树形结构" }
