@@ -27,7 +27,7 @@ odfpy==1.4.0
 openpyxl==2.5.12
 packaging==18.0
 pycryptodome
-Pygments==2.3.0
+Pygments==2.7.4
 pyparsing==2.3.0
 pytz
 PyYAML==3.13
