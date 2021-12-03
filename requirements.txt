@@ -30,7 +30,7 @@ pycryptodome
 Pygments==2.3.0
 pyparsing==2.3.0
 pytz
-PyYAML==3.13
+PyYAML==5.4
 requests==2.21.0
 six==1.10.0
 snowballstemmer==1.2.1
