@@ -25,7 +25,6 @@ from apps.utilities.publiclibrary.SystemInfo import SystemInfo
 from apps.bizlogic.service.permission.ScopPermission import ScopPermission
 from apps.bizlogic.service.base.UserRoleService import UserRoleService
 from apps.bizlogic.service.base.SequenceService import SequenceService
-from apps.hadmin.views.utils import get_pagination_params
 
 
 def GenerateSplitTool():
@@ -100,7 +99,15 @@ def GetUserPageDTByDepartmentId(request):
     except:
         searchValue = ''
 
-    page, rows = get_pagination_params(request, page_default=1, rows_default=20)
+    try:
+        page = request.POST['page']
+    except:
+        page = 1
+
+    try:
+        rows = request.POST['rows']
+    except:
+        rwos = 20
 
     searchValue = searchValue if searchValue else ''
 
@@ -130,7 +137,15 @@ def GetUserListByPage(request):
     sort = None
     order = None
     filter = None
-    page, rows = get_pagination_params(request, page_default=1, rows_default=50)
+    try:
+        page = request.POST['page']
+    except:
+        page = 1
+
+    try:
+        rows = request.POST['rows']
+    except:
+        rows = 50
 
     try:
         sort = request.POST['sort']
