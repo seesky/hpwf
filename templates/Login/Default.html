@@ -1,16 +1,94 @@
-﻿<!DOCTYPE html>
-
+<!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8" />
     <title>登录信息超时</title>
-    <script type="text/javascript">
-        function fullwin() {
-            alert("登录信息超时，请重新登录");
-            top.location.href = "/Admin/Index/";
-            return false;
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/layui@2.8.18/dist/css/layui.css" />
+    <style>
+        body {
+            background: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            font-family: "Helvetica Neue", Arial, "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
         }
+
+        .timeout-card {
+            width: 360px;
+        }
+
+        .timeout-card .layui-card-body {
+            text-align: center;
+            padding: 40px 32px;
+        }
+
+        .timeout-icon {
+            font-size: 48px;
+            color: #ff5722;
+            margin-bottom: 16px;
+        }
+
+        .timeout-message {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 24px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/layui@2.8.18/dist/layui.js"></script>
+    <script type="text/javascript">
+        layui.use(['layer'], function () {
+            var layer = layui.layer;
+            var $ = layui.$ || window.jQuery;
+
+            function redirectToLogin() {
+                top.location.href = "/Admin/Index/";
+            }
+
+            var initAlert = function () {
+                layer.alert('登录信息超时，请重新登录', {
+                    icon: 5,
+                    title: '提示',
+                    closeBtn: 0
+                }, function (index) {
+                    layer.close(index);
+                    redirectToLogin();
+                });
+            };
+
+            if (typeof layer.ready === 'function') {
+                layer.ready(initAlert);
+            } else {
+                initAlert();
+            }
+
+            (function attachHandler() {
+                var bind = function () {
+                    var button = document.getElementById('reloginBtn');
+                    if (button) {
+                        button.addEventListener('click', redirectToLogin);
+                    }
+                };
+
+                if ($ && $.fn && $.fn.ready) {
+                    $(bind);
+                } else if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', bind);
+                } else {
+                    bind();
+                }
+            })();
+        });
     </script>
 </head>
-<body onload="fullwin()">
+<body>
+    <div class="layui-card timeout-card">
+        <div class="layui-card-body">
+            <i class="layui-icon layui-icon-face-cry timeout-icon"></i>
+            <div class="timeout-message">登录信息已超时，请重新登录系统。</div>
+            <button type="button" class="layui-btn layui-btn-normal" id="reloginBtn">重新登录</button>
+        </div>
+    </div>
 </body>
 </html>
