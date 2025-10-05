@@ -270,49 +270,6 @@ def Delete(request):
         response.content = json.dumps({'Success': False, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
         return response
 
-@AjaxOnly
-@LoginAuthorize
-def SetUserEnabled(request):
-    userId = request.POST.get('userId', '')
-    isEnabledValue = request.POST.get('isEnabled', '')
-
-    if not userId:
-        response = HttpResponse()
-        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
-        return response
-
-    if isinstance(isEnabledValue, str):
-        if isEnabledValue.lower() in ('1', 'true', 't', 'yes', 'y', 'on'):
-            isEnabled = 1
-        elif isEnabledValue.lower() in ('0', 'false', 'f', 'no', 'n', 'off'):
-            isEnabled = 0
-        else:
-            try:
-                isEnabled = 1 if int(isEnabledValue) else 0
-            except (TypeError, ValueError):
-                isEnabled = 1
-    else:
-        try:
-            isEnabled = 1 if int(isEnabledValue) else 0
-        except (TypeError, ValueError):
-            isEnabled = 1
-
-    response = HttpResponse()
-    currentUser = CommonUtils.Current(response, request)
-
-    updateFields = {'enabled': isEnabled, 'modifiedon': datetime.datetime.now()}
-    if currentUser:
-        updateFields['modifieduserid'] = currentUser.Id
-        updateFields['modifiedby'] = currentUser.RealName
-
-    rows = Piuser.objects.filter(id=userId).update(**updateFields)
-
-    if rows:
-        response.content = json.dumps({'Success': True, 'Data': str(isEnabled), 'Message': FrameworkMessage.MSG3010})
-    else:
-        response.content = json.dumps({'Success': False, 'Data': '0', 'Message': FrameworkMessage.MSG3020})
-    return response
-
 @LoginAuthorize
 def SetUserPassword(request):
     userId = ''

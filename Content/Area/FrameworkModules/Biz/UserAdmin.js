@@ -462,7 +462,7 @@ layui.use(['tree', 'table', 'layer', 'form', 'dropdown', 'util'], function () {
             var userId = $elem.data('user-id');
             var original = Number($elem.data('original-enabled')) || 0;
             var newStatus = obj.elem.checked ? 1 : 0;
-            updateUserEnabled(userId, newStatus, original, function (success) {
+            updateUserEnabled(userId, original, function (success) {
                 if (success) {
                     $elem.data('original-enabled', newStatus);
                 } else {
@@ -491,12 +491,12 @@ layui.use(['tree', 'table', 'layer', 'form', 'dropdown', 'util'], function () {
         });
     }
 
-    function updateUserEnabled(userId, newStatus, original, callback) {
+    function updateUserEnabled(userId, original, callback) {
         if (!userId) {
             callback(false);
             return;
         }
-        $.ajaxjson('/Admin/FrameworkModules/UserAdmin/SetUserEnabled/', { userId: userId, isEnabled: newStatus }, function (d) {
+        $.ajaxjson('/FrameworkModules/UserAdmin/SetUserEnabled', 'userId=' + userId + '&isEnabled=' + original, function (d) {
             if (d.Success) {
                 layer.msg('状态更新成功');
                 reloadTable();
