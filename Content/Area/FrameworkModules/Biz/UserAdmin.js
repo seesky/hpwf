@@ -11,6 +11,26 @@ layui.use(['tree', 'table', 'layer', 'form', 'dropdown', 'util'], function () {
 
     var ajaxHeaders = { 'X-Requested-With': 'XMLHttpRequest' };
 
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrfToken = getCookie('csrftoken');
+    if (csrfToken) {
+        ajaxHeaders['X-CSRFToken'] = csrfToken;
+    }
+
     var escapeHtml = typeof util.escape === 'function' ? util.escape : function (str) {
         return String(str || '')
             .replace(/&/g, '&amp;')
