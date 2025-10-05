@@ -6,8 +6,6 @@
         <title>Python快速开发框架</title>
         <link href="/Content/Images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/layui@2.8.18/dist/css/layui.css" />
-        <link href="/Content/Scripts/easyui/themes/{{ Skin }}/easyui.css" rel="stylesheet" type="text/css" />
-        <link href="/Content/Scripts/easyui/themes/icon.css" rel="stylesheet" type="text/css" />
         <link href="/Content/Scripts/showloading/showLoading.css" rel="stylesheet" type="text/css" />
         <link href="/Content/Styles/common.css" rel="stylesheet" type="text/css" />
         <link href="/Content/Styles/iconNew16.css" rel="stylesheet" type="text/css" />
@@ -20,8 +18,6 @@
 
             .admin-shell {
                 min-height: 100vh;
-                display: flex;
-                flex-direction: column;
             }
 
             .header-bar {
@@ -58,21 +54,10 @@
                 margin-right: 12px;
             }
 
-            .layout-main {
-                flex: 1;
-                display: flex;
-                min-height: 0;
-                --sidebar-width: 240px;
-            }
-
             .layui-side {
-                width: var(--sidebar-width);
+                width: 240px;
                 background: #ffffff;
                 box-shadow: inset -1px 0 0 #edf2f7;
-                flex: 0 0 var(--sidebar-width);
-                min-width: 200px;
-                max-width: 480px;
-                transition: width 0.12s ease;
             }
 
             .layui-side-scroll {
@@ -119,38 +104,10 @@
                 background-size: contain;
             }
 
-            .sidebar-resizer {
-                width: 6px;
-                background: linear-gradient(180deg, rgba(47, 54, 95, 0.05) 0%, rgba(47, 54, 95, 0.15) 100%);
-                cursor: col-resize;
-                position: relative;
-                z-index: 12;
-            }
-
-            .sidebar-resizer::after {
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                width: 2px;
-                height: 32px;
-                margin: -16px 0 0 -1px;
-                border-radius: 2px;
-                background: rgba(47, 54, 95, 0.35);
-            }
-
-            .resizing,
-            .resizing * {
-                cursor: col-resize !important;
-                user-select: none !important;
-            }
-
             .layui-body {
                 background: #f5f7fb;
                 padding: 16px;
                 overflow: hidden;
-                flex: 1;
-                min-width: 0;
             }
 
             .workspace {
@@ -283,19 +240,15 @@
                 </div>
             </div>
 
-            <div class="layout-main">
-                <div class="layui-side">
-                    <div class="layui-side-scroll">
-                        <div id="menuAccordion" class="layui-collapse menu-accordion" lay-filter="menuAccordion" lay-accordion></div>
-                    </div>
+            <div class="layui-side">
+                <div class="layui-side-scroll">
+                    <div id="menuAccordion" class="layui-collapse menu-accordion" lay-filter="menuAccordion" lay-accordion></div>
                 </div>
+            </div>
 
-                <div class="sidebar-resizer" id="sidebarResizer"></div>
-
-                <div class="layui-body">
-                    <div class="workspace">
-                        <div class="layui-tab layui-tab-card" lay-filter="mainTabs" lay-allowclose="true" id="mainTabs"></div>
-                    </div>
+            <div class="layui-body">
+                <div class="workspace">
+                    <div class="layui-tab layui-tab-card" lay-filter="mainTabs" lay-allowclose="true" id="mainTabs"></div>
                 </div>
             </div>
 
@@ -318,9 +271,6 @@
         <div id="loadingGird" class="loading_background" style="display: none;"></div>
 
         <script type="text/javascript" src="/Content/Scripts/jquery-1.8.3.min.js"></script>
-        <script type="text/javascript" src="/Content/Scripts/easyui/jquery.easyui.min.js"></script>
-        <script type="text/javascript" src="/Content/Scripts/easyui/locale/easyui-lang-zh_CN.js"></script>
-        <script type="text/javascript" src="/Content/Scripts/easyui/hpwf-easyui-extend.js"></script>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/layui@2.8.18/dist/layui.js"></script>
         <script type="text/javascript" src="/Content/Scripts/jQuery.Ajax.js"></script>
         <script type="text/javascript" src="/Content/Scripts/hpwf-core.js"></script>
@@ -421,58 +371,6 @@
                 }
 
                 loadMenu();
-
-                function initSidebarResize() {
-                    var $layout = $('.layout-main');
-                    var $sidebar = $layout.find('.layui-side');
-                    var $resizer = $('#sidebarResizer');
-                    var layoutEl = $layout.get(0);
-                    var minWidth = 200;
-                    var maxWidth = 480;
-                    var startX = 0;
-                    var startWidth = 0;
-
-                    function getSidebarWidth() {
-                        if (layoutEl) {
-                            var computed = window.getComputedStyle(layoutEl).getPropertyValue('--sidebar-width');
-                            var parsed = parseInt(computed, 10);
-                            if (!isNaN(parsed)) {
-                                return parsed;
-                            }
-                        }
-                        return $sidebar.outerWidth() || 240;
-                    }
-
-                    function setSidebarWidth(width) {
-                        width = Math.max(minWidth, Math.min(maxWidth, width));
-                        if (layoutEl) {
-                            layoutEl.style.setProperty('--sidebar-width', width + 'px');
-                        }
-                        $sidebar.css('width', width + 'px');
-                    }
-
-                    setSidebarWidth(getSidebarWidth());
-
-                    $resizer.on('mousedown', function (e) {
-                        startX = e.clientX;
-                        startWidth = $sidebar.outerWidth();
-                        $('body').addClass('resizing');
-
-                        $(document)
-                            .on('mousemove.sidebarResize', function (event) {
-                                var newWidth = startWidth + (event.clientX - startX);
-                                setSidebarWidth(newWidth);
-                            })
-                            .on('mouseup.sidebarResize', function () {
-                                $('body').removeClass('resizing');
-                                $(document).off('.sidebarResize');
-                            });
-
-                        e.preventDefault();
-                    });
-                }
-
-                initSidebarResize();
 
                 function updateTimer() {
                     var now = new Date();
