@@ -26,47 +26,9 @@ layui.use(['tree', 'table', 'layer', 'form', 'dropdown', 'util'], function () {
         return cookieValue;
     }
 
-    function csrfSafeMethod(method) {
-        return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method);
-    }
-
-    function isSameOrigin(url) {
-        if (!url) {
-            return true;
-        }
-        var host = document.location.host;
-        var protocol = document.location.protocol;
-        var srOrigin = '//' + host;
-        var origin = protocol + srOrigin;
-        return url === origin || url.indexOf(origin + '/') === 0 ||
-            url === srOrigin || url.indexOf(srOrigin + '/') === 0 ||
-            !(/^(\/\/|http:|https:).*/.test(url));
-    }
-
-    function attachLayuiAjaxCsrf($instance, token) {
-        if (!$instance || typeof $instance.ajaxPrefilter !== 'function') {
-            return;
-        }
-        if ($instance.__csrfPrefilterAttached) {
-            return;
-        }
-        $instance.__csrfPrefilterAttached = true;
-        $instance.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-            var method = (options.type || '').toUpperCase();
-            if (!csrfSafeMethod(method) && isSameOrigin(options.url)) {
-                jqXHR.setRequestHeader('X-CSRFToken', token);
-            }
-            jqXHR.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        });
-    }
-
     var csrfToken = getCookie('csrftoken');
     if (csrfToken) {
         ajaxHeaders['X-CSRFToken'] = csrfToken;
-        attachLayuiAjaxCsrf($, csrfToken);
-    }
-    if (typeof $.ajaxSetup === 'function') {
-        $.ajaxSetup({ headers: ajaxHeaders });
     }
 
     var escapeHtml = typeof util.escape === 'function' ? util.escape : function (str) {
