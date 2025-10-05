@@ -50,7 +50,6 @@ urlpatterns = [
     url(r'^FrameworkModules/UserAdmin/SubmitForm/', UserAdminController.SubmitForm),
     url(r'^FrameworkModules/UserAdmin/GetEntity/', UserAdminController.GetEntity),
     url(r'^FrameworkModules/UserAdmin/Delete/', UserAdminController.Delete),
-    url(r'^FrameworkModules/UserAdmin/SetUserEnabled/', UserAdminController.SetUserEnabled),
     url(r'^FrameworkModules/UserAdmin/SetUserPassword/', UserAdminController.SetUserPassword),
     url(r'^FrameworkModules/UserAdmin/UserDimission/', UserAdminController.UserDimission),
     url(r'^FrameworkModules/UserAdmin/SetUserDimission/', UserAdminController.SetUserDimission),
