@@ -1,227 +1,203 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+﻿<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>用户离职管理</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/layui@2.8.18/dist/css/layui.css" integrity="sha384-6DCQE4kq1XEy+8GJtI75G2uHzoFgsxH8KHCBGbQSDxWoW8WgknOcZ5IRCDYXMVZX" crossorigin="anonymous" />
-    <style>
-        body {
-            background-color: #f5f5f5;
-            padding: 16px;
-        }
-
-        .dimission-card {
-            max-width: 720px;
-            margin: 0 auto;
-        }
-
-        .dimission-card .layui-card-body {
-            padding: 20px 24px 32px;
-        }
-
-        .dimission-section {
-            margin-bottom: 24px;
-        }
-
-        .form-footer {
-            text-align: center;
-            margin-top: 24px;
-        }
-    </style>
+    <link rel="stylesheet" href="/Content/Scripts/bootstrap-3.3.6/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/Content/Scripts/bootstrap-3.3.6/css/bootstrap-datetimepicker.min.css" />
 </head>
-<body>
-    <div class="layui-card dimission-card">
-        <div class="layui-card-header">用户离职管理</div>
-        <div class="layui-card-body">
-            <form class="layui-form" lay-filter="dimissionForm" id="dimissionForm">
-                <input type="hidden" id="Id" name="Id" />
-
-                <fieldset class="layui-elem-field dimission-section">
-                    <legend>用户信息</legend>
-                    <div class="layui-field-box">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">登录名</label>
-                            <div class="layui-input-block">
-                                <input type="text" id="UserName" name="UserName" class="layui-input" readonly />
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">姓名</label>
-                            <div class="layui-input-block">
-                                <input type="text" id="RealName" name="RealName" class="layui-input" readonly />
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">岗位</label>
-                            <div class="layui-input-block">
-                                <input type="text" id="Duty" name="Duty" class="layui-input" readonly />
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">默认角色</label>
-                            <div class="layui-input-block">
-                                <input type="text" id="RoleName" name="RoleName" class="layui-input" readonly />
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">公司/单位</label>
-                            <div class="layui-input-block">
-                                <input type="text" id="CompanyName" name="CompanyName" class="layui-input" readonly />
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">所在部门</label>
-                            <div class="layui-input-block">
-                                <input type="text" id="DepartmentName" name="DepartmentName" class="layui-input" readonly />
-                            </div>
-                        </div>
+    <body>
+        <form id="uiForm" class="form-horizontal" role="form">
+            <input type="hidden" id="Id" name="Id" />
+            <fieldset class="has-success" disabled>
+                <legend>用户信息</legend>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="UserName">用户登录名</label>
+                    <div class="col-sm-8">
+                        <input type="text" id="UserName" name="UserName" class="form-control" placeholder="">
                     </div>
-                </fieldset>
-
-                <fieldset class="layui-elem-field dimission-section">
-                    <legend>离职情况</legend>
-                    <div class="layui-field-box">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">离职日期</label>
-                            <div class="layui-input-block">
-                                <input type="text" id="DimissionDate" name="DimissionDate" lay-verify="required" placeholder="请选择离职日期" autocomplete="off" class="layui-input" />
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">是否离职</label>
-                            <div class="layui-input-block">
-                                <input type="checkbox" id="IsDimission" name="IsDimission" lay-skin="switch" lay-text="已离职|在职" />
-                            </div>
-                        </div>
-                        <div class="layui-form-item layui-form-text">
-                            <label class="layui-form-label">离职原因</label>
-                            <div class="layui-input-block">
-                                <textarea id="DimissionCause" name="DimissionCause" lay-verify="required" class="layui-textarea" placeholder="请输入离职原因"></textarea>
-                            </div>
-                        </div>
-                        <div class="layui-form-item layui-form-text">
-                            <label class="layui-form-label">离职去向</label>
-                            <div class="layui-input-block">
-                                <textarea id="DimissionWhither" name="DimissionWhither" class="layui-textarea" placeholder="请输入离职去向"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-
-                <div class="form-footer">
-                    <button type="button" class="layui-btn layui-btn-normal" id="btnSubmit">提交</button>
-                    <button type="button" class="layui-btn layui-btn-primary" id="btnClose">关闭</button>
                 </div>
-            </form>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/layui@2.8.18/dist/layui.js" integrity="sha384-yK65FM0tElXkJuQJxyPny5n0xcgOjsLxU5C04h74hFSe48XLyAuz7wch4+CQ8yJn" crossorigin="anonymous"></script>
-    <script src="/Content/Scripts/jquery-1.12.1.min.js"></script>
-    <script src="/Content/Scripts/jQuery.Ajax.js"></script>
-    <script src="/Content/Scripts/jQuery.cookie.js"></script>
-    <script src="/Content/Scripts/csrf.js"></script>
-    <script>
-        layui.use(['form', 'laydate', 'layer'], function () {
-            var form = layui.form;
-            var laydate = layui.laydate;
-            var layer = layui.layer;
-            var $ = layui.$;
-
-            laydate.render({
-                elem: '#DimissionDate',
-                trigger: 'click',
-                type: 'date'
+                <div class="form-group">
+                    <label for="username" class="col-sm-2 control-label">姓名</label>
+                    <div class="col-sm-8">
+                        <input type="text" id="RealName" name="RealName" class="form-control" placeholder="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lastname" class="col-sm-2 control-label">岗位</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="Duty" name="Duty" placeholder="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lastname" class="col-sm-2 control-label">默认角色</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="RoleName" name="RoleName" placeholder="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lastname" class="col-sm-2 control-label">公司/单位</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="CompanyName" name="CompanyName" placeholder="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lastname" class="col-sm-2 control-label">所在部门</label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="DepartmentName" name="DepartmentName" value="">
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>离职情况</legend>
+                <div class="form-group row">
+                    <label class="col-sm-2 control-label" for="DismissionDate">离职日期</label>
+                    <div class="col-sm-3">
+                        <div class="input-append date" id="datetimepicker" data-date="2016-05-01" data-date-format="yyyy-mm-dd">
+                            <input id="DimissionDate" name="DimissionDate" size="16" type="text" />
+                            <span class="add-on"><i class="icon-th"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <input type="checkbox" id="IsDimission" name="IsDimission"> 是否离职
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lastname" class="col-sm-2 control-label">离职原因</label>
+                    <div class="col-sm-8">
+                        <textarea id="DimissionCause" name="DimissionCause" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="lastname" class="col-sm-2 control-label">离职去向</label>
+                    <div class="col-sm-8">
+                        <textarea id="DimissionWhither" name="DimissionWhither" class="form-control" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-1 col-sm-8">
+                        <button id="btnSubmit" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-ok"></span> 提 交
+                        </button>
+                        <button id="btnClose" class="btn btn-default">
+                            <span class="glyphicon glyphicon-remove"></span> 关 闭
+                        </button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+        <script type="text/javascript" src="/Content/Scripts/jquery-1.12.1.min.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/bootstrap-3.3.6/bootstrap-datetimepicker.min.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/bootstrap-3.3.6/bootstrap-datetimepicker.zh-CN.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/easyui/jquery.validate.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/hpwf-core.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/jQuery.Ajax.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/jQuery.cookie.js"></script>
+        <script type="text/javascript" src="/Content/Scripts/csrf.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                $('#btnSubmit').attr('onclick', 'return SubmitForm();');
+                $('#btnClose').attr('onclick', 'CloseWindow();');
+                $('#DimissionDate').datetimepicker({
+                    format: 'yyyy-mm-dd',
+                    weekStart: 1,
+                    todayBtn: 0,
+                    autoclose: 1,
+                    startView: 2,
+                    minView: 3,
+                    language: 'zh-CN',
+                    forceParse: 1,
+                    showMeridian: 1
+                });
+                handleSubmit();
             });
 
-            form.verify({
-                required: function (value) {
-                    if (!value) {
-                        return '此项为必填项';
-                    }
-                }
-            });
-
-            $('#btnSubmit').on('click', function () {
-                SubmitForm();
-            });
-
-            $('#btnClose').on('click', function () {
-                CloseWindow();
-            });
-
-            window.BindPage = function (id) {
-                $.ajaxjson('/Admin/FrameworkModules/UserAdmin/GetEntity/', 'key=' + id, function (data) {
-                    if (data) {
-                        var entity = typeof data === 'string' ? JSON.parse(data) : data;
-                        setFormData(entity);
-                        if (entity.isdimission) {
-                            $('#btnSubmit').prop('disabled', true).addClass('layui-btn-disabled');
+            var handleSubmit = function() {
+                $('.form-horizontal').validate({
+                    errorElement: 'span',
+                    errorClass: 'help-block',
+                    focusInvalid: false,
+                    rules: {
+                        DimissionDate: {
+                            required: true
+                        },
+                        IsDimission: {
+                            required: true
+                        },
+                        DimissionCause: {
+                            required: true
                         }
+                    },
+                    messages: {
+                        DimissionDate: {
+                            required: "DimissionDate is required."
+                        },
+                        IsDimission: {
+                            required: "IsDimission is required."
+                        },
+                        DimissionCause: {
+                            required: "DimissionCause is required."
+                        }
+                    },
+
+                    highlight: function(element) {
+                        $(element).closest('.form-group').addClass('has-error');
+                    },
+
+                    success: function(label) {
+                        label.closest('.form-group').removeClass('has-error');
+                        label.remove();
+                    },
+
+                    errorPlacement: function(error, element) {
+                        element.parent('div').append(error);
                     }
                 });
             };
 
-            function setFormData(data) {
-                form.val('dimissionForm', {
-                    Id: data.id || '',
-                    UserName: data.username || '',
-                    RealName: data.realname || '',
-                    Duty: data.duty || '',
-                    RoleName: data.rolename || '',
-                    CompanyName: data.companyname || '',
-                    DepartmentName: data.departmentname || '',
-                    DimissionDate: data.dimissiondate ? data.dimissiondate.split(' ')[0] : '',
-                    DimissionCause: data.dimissioncause || '',
-                    DimissionWhither: data.dimissionwhither || ''
+            var BindPage = function (id) {
+                $.ajaxjson("/Admin/FrameworkModules/UserAdmin/GetEntity/", 'key=' + id, function (data) {
+                    if (data) {
+                        if (data.IsDimission) { //已离职就不要再去修改了
+                            $("#btnSubmit").attr("disabled", true);
+                        }
+                        SetWebControls(data, false);
+                    }
                 });
-                $('#IsDimission').prop('checked', data.isdimission === 1 || data.isdimission === true);
-                form.render('checkbox');
-            }
-
-            window.SubmitForm = function () {
-                var data = form.val('dimissionForm');
-                if (!data.DimissionDate) {
-                    layer.msg('请选择离职日期');
+                //$('#DimissionDate').focus();
+            };
+        
+            function SubmitForm() {
+                if (!$('.form-horizontal').validate().form()) {
                     return false;
                 }
-                if (!data.DimissionCause) {
-                    layer.msg('请输入离职原因');
-                    return false;
-                }
-                if (!$('#IsDimission').prop('checked')) {
-                    layer.msg('请确认是否已离职');
-                    return false;
-                }
-                layer.confirm('确定将该用户设置为离职状态吗？', { icon: 3, title: '提示' }, function (index) {
-                    var postData = {
-                        Id: data.Id,
-                        DimissionDate: data.DimissionDate,
-                        IsDimission: $('#IsDimission').prop('checked') ? 1 : 0,
-                        DimissionCause: data.DimissionCause,
-                        DimissionWhither: data.DimissionWhither
-                    };
-                    $.ajaxjson('/Admin/FrameworkModules/UserAdmin/SetUserDimission/', postData, function (resp) {
-                        if (resp.Success) {
-                            layer.msg(resp.Message || '操作成功');
+                if (confirm('确定离职?')) {
+                    var postData = pageMethod.serializeJson($('#uiForm'));
+                    $.ajaxjson("/Admin/FrameworkModules/UserAdmin/SetUserDimission/", postData, function (d) {
+                        if (d.Success) {
+                            alert(d.Message);
                             CloseWindow();
+                            return true;
                         } else {
-                            layer.msg(resp.Message || '操作失败');
+                            alert(d.Message);
+                            //BindPage($('#Id').val());
+                            return false;
                         }
                     });
-                    layer.close(index);
-                });
-                return false;
-            };
-
-            window.CloseWindow = function () {
+                }else{
+                    return false;
+                }
+            }
+			
+            var CloseWindow = function () {
                 var currTopTab = top.$('#tabs');
                 var currtabTitle = currTopTab.tabs('getSelected').panel('options').title;
                 currTopTab.tabs('close', currtabTitle);
             };
-        });
-    </script>
-</body>
+        </script>
+    </body>
+
 </html>
