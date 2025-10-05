@@ -101,6 +101,70 @@
             font-size: 16px;
         }
 
+        .slider-verify {
+            position: relative;
+            height: 44px;
+            line-height: 44px;
+            background-color: #f1f5f9;
+            border-radius: 22px;
+            overflow: hidden;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        .slider-verify.success {
+            background-color: #def7ec;
+            cursor: default;
+        }
+
+        .slider-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(30, 159, 255, 0.2), rgba(30, 159, 255, 0.5));
+            width: 0;
+            transition: width 0.2s ease;
+        }
+
+        .slider-verify.success .slider-bg {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.5));
+            width: 100% !important;
+        }
+
+        .slider-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            transition: color 0.2s ease;
+        }
+
+        .slider-verify.success .slider-text {
+            color: #047857;
+        }
+
+        .slider-handle {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 16px rgba(15, 27, 67, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1e9fff;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .slider-verify.success .slider-handle {
+            color: #047857;
+        }
+
         .login-support-link {
             display: inline-flex;
             align-items: center;
@@ -155,12 +219,138 @@
                 }
             });
 
+            var slider = $();
+            var sliderBg = $();
+            var sliderText = $();
+            var sliderHandle = $();
+            var isVerified = false;
+            var isDragging = false;
+            var startX = 0;
+            var startLeft = 2;
+
+            function setVerified() {
+                if (!slider.length) {
+                    return;
+                }
+                isVerified = true;
+                slider.addClass('success');
+                var maxLeft = slider.outerWidth() - sliderHandle.outerWidth() - 2;
+                sliderHandle.css('left', maxLeft + 'px');
+                sliderBg.width(slider.outerWidth());
+                sliderText.text('验证通过');
+                sliderHandle.html('<i class="layui-icon layui-icon-ok"></i>');
+            }
+
+            function resetSlider() {
+                if (!slider.length) {
+                    return;
+                }
+                isVerified = false;
+                slider.removeClass('success');
+                sliderBg.width(0);
+                sliderText.text('请按住滑块拖动到最右侧');
+                sliderHandle.css('left', '2px').html('<i class="layui-icon layui-icon-next"></i>');
+            }
+
+            function updatePosition(currentX) {
+                if (!slider.length || !isDragging || isVerified) {
+                    return;
+                }
+                var sliderOffset = slider.offset();
+                if (!sliderOffset) {
+                    return;
+                }
+                var delta = currentX - startX;
+                var newLeft = startLeft + delta;
+                var maxLeft = slider.outerWidth() - sliderHandle.outerWidth() - 2;
+                newLeft = Math.max(2, Math.min(newLeft, maxLeft));
+                sliderHandle.css('left', newLeft + 'px');
+                sliderBg.width(newLeft + sliderHandle.outerWidth() - 2);
+                if (newLeft >= maxLeft) {
+                    setVerified();
+                    detachEvents();
+                }
+            }
+
+            function detachEvents() {
+                $(document).off('.sliderVerify');
+                isDragging = false;
+            }
+
+            function bindEvents() {
+                $(document).on('mousemove.sliderVerify', function (e) {
+                    updatePosition(e.clientX || e.pageX || 0);
+                });
+                $(document).on('mouseup.sliderVerify', function () {
+                    detachEvents();
+                    if (!isVerified) {
+                        resetSlider();
+                    }
+                });
+                $(document).on('touchmove.sliderVerify', function (e) {
+                    if (e.originalEvent && e.originalEvent.touches.length > 0) {
+                        updatePosition(e.originalEvent.touches[0].clientX);
+                    }
+                });
+                $(document).on('touchend.sliderVerify touchcancel.sliderVerify', function () {
+                    detachEvents();
+                    if (!isVerified) {
+                        resetSlider();
+                    }
+                });
+            }
+
+            function initSlider() {
+                slider = $('#sliderVerify');
+                if (!slider.length) {
+                    return;
+                }
+                sliderBg = slider.find('.slider-bg');
+                sliderText = slider.find('.slider-text');
+                sliderHandle = slider.find('.slider-handle');
+                resetSlider();
+
+                sliderHandle.on('mousedown', function (e) {
+                    if (isVerified) {
+                        return;
+                    }
+                    isDragging = true;
+                    startX = e.clientX || e.pageX || 0;
+                    startLeft = parseInt(sliderHandle.css('left'), 10) || 2;
+                    bindEvents();
+                    e.preventDefault();
+                });
+
+                sliderHandle.on('touchstart', function (e) {
+                    if (isVerified) {
+                        return;
+                    }
+                    var touch = e.originalEvent && e.originalEvent.touches[0];
+                    if (!touch) {
+                        return;
+                    }
+                    isDragging = true;
+                    startX = touch.clientX;
+                    startLeft = parseInt(sliderHandle.css('left'), 10) || 2;
+                    bindEvents();
+                });
+
+            }
+
+            $(function () {
+                initSlider();
+            });
+
             $('#btnLogin').on('click', function () {
                 var account = $('#txtAccount').val();
                 var password = $('#txtPassword').val();
+                if (slider.length && !isVerified) {
+                    formMessage('请先完成滑动验证', 'warning');
+                    return false;
+                }
                 if (account === '') {
                     $('#txtAccount').focus();
-                    formMessage('登录账户不能为空', 'warning');
+                    formMessage('登录账不能为空', 'warning');
                     return false;
                 } else if (password === '') {
                     $('#txtPassword').focus();
@@ -179,13 +369,16 @@
                             if (status === -1) {
                                 $('#txtAccount').focus();
                                 formMessage('登录账户不存在', 'error');
+                                resetSlider();
                             } else if (status === 2) {
                                 $('#txtAccount').focus();
                                 formMessage('登录账户被系统锁定', 'error');
+                                resetSlider();
                             } else if (status === 4) {
                                 $('#txtAccount').focus();
                                 $('#txtPassword').val('');
                                 formMessage('登录密码错误', 'error');
+                                resetSlider();
                             } else if (status === 3) {
                                 formMessage('登录验证成功, 正在跳转首页', 'succeed');
                                 Load();
@@ -239,6 +432,13 @@
                                 <i class="layui-icon layui-icon-password"></i>
                             </div>
                             <input id="txtPassword" type="password" name="password" placeholder="密码" autocomplete="off" class="layui-input" value="123456" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="slider-verify" id="sliderVerify">
+                            <div class="slider-bg"></div>
+                            <div class="slider-text">请按住滑块拖动到最右侧</div>
+                            <div class="slider-handle"><i class="layui-icon layui-icon-next"></i></div>
                         </div>
                     </div>
                     <div class="layui-form-item login-remember">
