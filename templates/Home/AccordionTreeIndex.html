@@ -275,6 +275,9 @@
         <script type="text/javascript" src="/Content/Scripts/jquery-1.8.3.min.js"></script>
         <script type="text/javascript" src="/Content/Scripts/easyui/jquery.easyui.min.js"></script>
         <script type="text/javascript" src="/Content/Scripts/easyui/hpwf-easyui-extend.js"></script>
+        <script>
+            window.easyui$ = window.jQuery;
+        </script>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/layui@2.8.18/dist/layui.js"></script>
         <script type="text/javascript" src="/Content/Scripts/jQuery.Ajax.js"></script>
         <script type="text/javascript" src="/Content/Scripts/hpwf-core.js"></script>
@@ -294,6 +297,15 @@
                 var util = layui.util;
                 var $ = layui.$;
                 var errorUrl = '/error/error404';
+
+                if (window.easyui$ && window.easyui$.hDialog) {
+                    window.$ = window.easyui$;
+                    window.jQuery = window.easyui$;
+                }
+
+                if (layui.$ && !layui.$.hDialog && window.easyui$ && window.easyui$.hDialog) {
+                    layui.$.hDialog = window.easyui$.hDialog;
+                }
 
                 HPWFIndex.init({
                     element: element,
