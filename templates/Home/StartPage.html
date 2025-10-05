@@ -1,28 +1,338 @@
 <!DOCTYPE html>
-
 <html>
     <head>
-        <title>HPWF Desktop</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="SeeSky" content="SeeSky">
-        <meta name="Keywords" content="QQ:360457160">
-        <meta name="Description" content="mail:360457160@qq.com">
-        <link rel="stylesheet" type="text/css" href="/Content/Styles/desktop.css">
-        <link rel="stylesheet" type="text/css" href="/Content/Styles/portal.css">
-        <link rel="stylesheet" type="text/css" href="/Content/Styles/icon.css">
+        <title>HPWF Desktop</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/layui@2.8.18/dist/css/layui.css" />
+        <style>
+            body {
+                margin: 0;
+                min-height: 100vh;
+                background: linear-gradient(135deg, #eef2ff 0%, #f7fafc 100%);
+                font-family: "Helvetica Neue", Arial, "Microsoft YaHei", sans-serif;
+            }
 
-   </head>
+            .dashboard {
+                padding: 24px 24px 48px;
+            }
+
+            .stat-card .layui-card-header {
+                font-size: 14px;
+                color: #718096;
+            }
+
+            .stat-card .layui-card-body {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .stat-value {
+                font-size: 28px;
+                font-weight: 600;
+                color: #2d3748;
+            }
+
+            .stat-trend {
+                font-size: 12px;
+                color: #48bb78;
+            }
+
+            .welcome-card .layui-card-header {
+                font-size: 20px;
+                font-weight: 600;
+                color: #2b6cb0;
+            }
+
+            .welcome-description {
+                margin-top: 12px;
+                color: #4a5568;
+                line-height: 1.8;
+            }
+
+            .notice-list .layui-card-header {
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            .notice-list .layui-card-body {
+                padding-top: 8px;
+            }
+
+            .notice-item {
+                padding: 10px 0;
+                border-bottom: 1px solid #edf2f7;
+            }
+
+            .notice-item:last-child {
+                border-bottom: none;
+            }
+
+            .notice-item .title {
+                font-weight: 500;
+                color: #2d3748;
+            }
+
+            .notice-item .meta {
+                font-size: 12px;
+                color: #a0aec0;
+                margin-top: 4px;
+            }
+
+            .timeline-card .layui-card-header {
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            .team-card .layui-card-header {
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            .team-list li {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 0;
+                border-bottom: 1px solid #edf2f7;
+            }
+
+            .team-list li:last-child {
+                border-bottom: none;
+            }
+
+            .team-list .name {
+                font-weight: 500;
+            }
+
+            .team-role {
+                font-size: 12px;
+                color: #718096;
+            }
+
+            .progress-card .layui-card-header {
+                font-size: 16px;
+                font-weight: 600;
+            }
+
+            .progress-item {
+                margin-bottom: 12px;
+            }
+
+            .progress-item:last-child {
+                margin-bottom: 0;
+            }
+
+            .progress-item .title {
+                display: flex;
+                justify-content: space-between;
+                font-size: 13px;
+                margin-bottom: 6px;
+            }
+
+            .footer-note {
+                margin-top: 32px;
+                text-align: center;
+                color: #a0aec0;
+                font-size: 12px;
+            }
+        </style>
+    </head>
     <body>
+        <div class="layui-fluid dashboard">
+            <div class="layui-row layui-col-space16">
+                <div class="layui-col-sm6 layui-col-lg3">
+                    <div class="layui-card stat-card">
+                        <div class="layui-card-header">活跃用户</div>
+                        <div class="layui-card-body">
+                            <div class="stat-value">132</div>
+                            <div class="stat-trend">较昨日提升 12%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-sm6 layui-col-lg3">
+                    <div class="layui-card stat-card">
+                        <div class="layui-card-header">今日访问</div>
+                        <div class="layui-card-body">
+                            <div class="stat-value">3,482</div>
+                            <div class="stat-trend">较昨日提升 8%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-sm6 layui-col-lg3">
+                    <div class="layui-card stat-card">
+                        <div class="layui-card-header">待办事项</div>
+                        <div class="layui-card-body">
+                            <div class="stat-value">7</div>
+                            <div class="stat-trend" style="color: #ed8936;">请及时处理</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-sm6 layui-col-lg3">
+                    <div class="layui-card stat-card">
+                        <div class="layui-card-header">系统健康度</div>
+                        <div class="layui-card-body">
+                            <div class="stat-value">99.9%</div>
+                            <div class="stat-trend">运行稳定</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="layui-row layui-col-space16" style="margin-top: 16px;">
+                <div class="layui-col-lg8">
+                    <div class="layui-card welcome-card">
+                        <div class="layui-card-header">欢迎回来，管理员！</div>
+                        <div class="layui-card-body">
+                            <div class="welcome-description">
+                                这里是 HPWF 快速开发框架的工作台。您可以通过左侧导航快速访问用户、组织、权限、日志等管理模块，也可以通过顶部标签便捷地切换正在处理的页面。点击右上角即可修改密码或退出系统。
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-card progress-card" style="margin-top: 16px;">
+                        <div class="layui-card-header">重点项目进度</div>
+                        <div class="layui-card-body">
+                            <div class="progress-item">
+                                <div class="title">
+                                    <span>数据可视化中心</span>
+                                    <span class="layui-badge layui-bg-blue">72%</span>
+                                </div>
+                                <div class="layui-progress" lay-filter="progress-visual">
+                                    <div class="layui-progress-bar" lay-percent="72%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="title">
+                                    <span>权限模型优化</span>
+                                    <span class="layui-badge layui-bg-green">88%</span>
+                                </div>
+                                <div class="layui-progress" lay-filter="progress-permission">
+                                    <div class="layui-progress-bar" lay-percent="88%"></div>
+                                </div>
+                            </div>
+                            <div class="progress-item">
+                                <div class="title">
+                                    <span>API 网关升级</span>
+                                    <span class="layui-badge layui-bg-orange">45%</span>
+                                </div>
+                                <div class="layui-progress" lay-filter="progress-api">
+                                    <div class="layui-progress-bar" lay-percent="45%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-lg4">
+                    <div class="layui-card notice-list">
+                        <div class="layui-card-header">通知公告</div>
+                        <div class="layui-card-body">
+                            <div class="notice-item">
+                                <div class="title">系统维护计划 - 8 月例行升级</div>
+                                <div class="meta">今天 09:30 · 运维中心</div>
+                            </div>
+                            <div class="notice-item">
+                                <div class="title">新增组织架构数据导入模板</div>
+                                <div class="meta">昨天 18:15 · 产品部</div>
+                            </div>
+                            <div class="notice-item">
+                                <div class="title">安全提醒：请定期修改登录密码</div>
+                                <div class="meta">3 天前 · 安全中心</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-card team-card" style="margin-top: 16px;">
+                        <div class="layui-card-header">核心团队</div>
+                        <div class="layui-card-body">
+                            <ul class="team-list">
+                                <li>
+                                    <span class="name">王鹏</span>
+                                    <span class="team-role">技术负责人</span>
+                                </li>
+                                <li>
+                                    <span class="name">赵倩</span>
+                                    <span class="team-role">产品经理</span>
+                                </li>
+                                <li>
+                                    <span class="name">李浩</span>
+                                    <span class="team-role">后端开发</span>
+                                </li>
+                                <li>
+                                    <span class="name">陈琳</span>
+                                    <span class="team-role">测试工程师</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-row layui-col-space16" style="margin-top: 16px;">
+                <div class="layui-col-lg6">
+                    <div class="layui-card timeline-card">
+                        <div class="layui-card-header">近期动态</div>
+                        <div class="layui-card-body">
+                            <ul class="layui-timeline">
+                                <li class="layui-timeline-item">
+                                    <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                                    <div class="layui-timeline-content layui-text">
+                                        <h3 class="layui-timeline-title">今天 10:00</h3>
+                                        <p>完成系统参数模块的配置备份。</p>
+                                    </div>
+                                </li>
+                                <li class="layui-timeline-item">
+                                    <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                                    <div class="layui-timeline-content layui-text">
+                                        <h3 class="layui-timeline-title">昨天 16:30</h3>
+                                        <p>上线组织架构同步功能并完成全量同步。</p>
+                                    </div>
+                                </li>
+                                <li class="layui-timeline-item">
+                                    <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                                    <div class="layui-timeline-content layui-text">
+                                        <h3 class="layui-timeline-title">三天前</h3>
+                                        <p>发布权限模型升级方案，并对核心角色进行适配测试。</p>
+                                    </div>
+                                </li>
+                                <li class="layui-timeline-item">
+                                    <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                                    <div class="layui-timeline-content layui-text">
+                                        <h3 class="layui-timeline-title">一周前</h3>
+                                        <p>完成登录模块的 Layui 界面升级并通过回归测试。</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-lg6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">快捷入口</div>
+                        <div class="layui-card-body">
+                            <div class="layui-btn-container">
+                                <button class="layui-btn layui-btn-radius layui-btn-primary">用户管理</button>
+                                <button class="layui-btn layui-btn-radius layui-btn-normal">组织架构</button>
+                                <button class="layui-btn layui-btn-radius layui-btn-warm">角色权限</button>
+                                <button class="layui-btn layui-btn-radius layui-btn-danger">系统日志</button>
+                                <button class="layui-btn layui-btn-radius layui-btn-disabled">更多功能</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-note">
+                若您在使用过程中遇到问题，可通过帮助文档或联系技术支持团队获得协助。
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/layui@2.8.18/dist/layui.js"></script>
+        <script>
+            layui.use(['element'], function () {
+                var element = layui.element;
+                element.render('progress');
+            });
+        </script>
     </body>
-        <script type="text/javascript" src="/Content/Scripts/jquery-1.8.3.min.js"></script>
-        <script type="text/javascript" src="/Content/Scripts/easyui/jquery.easyui.min.js"></script>
-        <script type="text/javascript" src="/Content/Scripts/jquery.portal.js"></script>
-        <script type="text/javascript" src="/Content/Scripts/desktop.js"></script>
-        <script type="text/javascript" src="/Content/Scripts/hpwf-index.js?v=30"></script>
-        <script type="text/javascript" src="/Content/Scripts/qqmsg/jQuery.qqmsg.js"></script>
-        <script type="text/javascript" src="/Content/Scripts/showloading/jquery.showLoading.min.js"></script>
-        <script type="text/javascript" src="/Content/Scripts/easyui/jquery.validate.min.js"></script>
-        <script type="text/javascript" src="/Content/Scripts/easyui/jquery.validate.messages_zh.js"></script>
 </html>
-
