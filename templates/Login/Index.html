@@ -5,55 +5,165 @@
     <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9" />
     <link href="/Content/Images/favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <title>Python快速开发框架->用户登录</title>
-    <link rel="stylesheet" href="/Content/Styles/framework-login-30.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/layui@2.8.18/dist/css/layui.css" />
     <script type="text/javascript" src="/Content/Scripts/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/layui@2.8.18/dist/layui.js"></script>
     <script type="text/javascript" src="/Content/Scripts/hpwf-core.js"></script>
-    <!-- <script type="text/javascript" src="/Content/Scripts/cloud.js"></script> -->
     <script type="text/javascript" src="/Content/Scripts/jQuery.cookie.js"></script>
     <script type="text/javascript" src="/Content/Scripts/csrf.js"></script>
-    <script type="text/javascript" language="javascript">
-        $(function () {
-            $('.loginbox').css({ 'position': 'absolute', 'left': ($(window).width() - 692) / 2 });
-            $(window).resize(function () {
-                $('.loginbox').css({ 'position': 'absolute', 'left': ($(window).width() - 692) / 2 });
-            })
-        });  
-    </script>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffffff 0%, #f5f7fa 50%, #e9ecf3 100%);
+            font-family: "Helvetica Neue", Arial, "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
 
-    <script type="text/javascript" language="javascript">
-        //检查浏览器是否支持
+        .login-header {
+            padding: 24px 40px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .login-header a {
+            color: #1e9fff;
+            text-decoration: none;
+        }
+
+        .login-header a:hover {
+            text-decoration: underline;
+        }
+
+        .login-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 16px 64px;
+        }
+
+        .login-card {
+            width: 420px;
+            box-shadow: 0 12px 40px rgba(15, 27, 67, 0.12);
+        }
+
+        .login-card .layui-card-header {
+            font-size: 20px;
+            font-weight: 500;
+            text-align: center;
+            padding: 24px 0 8px;
+        }
+
+        .login-card .layui-card-body {
+            padding: 32px 36px 40px;
+        }
+
+        .login-description {
+            text-align: center;
+            margin-bottom: 24px;
+            color: #718096;
+        }
+
+        .layui-input-prefix {
+            color: #a0aec0;
+        }
+
+        .login-remember {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .login-footer {
+            text-align: center;
+            padding: 24px 0;
+            color: #a0aec0;
+            font-size: 13px;
+        }
+
+        .login-footer a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .layui-btn-fluid {
+            height: 44px;
+            font-size: 16px;
+        }
+
+        .login-support-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .login-support-link i {
+            font-size: 16px;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                width: 100%;
+            }
+
+            .login-card .layui-card-body {
+                padding: 24px;
+            }
+        }
+    </style>
+    <script type="text/javascript">
+        // 检查浏览器是否支持
         var isIE = !!window.ActiveXObject;
         var isIE6 = isIE && !window.XMLHttpRequest;
         if (isIE6) {
             window.location.href = "../Error/Browser";
         }
 
-        //提示信息
-        function formMessage(msg, type) {
-            $('.form-message').html('');
-            $('.form-message').append('<div class="form-' + type + '-text">' + msg + '</div>');
-        }
+        layui.use(['layer', 'form'], function () {
+            var layer = layui.layer;
+            var form = layui.form;
+            var $ = layui.$ || window.jQuery;
 
-        //回车键
-        document.onkeydown = function (e) {
-            if (!e) e = window.event; //火狐中是 window.event
-            if ((e.keyCode || e.which) == 13) {
-                var btlogin = document.getElementById("btlogin");
-                btlogin.focus();
-                btlogin.click();
+            form.render();
+
+            function formMessage(msg, type) {
+                var iconMap = {
+                    succeed: 1,
+                    warning: 0,
+                    error: 2
+                };
+                layer.msg(msg, {
+                    icon: iconMap[type] || 0,
+                    time: 2000
+                });
             }
-        };
 
-        $(function () {
-            $("#btnLogin").click(function () {
-                var account = $("#txtAccount").val();
-                var password = $("#txtPassword").val();
-                if (account == "") {
-                    $("#txtAccount").focus();
+            $(document).on('keydown', function (e) {
+                if ((e.keyCode || e.which) === 13) {
+                    e.preventDefault();
+                    $('#btnLogin').trigger('click');
+                }
+            });
+
+            $('#btnLogin').on('click', function () {
+                var account = $('#txtAccount').val();
+                var password = $('#txtPassword').val();
+                if (account === '') {
+                    $('#txtAccount').focus();
                     formMessage('登录账户不能为空', 'warning');
                     return false;
-                } else if (password == "") {
-                    $("#txtPassword").focus();
+                } else if (password === '') {
+                    $('#txtPassword').focus();
                     formMessage('登录密码不能为空', 'warning');
                     return false;
                 } else {
@@ -61,25 +171,24 @@
                     window.setTimeout(function () {
                         var postData = {
                             Account: escape(account),
-                            //Password: escape($.md5(password))
                             Password: escape(password),
                             csrfmiddlewaretoken: '{{ csrf_token }}'
                         };
                         getAjax('/Admin/CheckLogin/', postData, function (rs) {
-                            if (parseInt(rs) == -1) {
-                                $("#txtAccount").focus();
+                            var status = parseInt(rs);
+                            if (status === -1) {
+                                $('#txtAccount').focus();
                                 formMessage('登录账户不存在', 'error');
-                            } else if (parseInt(rs) == 2) {
-                                $("#txtAccount").focus();
+                            } else if (status === 2) {
+                                $('#txtAccount').focus();
                                 formMessage('登录账户被系统锁定', 'error');
-                            } else if (parseInt(rs) == 4) {
-                                $("#txtAccount").focus();
-                                $("#txtPassword").val("");
+                            } else if (status === 4) {
+                                $('#txtAccount').focus();
+                                $('#txtPassword').val('');
                                 formMessage('登录密码错误', 'error');
-                            } else if (parseInt(rs) == 3) {
-                                formMessage('登录验证成功,正在跳转首页', 'succeed');
-                                //setInterval(Load, 1000);
-                                Load()
+                            } else if (status === 3) {
+                                formMessage('登录验证成功, 正在跳转首页', 'succeed');
+                                Load();
                             } else {
                                 alert(rs);
                             }
@@ -87,56 +196,64 @@
                     }, 500);
                 }
             });
+
+            window.Load = function () {
+                var index = $.cookie('UIStyle');
+                if (index && index === 'Tree') {
+                    window.location.href = '/Admin/TreeIndex/';
+                } else if (index === 'AccordionTree') {
+                    window.location.href = '/Admin/AccordionTreeIndex/';
+                } else {
+                    window.location.href = '/Admin/TreeIndex/';
+                }
+                return false;
+            };
         });
-        
-    //登录加载
-    function Load() {
-        var Index = $.cookie('UIStyle');
-       
-        if (Index && Index == 'Tree') {
-            window.location.href = '/Admin/TreeIndex/';
-             //window.location.href = '/Admin/AccordionTreeIndex/';
-        } else if (Index == 'AccordionTree') {
-            window.location.href = '/Admin/AccordionTreeIndex/';
-        } else {
-             window.location.href = '/Admin/TreeIndex/';
-        }
-        return false;
-    }
     </script>
 </head>
-<body style="background-color:#ffffff;  background-repeat:no-repeat; background-position:center top; overflow:hidden;">
-    <div id="mainBody">
-      <div id="cloud1" class="cloud"></div>
-      <div id="cloud2" class="cloud"></div>
+<body>
+    <div class="login-header">
+        <div>Python Web Development Framework</div>
+        <a class="login-support-link" href="http://www.usable-programming.com" target="_blank" rel="noopener">
+            <i class="layui-icon layui-icon-service"></i>
+            技术支持
+        </a>
     </div>
-    <div class="logintop"> <span>Python Web Developemnt Framework</span>
-      <ul>
-        <li><a href="http://www.usable-programming.com">技术支持</a></li>
-      </ul>
-    </div>    
-    <div class="loginbody"><!-- <span class="systemlogo"> --></span>    
-      <div class="loginbox">
-        <ul>
-          <li>            
-            <input id="txtAccount" type="text" class="loginuser" value="administrator"/>
-          </li>
-          <li>
-            <input id="txtPassword" type="password" class="loginpwd" value="123456"/>
-          </li>
-          <li>
-            <input id="btnLogin" type="button" class="loginbtn" value="登录"/>
-            <label>
-              <input name="" type="checkbox" value="" checked="checked" />
-              记住密码</label>
-            <!--<label><a href="#">忘记密码？</a></label> -->
-          </li>
-          <li>
-            <div class="form-message"/>
-          <li>
-        </ul>
-      </div>
+    <div class="login-wrapper">
+        <div class="layui-card login-card">
+            <div class="layui-card-header">用户登录</div>
+            <div class="layui-card-body">
+                <div class="login-description">请输入您的账户和密码登录系统</div>
+                <form class="layui-form" lay-filter="login-form">
+                    <div class="layui-form-item">
+                        <div class="layui-input-wrap">
+                            <div class="layui-input-prefix">
+                                <i class="layui-icon layui-icon-username"></i>
+                            </div>
+                            <input id="txtAccount" type="text" name="account" placeholder="账户" autocomplete="off" class="layui-input" value="administrator" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-wrap">
+                            <div class="layui-input-prefix">
+                                <i class="layui-icon layui-icon-password"></i>
+                            </div>
+                            <input id="txtPassword" type="password" name="password" placeholder="密码" autocomplete="off" class="layui-input" value="123456" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item login-remember">
+                        <div>
+                            <input type="checkbox" name="remember" title="记住密码" lay-skin="primary" checked="checked" />
+                        </div>
+                        <!-- <a href="#">忘记密码？</a> -->
+                    </div>
+                    <div class="layui-form-item">
+                        <button type="button" class="layui-btn layui-btn-normal layui-btn-fluid" id="btnLogin">登录</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-    <div class="loginbm">Usable-Programming版权所有</div>
-    </body>
+    <div class="login-footer">Usable-Programming 版权所有</div>
+</body>
 </html>
