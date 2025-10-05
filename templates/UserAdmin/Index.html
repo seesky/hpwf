@@ -3,28 +3,155 @@
 <script type="text/javascript">
     var curUserinfo = { "id": '{{ CurrentUserId }}' };
 </script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/layui@2.8.18/dist/css/layui.css" integrity="sha384-6DCQE4kq1XEy+8GJtI75G2uHzoFgsxH8KHCBGbQSDxWoW8WgknOcZ5IRCDYXMVZX" crossorigin="anonymous" />
+<style>
+    .user-admin-container {
+        height: 100%;
+        padding: 12px;
+        box-sizing: border-box;
+    }
 
-<div id="layout">
-    <div region="west" iconCls="icon16_chart_organisation" split="true" title="组织机构" style="width:220px;padding: 5px" collapsible="false">
-        <ul id="organizeTree"></ul>
-    </div>
-    <div region="center" title="用户列表" iconCls="icon16_list" style="padding: 2px; overflow: hidden">
-        <div id="toolbar">
-            <div style="float: left;padding-top:1px;">
-                {% autoescape off %}
-                {{ ToolButton }}
-                {% endautoescape %}
-                <div class='datagrid-btn-separator'></div>
-                <div style="float: right; padding-bottom:1px;">
-                        搜索值：<input type="text" name="SearchValue" id="txtSearchValue" class="txt03" style="width: 150px;"/>
-                    <a id="btnSearch" href="javascript:;" plain="true" class="easyui-linkbutton" icon="icon16_search_accounts" title="查询">查询</a>
+    .user-admin-container .layui-card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-admin-container .layui-card-body {
+        flex: 1;
+        overflow: hidden;
+        padding: 0 12px 12px 12px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-admin-layout {
+        height: calc(100vh - 40px);
+    }
+
+    .organize-tree-wrapper {
+        height: 100%;
+        overflow: auto;
+        padding: 12px;
+        box-sizing: border-box;
+    }
+
+    #organizeTree {
+        max-height: 100%;
+    }
+
+    .user-admin-toolbar {
+        padding: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .user-admin-toolbar .toolbar-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .user-admin-toolbar .toolbar-search {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: auto;
+    }
+
+    .user-admin-toolbar label {
+        padding: 0;
+        line-height: 28px;
+    }
+
+    .user-admin-toolbar .layui-input {
+        width: 180px;
+    }
+
+    .user-admin-table-wrapper {
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .user-admin-table-wrapper .layui-table-view {
+        margin: 0;
+    }
+
+    .user-admin-toolbar .layui-btn + .layui-btn {
+        margin-left: 0;
+    }
+
+    .layui-table-view .layui-table-body tr.layui-disabled-row td {
+        color: #999;
+    }
+</style>
+
+<div class="layui-fluid user-admin-container">
+    <div class="layui-row layui-col-space15 user-admin-layout">
+        <div class="layui-col-sm4 layui-col-md3 layui-col-lg2">
+            <div class="layui-card">
+                <div class="layui-card-header">组织机构</div>
+                <div class="layui-card-body organize-tree-wrapper">
+                    <div id="organizeTree"></div>
                 </div>
             </div>
         </div>
-        <table id="userlist" toolbar="#toolbar"></table>
-    </div>     
+        <div class="layui-col-sm8 layui-col-md9 layui-col-lg10">
+            <div class="layui-card">
+                <div class="layui-card-header">
+                    <div id="toolbar" class="user-admin-toolbar">
+                        <div class="toolbar-buttons">
+                            {% autoescape off %}
+                            {{ ToolButton }}
+                            {% endautoescape %}
+                        </div>
+                        <div class="toolbar-search">
+                            <label class="layui-form-label">搜索值</label>
+                            <input type="text" id="txtSearchValue" placeholder="请输入关键字" autocomplete="off" class="layui-input" />
+                            <button type="button" id="btnSearch" class="layui-btn layui-btn-sm">
+                                <i class="layui-icon layui-icon-search"></i> 查询
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card-body user-admin-table-wrapper">
+                    <table id="userTable" lay-filter="userTable"></table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<script type="text/javascript" src="/Content/Scripts/Business/exportutil.js"></script>
-<script type="text/javascript" src="/Content/Scripts/Business/Search.js"> </script>
+
+<script type="text/html" id="enabledTpl">
+    {{# if(d.USERNAME === 'Administrator'){ }}
+        <span class="layui-badge layui-bg-green">超级管理员</span>
+    {{# } else { }}
+        <input type="checkbox" lay-skin="switch" lay-text="启用|禁用" data-user-id="{{ d.ID }}" data-original-enabled="{{ d.ENABLED ? 1 : 0 }}" {{ d.ENABLED ? 'checked' : '' }} lay-filter="enabledSwitch" />
+    {{# } }}
+</script>
+
+<script type="text/html" id="dimissionTpl">
+    {{# if(d.ISDIMISSION){ }}
+        <span class="layui-badge layui-bg-orange">离职</span>
+    {{# } else { }}
+        <span class="layui-badge-dot layui-bg-green"></span>
+    {{# } }}
+</script>
+
+<script type="text/html" id="genderTpl">
+    {{# if(d.GENDER === '男'){ }}
+        <i class="layui-icon layui-icon-user"></i>
+    {{# } else if(d.GENDER === '女'){ }}
+        <i class="layui-icon layui-icon-female"></i>
+    {{# } else { }}
+        <i class="layui-icon layui-icon-about" title="未设置"></i>
+    {{# } }}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/layui@2.8.18/dist/layui.js" integrity="sha384-yK65FM0tElXkJuQJxyPny5n0xcgOjsLxU5C04h74hFSe48XLyAuz7wch4+CQ8yJn" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/Content/Scripts/Business/Search.js"></script>
 <script type="text/javascript" src="/Content/Area/FrameworkModules/Biz/UserAdmin.js"></script>
 {% endblock %}
