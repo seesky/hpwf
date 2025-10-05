@@ -8,35 +8,80 @@
         <link href="/Content/Scripts/showloading/showLoading.css" rel="stylesheet" type="text/css" />
         <link href="/Content/Styles/common.css" rel="stylesheet" type="text/css" />
         <link href="/Content/Scripts/easyui/themes/{{ Skin }}/easyui.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/layui-src/dist/css/layui.css" integrity="sha384-Z5pCWKsd4tHxA9A5q40GkaeJfRFh7/6GmdLk7RX9n8Mnp7CWQJk5E12Py1S4dZIH" crossorigin="anonymous" />
         <link href="/Content/Styles/iconNew16.css" rel="stylesheet" type="text/css" />
         <script type="text/javascript" src="/Content/Scripts/jquery-1.8.3.min.js"></script>
         <script type="text/javascript" src="/Content/Scripts/easyui/jquery.easyui.min.js"></script>
         <script type="text/javascript" src="/Content/Scripts/easyui/locale/easyui-lang-zh_CN.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/layui-src/dist/layui.js" integrity="sha384-E8GZrS7r7DmB1gSOpBv4Osms6jOkz7zsp2GTgty7R7Qx8k3Xl5hpWh3EgYmsC3Se" crossorigin="anonymous"></script>
         <script type="text/javascript" src="/Content/Scripts/jQuery.Ajax.js"></script>
         <script type="text/javascript" src="/Content/Scripts/easyui/hpwf-easyui-extend.js?v=30" ></script>
         <script type="text/javascript" src="/Content/Scripts/hpwf-core.js?v=30" ></script>
         <script type="text/javascript" src="/Content/Scripts/jsCommon.js?v=30" ></script>
         <script type="text/javascript" src="/Content/Scripts/csrf.js"></script>
+        <style>
+            #wnav .custom-tree-icon {
+                display: inline-block;
+                width: 16px;
+                height: 16px;
+                margin-right: 6px;
+                vertical-align: middle;
+            }
+            #wnav .layui-tree-txt {
+                vertical-align: middle;
+            }
+        </style>
         <script type="text/javascript">
             /**初始化**/
             $(document).ready(function () {
                 addTab("我的桌面", '/Admin/StartPage', "icon16_home_page");
 
-                getAjax("/Admin/LoadTreeMenu/", "", function (data) {
-                    var treeJson = eval("(" + data + ")");
-                    $("#wnav").tree({
-                        animate: true,
-                        lines: true,
-                        data: treeJson,
-                        onClick: function (node) {
-                            if (node.attributes.url != '#' && node.attributes.url != '') {
-                                addTab(node.text, node.attributes.url, node.iconCls);
-                            } else {
-                                if (node.attributes.url != '#') {
-                                    addTab(node.text, errorUrl, node.iconCls);
+                layui.use('tree', function () {
+                    var tree = layui.tree;
+
+                    function convertToLayuiTree(nodes) {
+                        if (!nodes) {
+                            return [];
+                        }
+                        return $.map(nodes, function (node) {
+                            var converted = {
+                                id: node.id,
+                                title: node.text,
+                                spread: node.state === 'open',
+                                iconCls: node.iconCls,
+                                attributes: node.attributes || {}
+                            };
+                            if (node.children && node.children.length > 0) {
+                                converted.children = convertToLayuiTree(node.children);
+                            }
+                            return converted;
+                        });
+                    }
+
+                    getAjax("/Admin/LoadTreeMenu/", "", function (data) {
+                        var treeJson = eval("(" + data + ")");
+                        var layuiTreeData = convertToLayuiTree(treeJson);
+                        tree.render({
+                            elem: '#wnav',
+                            data: layuiTreeData,
+                            showLine: true,
+                            accordion: true,
+                            templet: function (d) {
+                                var iconHtml = d.iconCls ? '<i class="custom-tree-icon ' + d.iconCls + '"></i>' : '';
+                                return iconHtml + '<span class="layui-tree-txt">' + d.title + '</span>';
+                            },
+                            click: function (obj) {
+                                var node = obj.data;
+                                var attributes = node.attributes || {};
+                                if (attributes.url != '#' && attributes.url != '') {
+                                    addTab(node.title, attributes.url, node.iconCls);
+                                } else {
+                                    if (attributes.url != '#') {
+                                        addTab(node.title, errorUrl, node.iconCls);
+                                    }
                                 }
                             }
-                        }
+                        });
                     });
                 });
             });
@@ -77,7 +122,7 @@
     </div>
     <div region="west" split="true" title="导航菜单" style="width: 200px;" id="west">
         <div style="margin: 5px">
-            <ul id="wnav"></ul>
+            <div id="wnav"></div>
         </div>
     </div>
 
