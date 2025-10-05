@@ -9,6 +9,8 @@ layui.use(['tree', 'table', 'layer', 'form', 'dropdown', 'util'], function () {
     var util = layui.util;
     var $ = layui.$;
 
+    var ajaxHeaders = { 'X-Requested-With': 'XMLHttpRequest' };
+
     var escapeHtml = typeof util.escape === 'function' ? util.escape : function (str) {
         return String(str || '')
             .replace(/&/g, '&amp;')
@@ -343,22 +345,27 @@ layui.use(['tree', 'table', 'layer', 'form', 'dropdown', 'util'], function () {
     }
 
     function initTree() {
-        $.getJSON('/Admin/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/?isTree=1', function (data) {
-            var treeData = normalizeTree(data || []);
-            tree.render({
-                elem: '#organizeTree',
-                onlyIconControl: true,
-                data: treeData,
-                click: function (obj) {
-                    if (obj && obj.data) {
-                        state.organizeId = obj.data.id;
-                        reloadTable(true);
+        $.ajax({
+            url: '/Admin/FrameworkModules/OrganizeAdmin/GetOrganizeTreeJson/?isTree=1',
+            dataType: 'json',
+            headers: ajaxHeaders,
+            success: function (data) {
+                var treeData = normalizeTree(data || []);
+                tree.render({
+                    elem: '#organizeTree',
+                    onlyIconControl: true,
+                    data: treeData,
+                    click: function (obj) {
+                        if (obj && obj.data) {
+                            state.organizeId = obj.data.id;
+                            reloadTable(true);
+                        }
                     }
+                });
+                if (treeData.length) {
+                    state.organizeId = treeData[0].id;
+                    reloadTable(true);
                 }
-            });
-            if (treeData.length) {
-                state.organizeId = treeData[0].id;
-                reloadTable(true);
             }
         });
     }
@@ -393,6 +400,7 @@ layui.use(['tree', 'table', 'layer', 'form', 'dropdown', 'util'], function () {
                 organizeId: state.organizeId,
                 searchValue: state.searchValue
             },
+            headers: ajaxHeaders,
             parseData: function (res) {
                 if (typeof res === 'string') {
                     try {
